@@ -1,0 +1,88 @@
+% This file was converted to LaTeX by Writer2LaTeX ver. 1.9.9
+% see http://writer2latex.sourceforge.net for more info
+\documentclass[a4paper]{article}
+\usepackage{calc,pifont,eurosym,amsmath,wasysym,amssymb,amsfonts}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{xcolor,microtype,longfbox}
+\usepackage[explicit]{titlesec}
+\usepackage[skip=0cm plus 0cm,indent=0cm]{parskip}
+\usepackage{fancyhdr}
+\usepackage[margin=2cm,noheadfoot]{geometry}
+\usepackage[style=numeric,backend=biber]{biblatex}
+\usepackage{enumitem,hyperref}
+\hypersetup{colorlinks=true,allcolors=blue}
+\usepackage[pdftex]{graphicx}
+\makeatletter\newdimen\@tempdimd\makeatother
+% Headings
+% Outline numbering
+\setcounter{secnumdepth}{0}
+% Pages
+\fancypagestyle{Standard}{\fancyhf{}
+  \fancyhead[L]{}
+  \fancyfoot[L]{}
+  \renewcommand\headrulewidth{0pt}
+  \renewcommand\footrulewidth{0pt}
+  \renewcommand\thepage{\arabic{page}}
+}
+\pagestyle{Standard}
+\setlength{\skip\footins}{0.119cm}
+\renewcommand\footnoterule{\vspace*{-0.018cm}\setlength\leftskip{0pt}\setlength\rightskip{0pt plus 1fil}\noindent\textcolor{black}{\rule{0.25\columnwidth}{0.018cm}}\vspace*{0.101cm}}
+\date{2025-03-02}
+
+
+\usepackage{tikz}
+
+\usepackage{tgheros}
+\renewcommand*\familydefault{\sfdefault}
+
+
+
+\begin{document}
+
+\begin{figure}
+\centering
+
+\begin{tikzpicture}
+		\node at (-1,13) { \includegraphics[width=5.652cm,height=1.507cm]{Deckblatt-img001.jpg} };
+		\node at (-1,11) {Hochschule Karlsruhe};
+		\node at (-1,10.5) {University of Applied Science};
+
+		\node at (-1,9.5) {Fakultät für Informatik und Wirtschaftsinformatik};
+		\node at (-1,9.0) {Wirtschaftsinformatik};
+		\node at (-1,6.5) {BACHELORTHESIS};
+		\node at (-1,5.0) {TITEL};
+
+		  
+
+\node at (-0.5,-2) { \begin{tabular}{p{3cm}p{10cm}}
+Von		&			VON \\
+&\\
+Matrikelnr.	&		0000 \\
+&\\
+Arbeitsplatz		&	ORT \\
+&\\
+Erstbetreuer		& PROF1 \\
+&\\
+		  Zweitbetreuer	&	PROF2 \\
+&\\
+Abgabetermin	&	DATUM \\
+
+\end{tabular} };
+
+
+
+\node at (3,-9.5) {\begin{tabular}{r}
+Karslruhe, DATUM\\
+\\
+\\
+Vorsitzender des Prüfungsausschusses
+\end{tabular}
+};
+
+\end{tikzpicture}
+
+\end{figure}
+
+
+\end{document}
