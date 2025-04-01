@@ -4,5 +4,4 @@ $(TEXFILE).pdf: $(TEXFILE).tex
 	latexmk -pdf -quiet $(TEXFILE)
 
 clean:
-	latexmk -c expose.tex
-
+	latexmk -c $(TEXFILE).tex && rm *.aux */*.aux
