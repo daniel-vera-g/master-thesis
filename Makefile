@@ -5,3 +5,6 @@ $(TEXFILE).pdf: $(TEXFILE).tex
 
 clean:
 	latexmk -c $(TEXFILE).tex && rm *.aux */*.aux
+
+pdf:
+	open main.pdf
