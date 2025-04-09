@@ -55,33 +55,23 @@ Foundational work by Khanna \cite{khanna_enhancing_2024} explores the integratio
 Building upon these foundational capabilities, the integration of GenAI represents a significant leap beyond conventional rule-based security systems. Research indicates that GenAI enhances security automation, particularly within multi-cloud and hybrid architectures. It allows systems to adapt infrastructure dynamically in response to varying traffic patterns and implements AI-powered defenses against continuously evolving cyber threats. This adaptive capability directly addresses persistent challenges in cloud security related to optimizing workload distribution, ensuring performance, and managing costs effectively \cite{seth_ai_2025}.
 
 Furthermore, recent studies underscore the practical impact of integrating GenAI with established cloud-native security tools. Patel et al. \cite{patel_generative_2025} demonstrate how layering GenAI onto platforms like AWS GuardDuty and Google Cloud Security Command Center significantly boosts automated threat detection, enables real-time incident response, and improves comprehensive vulnerability management across distributed cloud infrastructures. Their work provides empirical evidence, citing examples like Netflix and JPMorgan Chase, which reported measurable improvements in detection accuracy and notable reductions in security incidents following the adoption of GenAI-driven security automation strategies \cite{patel_generative_2025}. This convergence of GenAI with existing security frameworks highlights its potential to transform security operations centers (SOCs) by enhancing both efficiency and effectiveness.
+
 % subsubsection AI-Driven Security Approaches (end)
 
 \subsubsection{GenAI Security Scoping Matrix} % (fold)
 \label{sec: GenAI Security Scoping Matrix}
 
-A significant contribution to the field comes from AWS's introduction of the "Generative AI Security Scoping Matrix," which provides a structured approach to assessing security requirements based on the type of GenAI deployment. This framework categorizes deployments into five scopes:
-Consumer apps: Public third-party GenAI services
-Enterprise apps: Third-party applications with embedded GenAI features
-Pre-trained models: Custom applications using existing third-party foundation models
-Fine-tuned models: Refined third-party models with business-specific data
-Self-trained models: Custom-built and trained models using proprietary data
-This matrix helps security teams prioritize focus areas by identifying five key security disciplines that vary across deployment scopes: governance and compliance, legal and privacy, risk management, controls, and resilience.
+With the introduction of the "Generative AI Security Scoping Matrix," by AWS, a structured and comprehensive framework for assessing security requirements based on the type of GenAI deployment is provided\cite{noauthor_securing_nodate}. This framework aids organizations in evaluating their security posture, identifying potential vulnerabilities, and implementing appropriate controls throughout the AI lifecycle\cite{noauthor_securing_nodate}. While core security disciplines remain essential, the matrix specifically helps address the unique risks and additional considerations introduced by generative AI workloads\cite{noauthor_securing_nodate}. It classifies implementations into five scopes, representing increasing levels of ownership and control\cite{noauthor_securing_2023}:
 
-“Securing Generative AI.”
+\begin{enumerate}
+    \item \textbf{Consumer apps (Scope 1):} Utilising public third-party GenAI services (e.g., public chatbots), often with no cost or paid access, where the business does not own or see the training data or model and cannot modify it. Interaction occurs via APIs or direct application use according to provider terms\cite{noauthor_securing_2023}\cite{noauthor_securing_nodate}. This falls under the "Buying" category of GenAI usage\cite{noauthor_securing_nodate}.
+    \item \textbf{Enterprise apps (Scope 2):} Employing third-party enterprise applications (e.g., Amazon Q) with embedded GenAI features, involving an established business relationship with the vendor\cite{noauthor_securing_2023}\cite{noauthor_securing_nodate}. This also falls under the "Buying" category\cite{noauthor_securing_nodate}.
+    \item \textbf{Pre-trained models (Scope 3):} Building custom applications that integrate with existing third-party foundation models (e.g., Amazon Bedrock base models) via APIs\cite{noauthor_securing_2023}\cite{noauthor_securing_nodate}. This represents the start of the "Building" category\cite{noauthor_securing_nodate}.
+    \item \textbf{Fine-tuned models (Scope 4):} Refining an existing third-party foundation model by fine-tuning it with business-specific data, resulting in a new, specialized model (e.g., Amazon Bedrock customized models)\cite{noauthor_securing_2023}\cite{noauthor_securing_nodate}. This is part of the "Building" category\cite{noauthor_securing_nodate}.
+    \item \textbf{Self-trained models (Scope 5):} Constructing and training a GenAI model from the ground up using proprietary or acquired data, implying full ownership of the model (e.g., using Amazon SageMaker)\cite{noauthor_securing_2023}\cite{noauthor_securing_nodate}. This represents the highest level of ownership in the "Building" category\cite{noauthor_securing_nodate}.
+\end{enumerate}
 
-% subsubsection  GenAI Security Scoping Matrix (end)
-
-\subsubsection{Trust Challenges} % (fold)
-\label{sec:Trust Challenges}
-
-A significant challenge in implementing GenAI for security automation relates to the "black box" nature of many large language models (LLMs). Recent research addresses this concern through the Zero-Trust Architecture (ZTA) framework, which is specifically designed to address trust issues with GenAI models.
-
-The ZTA approach acknowledges that GenAI models present unique challenges due to their opaque feature lists and multimodal capabilities. This framework is built on zero-trust principles intended to prevent data breaches, enhance privacy, and restrict internal lateral movement within enterprise environments.
-
-“Zero-Trust Architecture (ZTA): Designing an AI-Powered Cloud Security Framework for LLMs’ Black Box Problems | Semantic Scholar.”
-
-% subsubsection Trust Challenges (end)
+This matrix serves as a mental model\cite{noauthor_securing_nodate} that helps security teams prioritize focus areas by identifying five key security disciplines whose requirements vary across the deployment scopes: governance and compliance, legal and privacy, risk management, controls, and resilience\cite{noauthor_securing_2023}\cite{noauthor_securing_nodate}. As organizations move across the scopes from consuming consumer apps (Scope 1) towards building self-trained models (Scope 5), the demands within these disciplines evolve significantly. For instance, governance requirements escalate from basic compliance with terms of service to comprehensive frameworks for model development and monitoring. Similarly, risk management priorities shift, potentially focusing on prompt injection for pre-trained models (Scope 3) versus data poisoning or model extraction for fine-tuned or self-trained models (Scopes 4 and 5). The necessary security controls also transition from emphasizing access policies in lower scopes to implementing technical safeguards like adversarial testing and output filtering in higher scopes. Resilience planning also adapts based on the application's criticality. By mapping their GenAI activities to this matrix, organizations can systematically assess risks and apply appropriate security measures tailored to their specific implementation context.
 
 \subsubsection{GenAI Security Frameworks} % (fold)
 \label{sec:GenAI Security Frameworks}
@@ -132,6 +122,17 @@ The proposed solutions—including improving training data quality, implementing
 Surathunmanun, Ongsakul, and Singh, “Exploring the Role of Generative Artificial Intelligence in the Energy Sector.”
 
 % subsubsection GenAI Security Frameworks (end)
+
+\subsubsection{Trust Challenges} % (fold)
+\label{sec:Trust Challenges}
+
+A significant challenge in implementing GenAI for security automation relates to the "black box" nature of many large language models (LLMs). Recent research addresses this concern through the Zero-Trust Architecture (ZTA) framework, which is specifically designed to address trust issues with GenAI models.
+
+The ZTA approach acknowledges that GenAI models present unique challenges due to their opaque feature lists and multimodal capabilities. This framework is built on zero-trust principles intended to prevent data breaches, enhance privacy, and restrict internal lateral movement within enterprise environments.
+
+“Zero-Trust Architecture (ZTA): Designing an AI-Powered Cloud Security Framework for LLMs’ Black Box Problems | Semantic Scholar.”
+
+% subsubsection Trust Challenges (end)
 
 \subsubsection{Agent-Based Approaches} % (fold)
 \label{sec:Agent-Based Approaches}
