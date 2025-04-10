@@ -8,3 +8,6 @@ clean:
 
 reset:
 	rm -rf ./build/*
+
+open:
+	open ./build/main.pdf
