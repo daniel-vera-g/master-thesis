@@ -190,75 +190,69 @@ This approach, exemplified by DevSecOps Sentinel, highlights a promising directi
 
 % subsubsection Agent-Based Approaches (end)
 
-\subsubsection{GenAI for Infrastructure Security} % (fold)
-\label{sec:GenAI Security Infrastructure}
+\subsubsection{Security Risks} % (fold)
+\label{sec:Security Risks}
 
-TBD
+Based on the provided systematic literature review by Nyoto et al. \cite{nyoto_cyber_2024}, which analyzed 17 relevant studies following PRISMA 2020 guidelines \cite{page_prisma_2021}, several significant cybersecurity risks arising from the use of Generative Artificial Intelligence (GenAI) were identified. These risks highlight potential threats emerging from the irresponsible application of this technology:
 
-% The evolution of security infrastructure to accommodate GenAI capabilities is evident in research on next-generation firewalls that incorporate machine learning and generative modeling for enhanced threat detection. These advanced systems integrate security controls and protocols at Layer 7 of the OSI model, representing a significant leap forward in perimeter security technology for cloud environments. This integration enables the detection of sophisticated attack patterns that traditional signature-based approaches might miss.
+\begin{itemize}
+    \item \textbf{Phishing Attacks and Social Engineering:} GenAI can craft highly personalized and convincing messages, making phishing attempts and social engineering tactics more effective, even with minimal information about the target \cite{nyoto_cyber_2024}.
+    \item \textbf{Ransomware and Malware Generation:} The technology lowers the barrier for creating sophisticated malicious software. GenAI can be used to generate effective ransomware and various forms of malware, potentially enabling individuals with limited coding expertise to launch attacks \cite{nyoto_cyber_2024}.
+    \item \textbf{Deepfakes and Misinformation:} GenAI facilitates the creation of highly realistic deepfake content (audio/video) without clear legal frameworks or consent, posing risks of fraud, manipulation, reputational damage, and the spread of disinformation. Furthermore, GenAI models can generate plausible but inaccurate information (hallucinations), exacerbated by potential data poisoning during training, contributing to the proliferation of false information \cite{nyoto_cyber_2024}.
+    \item \textbf{Data Leakage and Misuse of Personal Data:} GenAI models are often trained on vast datasets that may include sensitive or personal data scraped without explicit consent. User interactions and prompts can also be incorporated into training data, leading to potential data leakage and privacy violations \cite{nyoto_cyber_2024}.
+    \item \textbf{Executable Attack Code Generation:} Beyond malware, GenAI can generate other forms of executable attack code, such as SQL injection scripts, further empowering malicious actors \cite{nyoto_cyber_2024}.
+    \item \textbf{Privacy Risks and Intellectual Property Violations:} The use of copyrighted material or personal data in training datasets without permission raises significant intellectual property and privacy concerns, challenging compliance with regulations like GDPR. The lack of transparency and control over how data, including user interactions, is utilized presents substantial privacy risks \cite{nyoto_cyber_2024}.
+\end{itemize}
 
-% Patel et al., “Generative AI for Automated Security Operations in Cloud Computing.”
+These findings underscore the critical need for robust risk mitigation strategies, ethical guidelines, and potentially new regulations to govern the development and deployment of GenAI, ensuring its responsible use and addressing the emerging cybersecurity challenges.
 
-% Despite the transformative potential of GenAI in cloud security, research published in 2023 indicates that organizations often implement these technologies without adequately assessing potential security vulnerabilities. This observation underscores the need for balanced approaches that embrace technological advancement while implementing robust security practices and governance frameworks.
+Another significant challenge in implementing GenAI for security automation is the comprehensive identification and management of the unique risks these systems introduce, which differ significantly from traditional software risks. The NIST Artificial Intelligence Risk Management Framework (AI RMF 1.0) \cite{tabassi_artificial_2023} provides a structured, voluntary approach to address these challenges.
 
-% Lekkala, “Next-Gen Firewalls.”
+The AI RMF defines an AI system as an "engineered or machine-based system that can, for a given set of objectives, generate outputs such as predictions, recommendations, or decisions influencing real or virtual environments" \cite[p.1]{tabassi_artificial_2023}. It acknowledges that while AI offers transformative potential, it also poses distinct risks due to factors like data dependency, complexity, opacity, and the socio-technical context of deployment \cite{tabassi_artificial_2023}.
 
-% subsubsection GenAI Security Infrastructure (end)
+In the paper, the NIST describes some key points relevant to GenAI Security Risks in Cloud Computing.
 
-\subsubsection{Trust Challenges} % (fold)
-\label{sec:Trust Challenges}
+\begin{enumerate}
+    \item \textbf{Unique AI Risk Landscape:} The framework highlights that AI risks differ from traditional software risks. Appendix B specifically notes challenges pertinent to GenAI and cloud environments, including:
+    \begin{itemize}
+        \item Dependency on vast datasets which may harbor biases or quality issues, and are susceptible to poisoning attacks \cite{tabassi_artificial_2023}.
+        \item Risks associated with using pre-trained models, which can "increase levels of statistical uncertainty and cause issues with bias management, scientific validity, and reproducibility" \cite[p.38]{tabassi_artificial_2023}. This is crucial in cloud settings where models might be sourced from third parties.
+        \item Increased opacity and difficulty in predicting failure modes or emergent behaviors, complicating security validation \cite{tabassi_artificial_2023}.
+        \item Specific security concerns not fully addressed by traditional frameworks, such as "evasion, model extraction, membership inference, availability, or other machine learning attacks" \cite[p.39]{tabassi_artificial_2023}.
+        \item Risks associated with "third-party AI technologies, transfer learning, and off-label use," which are highly relevant when using GenAI models hosted or integrated via cloud services \cite[p.39]{tabassi_artificial_2023}.
+    \end{itemize}
 
-TBD
+    \item \textbf{Trustworthiness Characteristics:} The RMF emphasizes achieving trustworthy AI by balancing several characteristics \cite{tabassi_artificial_2023}. For security, the most critical are:
+    \begin{itemize}
+      \item \textbf{Secure and Resilient:} AI systems should maintain "confidentiality, integrity, and availability" and be able to "withstand unexpected adverse events or unexpected changes" \cite[p.15]{tabassi_artificial_2023}. This includes protecting against data poisoning, adversarial examples, and model exfiltration – key threats for GenAI. The RMF notes applicability of existing standards like the NIST Cybersecurity Framework here \cite[p.15]{tabassi_artificial_2023}.
+        \item \textbf{Accountable and Transparent:} While distinct from security, transparency and accountability are vital for security incident analysis, understanding vulnerabilities, and assigning responsibility, especially in complex cloud supply chains \cite{tabassi_artificial_2023}.
+        \item \textbf{Privacy-Enhanced:} GenAI often processes vast amounts of data, potentially including sensitive information. Privacy risks are intertwined with security, as data breaches impact both. The RMF advocates for privacy considerations throughout the lifecycle and mentions Privacy-Enhancing Technologies\cite{tabassi_artificial_2023}.
+        \item \textbf{Valid and Reliable:} Systems must perform accurately and consistently. Unreliable GenAI could produce insecure code, faulty security recommendations, or fail in ways that create security openings \cite{tabassi_artificial_2023}.
+    \end{itemize}
+
+    \item \textbf{Risk Management Core Functions:} The RMF outlines four functions to operationalize risk management:
+    \begin{itemize}
+      \item \textbf{Govern:} Establishing a risk management culture, policies, accountability structures, and processes. Crucially, this includes policies addressing risks from "third-party software and data and other supply chain issues", vital for cloud-based GenAI \cite[pp.21-24]{tabassi_artificial_2023}.
+        \item \textbf{Map:} Establishing context, categorizing the AI system, understanding capabilities and limitations, and mapping risks/benefits, explicitly including those from third-party components\cite{tabassi_artificial_2023}.
+        \item \textbf{Measure:} Applying methods and metrics to assess risks and evaluate trustworthy characteristics, including specific evaluations for security and resilience and privacy\cite{tabassi_artificial_2023}.
+        \item \textbf{Manage:} Prioritizing and responding to risks, including managing risks from third-party entities and implementing incident response and recovery plans\cite{tabassi_artificial_2023}.
+    \end{itemize}
+\end{enumerate}
+
+In essence, the NIST AI RMF 1.0 provides a comprehensive framework that, while voluntary and high-level, guides organizations in systematically considering the multifaceted risks, including significant security and privacy challenges, inherent in developing, deploying, and using complex AI systems like GenAI, particularly within the context of third-party dependencies common in cloud computing environments. It stresses the importance of integrating risk management throughout the AI lifecycle and addressing the unique characteristics and vulnerabilities of AI technologies.
+
+The literature review on GenAI in the energy sector identifies key challenges that are equally applicable to cloud security implementations: hallucinations (generating plausible but incorrect information), data biases that affect model outputs, privacy concerns related to training data, potential for misuse, and system errors that may propagate through automated processes.
+Addressing these challenges requires comprehensive approaches to data governance, model validation, and continuous monitoring that ensure GenAI systems operate within acceptable parameters. These considerations are particularly important in security contexts, where false positives or missed detections can have significant consequences for organizational risk posture.
+
+% Surathunmanun, Ongsakul, and Singh, “Exploring the Role of Generative Artificial Intelligence in the Energy Sector.”
+
+% TODO Trust Challenges
 
 % A significant challenge in implementing GenAI for security automation relates to the "black box" nature of many large language models (LLMs). Recent research addresses this concern through the Zero-Trust Architecture (ZTA) framework, which is specifically designed to address trust issues with GenAI models.
 
 % The ZTA approach acknowledges that GenAI models present unique challenges due to their opaque feature lists and multimodal capabilities. This framework is built on zero-trust principles intended to prevent data breaches, enhance privacy, and restrict internal lateral movement within enterprise environments.
 
 % “Zero-Trust Architecture (ZTA): Designing an AI-Powered Cloud Security Framework for LLMs’ Black Box Problems | Semantic Scholar.”
-
-% % subsubsection Trust Challenges (end)
-
-
-\subsubsection{Privacy and Regulatory compliance} % (fold)
-\label{sec:Privacy and Regulatory compliance}
-
-TBD
-
-% A significant challenge in implementing GenAI for security automation is ensuring compliance with evolving regulatory frameworks. Research indicates the need for clear guidelines regarding intellectual property ownership rules, particularly concerning AI-created works and the legal status of data used to train AI models.
-
-% The Association for Computing Machinery (ACM) urges that personal data used to generate information or train models should be subject to opt-out policies, and AI creators should maintain records of errors made by their systems to ensure transparency about accuracy and correctability.
-
-% Tabassi, “Artificial Intelligence Risk Management Framework (AI RMF 1.0).”
-
-% The literature review on GenAI in the energy sector identifies key challenges that are equally applicable to cloud security implementations: hallucinations (generating plausible but incorrect information), data biases that affect model outputs, privacy concerns related to training data, potential for misuse, and system errors that may propagate through automated processes.
-% Addressing these challenges requires comprehensive approaches to data governance, model validation, and continuous monitoring that ensure GenAI systems operate within acceptable parameters. These considerations are particularly important in security contexts, where false positives or missed detections can have significant consequences for organizational risk posture.
-
-% Surathunmanun, Ongsakul, and Singh, “Exploring the Role of Generative Artificial Intelligence in the Energy Sector.”
-
-% subsubsection Privacy and Regulatory compliance (end)
-
-\subsubsection{Security Risks} % (fold)
-\label{sec:Security Risks}
-
-TBD
-
-% Research by Khanna et al. identifies several cybersecurity risks arising from the use of GenAI, including:
-
-% Phishing attacks and social engineering
-% Ransomware and malware generation
-% Deepfakes and misinformation
-% Data leakage and misuse of personal data
-% Executable attack code generation
-% Privacy risks and intellectual property violations
-
-% These findings provide critical insights into potential threats from irresponsible use of GenAI and emphasize the need for risk mitigation efforts and regulations concerning ethical use.
-
-% Nyoto, Devega, and Nyoto, “Cyber Security Risks in the Rapid Development of Generative Artificial Intelligence.”
-
-% Implementing GenAI across hyperscale cloud environments introduces additional challenges related to model distribution, data synchronization, and consistent policy enforcement across regions and services. While not explicitly addressed in all the available research, these scaling considerations represent significant technical hurdles for organizations operating at hyperscale.
-% The cautionary note about adopting GenAI without carefully considering potential security vulnerabilities underscores the need for comprehensive risk assessment and gradual implementation approaches that allow organizations to identify and address issues before full-scale deployment
-
-% Weedon, “Generative AI.”
 
 % subsubsection Security Risks (end)
 
@@ -283,6 +277,20 @@ TBD
 % subsubsection Balance of Automation and Human Oversight (end)
 
 % section Literature Review (end)
+
+% TODO maybe
+% \subsubsection{GenAI for Infrastructure Security} % (fold)
+% \label{sec:GenAI Security Infrastructure}
+
+% The evolution of security infrastructure to accommodate GenAI capabilities is evident in research on next-generation firewalls that incorporate machine learning and generative modeling for enhanced threat detection. These advanced systems integrate security controls and protocols at Layer 7 of the OSI model, representing a significant leap forward in perimeter security technology for cloud environments. This integration enables the detection of sophisticated attack patterns that traditional signature-based approaches might miss.
+
+% Patel et al., “Generative AI for Automated Security Operations in Cloud Computing.”
+
+% Despite the transformative potential of GenAI in cloud security, research published in 2023 indicates that organizations often implement these technologies without adequately assessing potential security vulnerabilities. This observation underscores the need for balanced approaches that embrace technological advancement while implementing robust security practices and governance frameworks.
+
+% Lekkala, “Next-Gen Firewalls.”
+
+% subsubsection GenAI Security Infrastructure (end)
 
 \section{Research Gaps} % (fold)
 \label{sec:Research Gaps}
