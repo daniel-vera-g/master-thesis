@@ -6,5 +6,3 @@
 ## References
 
 - Template: http://www.latextemplates.com/template/masters-doctoral-thesis
-
-test
