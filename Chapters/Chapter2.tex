@@ -24,8 +24,8 @@ TBD
 
 % section State of Cloud Provider Ecosystems (end)
 
-\section{Literature Review} % (fold)
-\label{sec:Literature Review}
+\section{Literature State of the Art} % (fold)
+\label{sec:State of the Art}
 
 The convergence of Generative Artificial Intelligence (GenAI) and hyperscale cloud platforms presents a rapidly evolving frontier for cybersecurity. As organizations increasingly rely on complex cloud environments, the scale and sophistication of threats necessitate advanced automation capabilities. GenAI offers promising avenues for enhancing security posture through intelligent automation, but its integration also introduces challenges and risks. A comprehensive understanding of the existing research landscape is therefore essential to identify established practices, emerging trends, and critical gaps in knowledge.
 
@@ -33,7 +33,7 @@ This literature review synthesizes current academic and industry contributions p
 
 By examining these facets, this review aims to provide a foundational understanding of the state-of-the-art, highlighting both the potential of GenAI in cloud security automation and the significant considerations that must be addressed for its responsible and effective deployment. This synthesis will inform the subsequent research presented in this thesis.
 
-\subsubsection{Methodology} % (fold)
+\subsection{Methodology} % (fold)
 \label{sec:Methodology}
 
 This literature review followed a structured approach to identify relevant publications, focusing on peer-reviewed articles addressing GenAI applications in hyperscale cloud security published primarily within the last five years. The search utilized academic databases with key search terms related to generative AI, cloud security automation, hyperscale platforms, and multi-cloud orchestration.
@@ -48,9 +48,9 @@ Papers were selected based on their relevance to:
 
 The selection process involved initial screening of titles and abstracts followed by full-text review of promising papers. The analysis employed a thematic approach, identifying recurring concepts, methodological approaches, and gaps in existing research. Particular attention was paid to identifying the theoretical foundations underpinning GenAI applications in security contexts, empirical evidence of effectiveness, and limitations of current approaches.
 
-% subsubsection Methodology (end)
+% subsection Methodology (end)
 
-\subsubsection{AI-Driven Security Approaches} % (fold)
+\subsection{AI-Driven Security Approaches} % (fold)
 \label{sec:AI-Driven Security Approaches}
 
 The landscape of cloud security is undergoing a significant transformation, shifting from traditional, often reactive methods towards more proactive and adaptive strategies powered by Artificial Intelligence (AI), particularly Generative AI (GenAI). This evolution marks a move beyond basic anomaly detection towards sophisticated security postures capable of learning from and responding dynamically to novel threat vectors in complex cloud environments.
@@ -61,9 +61,9 @@ Building upon these foundational capabilities, the integration of GenAI represen
 
 Furthermore, recent studies underscore the practical impact of integrating GenAI with established cloud-native security tools. Patel et al. \cite{patel_generative_2025} demonstrate how layering GenAI onto platforms like AWS GuardDuty and Google Cloud Security Command Center significantly boosts automated threat detection, enables real-time incident response, and improves comprehensive vulnerability management across distributed cloud infrastructures. Their work provides empirical evidence, citing examples like Netflix and JPMorgan Chase, which reported measurable improvements in detection accuracy and notable reductions in security incidents following the adoption of GenAI-driven security automation strategies \cite{patel_generative_2025}. This convergence of GenAI with existing security frameworks highlights its potential to transform security operations centers (SOCs) by enhancing both efficiency and effectiveness.
 
-% subsubsection AI-Driven Security Approaches (end)
+% subsection AI-Driven Security Approaches (end)
 
-\subsubsection{GenAI Security Scoping Matrix} % (fold)
+\subsection{GenAI Security Scoping Matrix} % (fold)
 \label{sec: GenAI Security Scoping Matrix}
 
 With the introduction of the "Generative AI Security Scoping Matrix," by AWS, a structured and comprehensive framework for assessing security requirements based on the type of GenAI deployment is provided\cite{noauthor_securing_nodate}. This framework aids organizations in evaluating their security posture, identifying potential vulnerabilities, and implementing appropriate controls throughout the AI lifecycle\cite{noauthor_securing_nodate}. While core security disciplines remain essential, the matrix specifically helps address the unique risks and additional considerations introduced by generative AI workloads\cite{noauthor_securing_nodate}. It classifies implementations into five scopes, representing increasing levels of ownership and control\cite{noauthor_securing_2023}:
@@ -78,7 +78,7 @@ With the introduction of the "Generative AI Security Scoping Matrix," by AWS, a 
 
 This matrix serves as a mental model\cite{noauthor_securing_nodate} that helps security teams prioritize focus areas by identifying five key security disciplines whose requirements vary across the deployment scopes: governance and compliance, legal and privacy, risk management, controls, and resilience\cite{noauthor_securing_2023}\cite{noauthor_securing_nodate}. As organizations move across the scopes from consuming consumer apps (Scope 1) towards building self-trained models (Scope 5), the demands within these disciplines evolve significantly. For instance, governance requirements escalate from basic compliance with terms of service to comprehensive frameworks for model development and monitoring. Similarly, risk management priorities shift, potentially focusing on prompt injection for pre-trained models (Scope 3) versus data poisoning or model extraction for fine-tuned or self-trained models (Scopes 4 and 5). The necessary security controls also transition from emphasizing access policies in lower scopes to implementing technical safeguards like adversarial testing and output filtering in higher scopes. Resilience planning also adapts based on the application's criticality. By mapping their GenAI activities to this matrix, organizations can systematically assess risks and apply appropriate security measures tailored to their specific implementation context.
 
-\subsubsection{GenAI Security Frameworks} % (fold)
+\subsection{GenAI Security Frameworks} % (fold)
 \label{sec:GenAI Security Frameworks}
 
 A notable contribution to the field is the SecGenAI framework, which provides a comprehensive approach to securing cloud-based Generative AI (GenAI) applications, with particular attention to Retrieval-Augmented Generation (RAG) systems within the context of Australian Critical Technologies of National Interest\cite{haryanto_secgenai_2024}. This framework addresses the unique security challenges introduced by the rapid advancement of GenAI technologies\cite{haryanto_secgenai_2024}.
@@ -126,9 +126,9 @@ This research identifies three key innovations within these unified platforms wi
 
 These architectural approaches, integrating MLOps frameworks for lifecycle management, robust data processing, workflow orchestration, and advanced capabilities like federated learning and real-time analytics within a multi-cloud context, provide the necessary foundation upon which advanced solutions like GenAI-driven security automation can be built across heterogeneous cloud environments\cite{sushil_prabhu_prabhakaran_integration_2024}. While the analyzed paper focuses broadly on process automation and decision systems, the detailed exploration of scalable, resilient, governable, and interoperable architectures directly supports the implementation of sophisticated, automated security measures in complex multi-cloud settings\cite{sushil_prabhu_prabhakaran_integration_2024}.
 
-% subsubsection GenAI Security Frameworks (end)
+% subsection GenAI Security Frameworks (end)
 
-\subsubsection{Approaches for Automated Cloud Security} % (fold)
+\subsection{Approaches for Automated Cloud Security} % (fold)
 \label{sec:Approaches for Automated Cloud Security}
 
 This subsection details specific technical approaches and architectural patterns crucial for enabling automated cloud security. It reviews research on unified platforms integrating AI and MLOps across multi-cloud environments, techniques for automated policy orchestration in complex Kubernetes setups, and the application of digital twins for robust security policy validation. These approaches represent concrete mechanisms for realizing the potential of automation in dynamic cloud infrastructures.
@@ -167,9 +167,9 @@ As described, this approach integrates continuous validation processes throughou
 While not specifically focused on cloud security, research on GenAI applications in the energy sector offers transferable insights into implementation approaches for complex operating environments. This comprehensive literature review identifies how GenAI enhances productivity through data creation, forecasting, optimization, and natural language understanding, while also addressing challenges such as hallucinations, data biases, privacy concerns, and system errors \cite{surathunmanun_exploring_2024}.
 The proposed solutions—including improving training data quality, implementing system fine-tuning processes, establishing human oversight mechanisms, and deploying robust security measures—provide a valuable framework for GenAI implementations in cloud security contexts. These approaches are particularly relevant for hyperscale environments where scale and complexity amplify both the benefits and risks of GenAI adoption \cite{surathunmanun_exploring_2024}.
 
-% subsubsection Approaches for Automated Cloud Security (end)
+% subsection Approaches for Automated Cloud Security (end)
 
-\subsubsection{Agent-Based Approaches} % (fold)
+\subsection{Agent-Based Approaches} % (fold)
 \label{sec:Agent-Based Approaches}
 
 A recent paper from 2024 introduces and validates the concept of employing Generative AI (GenAI)-driven agentic workflows to achieve comprehensive security automation, particularly in complex modern environments. A notable example is the DevSecOps Sentinel system\cite{noauthor_devsecops_nodate}, specifically designed to address the mounting security challenges inherent in modern software supply chains. Challenges coming from microservices, containerization, and cloud-native architectures that often outpace traditional DevSecOps practices\cite{noauthor_devsecops_nodate}.
@@ -200,9 +200,9 @@ The implementation and testing of DevSecOps Sentinel demonstrate several key poi
 
 This approach, exemplified by DevSecOps Sentinel, highlights a promising direction for leveraging GenAI to automate and enhance security functions, moving beyond traditional limitations to offer more adaptive, context-aware, and efficient security management in demanding environments like hyperscale clouds.
 
-% subsubsection Agent-Based Approaches (end)
+% subsection Agent-Based Approaches (end)
 
-\subsubsection{Security Risks} % (fold)
+\subsection{Security Risks} % (fold)
 \label{sec:Security Risks}
 
 The increasing integration of Generative Artificial Intelligence (GenAI) into various domains, including cybersecurity, presents significant opportunities but also introduces complex and multifaceted risks. Insights from recent literature reviews highlight these emerging challenges. A systematic literature review by Nyoto et al. \cite{nyoto_cyber_2024}, analyzing 17 relevant studies according to PRISMA 2020 guidelines \cite{page_prisma_2021}, identifies several significant cybersecurity threats stemming primarily from the irresponsible application of GenAI technology. Complementing this, Surathunmanun et al. \cite{surathunmanun_exploring_2024}, while reviewing GenAI in the energy sector, outline key challenges that possess direct and critical relevance to security implementations, particularly within cloud environments reliant on third-party models and data. Synthesizing these findings provides a comprehensive overview of the risks:
@@ -258,7 +258,7 @@ In essence, the NIST AI RMF 1.0 provides a comprehensive framework that, while v
 
 Adding to frameworks like the NIST AI RMF, specific architectural approaches are emerging to address the unique security challenges of GenAI in cloud environments. One prominent example is Zero Trust Architecture (ZTA) \cite{noauthor_zero-trust_nodate}. ZTA moves away from traditional perimeter-based security towards a model where trust is never assumed, and verification is continuously required\cite{noauthor_zero-trust_nodate}. This aligns well with the NIST RMF's emphasis on secure and resilient systems and proactive risk management, particularly given the "black box" nature and dynamic deployment of many GenAI models \cite{noauthor_zero-trust_nodate, tabassi_artificial_2023}. Key tenets include strict identity verification, micro-segmentation to limit lateral movement, least privilege access control, and continuous monitoring \cite{noauthor_zero-trust_nodate}. Implementing ZTA for LLMs involves specific considerations such as unified identity management across cloud platforms, AI-driven dynamic access policies, automated network segmentation, robust data encryption and classification, continuous threat monitoring tailored to LLM vulnerabilities, and ensuring compliance \cite{noauthor_zero-trust_nodate}. Interestingly, AI itself can enhance ZTA through behavioral analytics for continuous authentication or threat intelligence processing\cite{noauthor_zero-trust_nodate}. However, implementing ZTA effectively presents its own challenges, including complexity, integration with legacy systems, resource requirements, and potential performance impacts \cite{noauthor_zero-trust_nodate}.
 
-\subsubsection{Balance of Automation and Human Oversight} % (fold)
+\subsection{Balance of Automation and Human Oversight} % (fold)
 \label{sec:Balance of Automation and Human Oversight}
 
 The integration of Artificial Intelligence (AI), particularly Generative AI (GenAI), into cybersecurity presents a significant paradigm shift, offering powerful automation capabilities to counter increasingly sophisticated cyber threats. A recurring theme in the literature, however, is the inherent tension between the compelling benefits derived from this automation and the indispensable necessity of human oversight \cite{seth_ai_2025}. While AI-powered security automation provides crucial safeguards against evolving cyber dangers, the unique characteristics and potential risks associated with AI systems, especially GenAI, underscore the continued importance of human expertise and intervention \cite{seth_ai_2025, patel_generative_2025}.
@@ -273,17 +273,16 @@ Frameworks like the NIST AI RMF provide structured approaches to managing these 
 
 Ultimately, the effective use of GenAI in cybersecurity hinges on achieving a balanced, symbiotic relationship between automated capabilities and human expertise. This balanced approach acknowledges the complementary strengths of humans and AI. GenAI can process vast amounts of data and automate repetitive tasks at scale and speed, while humans provide critical thinking, contextual awareness, ethical guidance, and ultimate accountability \cite{patel_generative_2025}. Preventive efforts and well-planned action plans, incorporating robust human oversight mechanisms, are essential to harness the benefits of GenAI for cybersecurity while mitigating its inherent risks \cite{patel_generative_2025}.
 
-% subsubsection Balance of Automation and Human Oversight (end)
+% subsection Balance of Automation and Human Oversight (end)
 
-% section Literature Review (end)
-
-\subsubsection{Summary Literature review} % (fold)
-\label{sec:Summary Literature review}
+\subsection{Summary Literature State of the Art} % (fold)
+\label{sec:Summary Literature State of the Art}
 
 This literature review demonstrates that Generative AI (GenAI) represents a transformative technology for security automation within hyperscale cloud environments. The analysis reveals significant potential for GenAI to enhance security operations through automated threat detection, policy generation, and incident response, particularly across complex multi-cloud settings. Research highlights notable advancements in conceptual frameworks for multi-cloud policy orchestration, validation mechanisms to ensure trust and accuracy, and technical approaches for implementing GenAI at scale. The most promising strategies often leverage multi-cloud architectures, zero-trust principles, and comprehensive security frameworks, while necessarily acknowledging the unique infrastructure requirements of GenAI itself. However, despite this progress, persistent challenges related to trust, validation, data privacy and quality, and the crucial balance between automation and human oversight remain significant considerations. As this field continues its rapid evolution, interdisciplinary collaboration will be essential to develop robust ethical norms and innovative defense mechanisms, addressing current issues while guiding the responsible application of GenAI in cybersecurity.
 
-% subsubsection Summary Literature review (end)
+% subsection Summary LietaState of the Art (end)
 
+% section State of the Art (end)
 
 \section{Research Gaps} % (fold)
 \label{sec:Research Gaps}
