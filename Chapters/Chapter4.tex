@@ -1,0 +1,160 @@
+% Chapter Template
+
+\chapter{Conceptual Framework for GenAI-Driven Security Automation} % Main chapter title
+% \chapter{Framework Development} % Main chapter title
+
+\section{Architectural Overview of the Proposed Framework}
+
+% TODO
+% Sources of Security Data
+% Data Ingestion and Preprocessing
+
+\subsection{Core components} % (fold)
+\label{sub:Core components}
+
+The core components are meant to...
+
+\subsubsection{Data Ingestion Layer} % (fold)
+\label{sec:Data Ingestion Layer}
+
+The Data Ingestion Layer serves as the foundational entry point for security artifacts into the automation framework. Its primary function is to ingest Infrastructure-as-Code (IaC) configurations, with a specific focus on Terraform code, which is a prevalent standard for provisioning and managing cloud infrastructure. The reliance on IaC, while enhancing automation and consistency, introduces significant risks such as misconfigurations, coding errors, and embedded secrets, making automated analysis a critical requirement for secure cloud operations \cite{hayagreevan_security_2024}.
+
+This layer is designed to support both batch and real-time ingestion modes, a flexible approach that aligns with modern data pipeline architectures emphasizing scalability and performance \cite{ismail_big_2025}. Batch ingestion allows for comprehensive, scheduled scans of entire code repositories, while real-time ingestion facilitates immediate analysis within continuous integration and continuous delivery (CI/CD) pipelines. The framework accepts Terraform code through a command-line interface, ensuring seamless integration into existing developer workflows and automated systems.
+
+Upon ingestion, the layer initiates a multi-stage preliminary analysis process as defined by the prototype architecture diagram. First, the raw Terraform code is parsed for programmatic analysis. Following this step, a suite of established static analysis security testing (SAST) tools—including tfsec, Trivy, Checkov, and Terrascan—is executed. This initial scan generates a baseline vulnerability report by checking the code against a comprehensive database of known misconfigurations, security vulnerabilities, and compliance violations. The structured output from this layer, comprising the original code, its AST representation, and the baseline vulnerability report, is then passed to the Data Processing Layer for the deeper, context-aware analysis powered by generative AI that is the focus of this research. In the following, the processes of the Data processing layer are explained more in Detail
+
+% subsubsection Data Ingestion Layer (end)
+
+\subsubsection{Data Processing Layer} % (fold)
+\label{sec:Data Processing Layer}
+
+Argue for the Rationale for Two Processing Layers.
+
+Segregates processing activities into two distinct but complementary layers.
+
+Static analysis for common errors and genai for contextual parts
+
+- **Static Code Analysis:**  
+    - Employs traditional static analysis tools to detect known vulnerabilities, misconfigurations, and code smells by referencing established security standards (e.g., OWASP, CIS)[3].
+    - Outputs a baseline report of potential issues, focusing on syntactic and structural flaws.
+  - **GenAI Analysis Engine:**  
+    - Applies generative AI models (e.g., LLMs) for deeper, contextual analysis, such as understanding intent, business logic, and emerging threats[4].
+    - Bridges the gap between traditional rule-based detection and adaptive, context-aware threat identification
+
+% subsubsection Data Processing Layer (end)
+
+\subsubsection{Validation Layer} % (fold)
+\label{sec:Validation Layer}
+
+ **Purpose:**  
+  Ensures the integrity, correctness, and security of both the analysis results and any generated artifacts before they progress further in the pipeline.
+- **Key Functions:**  
+  - Validates outputs from both static and GenAI analysis for consistency and accuracy.
+  - Applies automated and, where necessary, human-in-the-loop review mechanisms to mitigate risks of false positives, hallucinations, or overlooked vulnerabilities[1][5].
+- **Security and Compliance:**  
+  - Enforces policy compliance and auditability, supporting traceability and regulatory requirements[1][5].
+  - Functions as a critical checkpoint to prevent propagation of errors or insecure code downstream.
+
+% subsubsection Validation Layer (end)
+
+\subsubsection{Code Generation Layr} % (fold)
+\label{sec:Code Generation Laye}
+
+- **Purpose:**  
+  Automates the creation of security policies, remediation scripts, or configuration changes using GenAI, followed by rigorous validation to ensure quality and safety.
+- **Key Functions:**  
+  - Leverages LLMs to generate code or policies (e.g., Rego, JSON) tailored to the detected issues and organizational standards[5].
+  - Subject to multi-stage validation, including:
+    - Automated code review and vulnerability scanning.
+    - Manual review for high-impact changes or where AI uncertainty is high[5][7].
+    - Differential and metamorphic testing to detect inconsistencies or unintended behaviors[7].
+  - Maintains detailed audit logs for traceability and compliance, supporting both operational monitoring and forensic analysis[5].
+- **Security and Governance:**  
+  - Integrates access controls and authentication to restrict code generation capabilities to authorized entities[5].
+  - Ensures that only validated, secure, and compliant code is promoted to deployment or enforcement stages.
+
+% subsubsection Code Generation Laye (end)
+
+% subsection Core components (end)
+
+\subsection{Integration with Hyperscale Cloud Platforms} % (fold)
+\label{sec:Integration with Hyperscale Cloud Platforms}
+
+% subsubsection Integration with Hyperscale Cloud Platforms (end)
+
+\subsection{Integration of GenAI-Driven Security Automation} % (fold)
+\label{sub:Integration of GenAI-Driven Security Automation}
+
+% TODO
+% Use of Retrieval-Augmented Generation (RAG) for Enhanced Accuracy 
+% Use of custom System Prompts
+% Large Language Models used
+
+% subsection Integration of GenAI-Driven Security Automation (end)
+
+\subsection{Leveraging LLMs for Deeper Contextual Analysis} % (fold)
+\label{sec:Leveraging LLMs for Deeper Contextual Analysis}
+
+% TODO
+% Identifying Context-Sensitive Security Weaknesses
+% Detecting Wrongly Flagged Issues
+% Uncovering Suboptimal or Inefficient Configurations
+% Spotting Violations of Complex Organizational Policies
+% Identifying Logical Flaws and Missing Security Basics
+
+% subsubsection Leveraging LLMs for Deeper Contextual Analysis (end)
+
+\subsection{Using LLMs to Generate Security Policies} % (fold)
+\label{sec:Using LLMs to Generate Security Policies}
+
+% TODO
+% Incorporating Security Standards and Best Practices into Policy Generation
+% Validation of Generated Policies (JSON/Rego Validators) 
+% Validation and Trust Mechanisms
+
+% subsubsection Using LLMs to Generate Security Policies (end)
+
+\subsection{Metrics for Security Posture Assessment} % (fold)
+\label{sec:Metrics for Security Posture Assessment}
+
+% subsubsection Metrics for Security Posture Assessment (end)
+
+\subsection{Human-in-the-Loop for Review and Approval} % (fold)
+\label{sub:Human-in-the-Loop for Review and Approval}
+
+% subsection Human-in-the-Loop for Review and Approval (end)
+
+\subsection{Integration with CI/CD Pipelines for Policy-as-Code} % (fold)
+\label{sec:Integration with CI/CD Pipelines for Policy-as-Code}
+
+% subsubsection Integration with CI/CD Pipelines for Policy-as-Code  (end)
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Main Section 1}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
+
+%-----------------------------------
+%	SUBSECTION 1
+%-----------------------------------
+\subsection{Subsection 1}
+
+Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+
+%-----------------------------------
+%	SUBSECTION 2
+%-----------------------------------
+
+\subsection{Subsection 2}
+Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+
+\section{Main Section 2}
+
+Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
