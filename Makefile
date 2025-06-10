@@ -1,13 +1,17 @@
 TEXFILE = main
 
 $(TEXFILE).pdf: $(TEXFILE).tex
-	latexmk -pdf -output-directory=build -aux-directory=build -quiet $(TEXFILE)
+	latexmk -pdf -quiet $(TEXFILE)
+#	latexmk -pdf -outdir=build -output-directory=build -aux-directory=build -quiet $(TEXFILE)
+
 
 clean:
-	latexmk -c -output-directory=build -aux-directory=build $(TEXFILE).tex && rm *.aux */*.aux
+	latexmk -c main.tex && rm main.bbl main.lol main.pdf main.synctex.gz
+#   latexmk -c -outdir=build -output-directory=build -aux-directory=build $(TEXFILE).tex && rm *.aux */*.aux
 
-reset:
-	rm -rf ./build/*
+# reset:
+# 	rm -rf ./build/*
 
 open:
-	open ./build/main.pdf
+	open ./$(TEXFILE).pdf
+# 	open ./build/main.pdf
