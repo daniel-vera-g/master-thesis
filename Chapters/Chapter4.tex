@@ -64,21 +64,22 @@ By synthesizing information from the code and the initial scan, the GenAI Analys
 
 % subsubsection Validation Layer (end)
 
-\subsubsection{Code Generation Layr} % (fold)
+\subsubsection{Code Generation Layer} % (fold)
 \label{sec:Code Generation Laye}
 
-- **Purpose:**  
-  Automates the creation of security policies, remediation scripts, or configuration changes using GenAI, followed by rigorous validation to ensure quality and safety.
-- **Key Functions:**  
-  - Leverages LLMs to generate code or policies (e.g., Rego, JSON) tailored to the detected issues and organizational standards[5].
-  - Subject to multi-stage validation, including:
-    - Automated code review and vulnerability scanning.
-    - Manual review for high-impact changes or where AI uncertainty is high[5][7].
-    - Differential and metamorphic testing to detect inconsistencies or unintended behaviors[7].
-  - Maintains detailed audit logs for traceability and compliance, supporting both operational monitoring and forensic analysis[5].
-- **Security and Governance:**  
-  - Integrates access controls and authentication to restrict code generation capabilities to authorized entities[5].
-  - Ensures that only validated, secure, and compliant code is promoted to deployment or enforcement stages.
+The Code Generation Layer operationalizes the insights derived from the Data Processing Layer, acting as the primary action-oriented The Code Generation Layer operationalizes the insights derived from the Data Processing Layer, acting as the primary action-oriented component of the framework. Its purpose is to automate the creation of security artifacts, in the context of this prototype, preventative policies—using Generative AI. This layer directly addresses a core aspect of this research: leveraging LLMs to not only analyze but also actively generate security policies. The integration of GenAI into the security architecture in this manner marks a significant shift, promising to streamline development workflows and accelerate remediation cycles\cite{kumar_generative_nodate}.
+
+this layer leverages LLMs, specifically models provided by AWS Bedrock, to generate code tailored to the vulnerabilities identified in the preceding analysis stages. The generated artifacts are formal policies written in the Rego language, designed to be enforced by policy engines like Open Policy Agent (OPA). The LLM is guided by system prompts and a curated knowledge base of security standards to produce precise, context-aware rules. This process of generating platform-specific code from a higher-level analysis aligns with established methods in automated systems engineering, where abstract requirements are translated into concrete, executable artifacts for a target platform.\cite{chen_platform-specific_2025}.
+
+A critical aspect of this layer is its multi-stage validation process, designed to mitigate risks associated with AI-generated code, such as factual inaccuracies (hallucinations) or the introduction of new security flaws\cite{kumar_generative_nodate}. Raw, unvalidated output is never trusted for deployment. The workflow, as specified in the prototype design, includes several checkpoints
+
+\begin{itemize}
+    \item \textbf{Automated Validation:} Generated code undergoes initial automated checks for syntactic correctness, such as using a Rego or JSON validator. Following this, the code is subjected to the same suite of static analysis tools used in the Data Ingestion Layer to ensure no new vulnerabilities have been introduced.
+    \item \textbf{Human-in-the-Loop Review:} The framework mandates a human-in-the-loop review process, which is indispensable for high-impact changes or when the AI model's confidence in its output is low. This approach maintains a crucial balance between automation and human oversight, a central theme identified in the literature review.
+    \item \textbf{Advanced Testing:} For more accuracy, the architecture can incorporate further testing to detect subtle inconsistencies or unintended behaviors in the generated policies or code.
+\end{itemize}
+
+From a governance standpoint, the layer integrates robust security controls. Access controls and authentication mechanisms restrict the code generation function to authorized entities and automated processes. Comprehensive audit logs are maintained for all generated and validated artifacts, ensuring traceability for compliance and forensic analysis, a key element in modern data architectures\cite{ismail_big_2025-1}. Ultimately, this layer ensures that only validated, secure, and compliant code is promoted to subsequent deployment or enforcement stages within a CI/CD pipeline.
 
 % subsubsection Code Generation Laye (end)
 
