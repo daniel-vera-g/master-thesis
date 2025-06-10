@@ -454,6 +454,20 @@ KOMA-script documentation for details.}]{fancyhdr}
 	}{}
 }
 
+\DeclareDocumentEnvironment{customdeclaration}{m}{ % The 'm' allows one mandatory argument
+    \ifbool{consistentlayout}{
+        % This part handles the 'consistentlayout=true' case
+        \addchap*{#1} % Uses the provided title (#1)
+    }{
+        % This part handles the 'consistentlayout=false' case, which matches your desired style
+        \checktoopen
+        \tttypeout{#1} % Use the provided title (#1)
+        \thispagestyle{plain}
+        \null\vfil
+        {\noindent\huge\bfseries#1\par\vspace{10pt}} % Use the provided title (#1) as the heading
+    }
+}{}
+
 %----------------------------------------------------------------------------------------
 %	DEDICATION PAGE DESIGN
 %----------------------------------------------------------------------------------------
