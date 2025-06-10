@@ -93,11 +93,19 @@ From a governance standpoint, the layer integrates robust security controls. Acc
 \subsection{Integration of GenAI-Driven Security Automation} % (fold)
 \label{sub:Integration of GenAI-Driven Security Automation}
 
-% TODO
-% Use of Retrieval-Augmented Generation (RAG) for Enhanced Accuracy 
-% Use of custom System Prompts
-% Large Language Models used
+% TODO add references
+% TOOD add diagramm
 
+The core of the proposed security automation framework is centered around the integration of Generative AI (GenAI), specifically through the use of Large Language Models (LLMs) provided as a managed cloud service. For the implementation of this prototype, the framework accesses foundation models via AWS Bedrock. This approach was deliberately chosen over deploying and managing local, open-source models for several strategic reasons. Utilizing a hyperscale cloud provider's managed AI service offers access to powerful, state-of-the-art models without the substantial computational and financial overhead associated with self-hosting. It abstracts away the complexities of MLOps, such as infrastructure provisioning, scaling, and maintenance, allowing the focus to remain on the application logic. Furthermore, this model aligns with the Shared Responsibility Model discussed in the literature review, where the cloud provider manages the security and availability of the underlying AI service.
+
+To ensure the generation of accurate, contextually relevant, and reliable security policies, the framework employs a Retrieval-Augmented Generation (RAG) architecture. This pattern is crucial for grounding the LLM's output in factual data, thereby mitigating the risk of model "hallucinations", a significant concern in GenAI systems where plausible but incorrect information may be generated. The RAG process within this framework functions as follows:
+\begin{enumerate}
+    \item Upon receiving a vulnerability finding from the Data Processing Layer, the system queries a dedicated Knowledge Base. As specified in the prototype architecture, this knowledge base is a curated repository containing security standards (e.g., CIS Benchmarks), vulnerability information, best practices for Terraform, and official Rego language documentation.
+    \item The retrieved documents, which provide specific context for the detected vulnerability, are then combined with a custom System Prompt. This prompt instructs the LLM on its role, the task to be performed (e.g., "You are a security expert. Generate a precise Rego policy to prevent the following vulnerability"), and the required output format.
+    \item This enriched context, consisting of the vulnerability data, retrieved knowledge, and the system prompt, is then sent to the selected LLM via the AWS Bedrock API to generate the security policy.
+\end{enumerate}
+
+This RAG-based approach ensures that the generated policies are not only syntactically correct but are also directly informed by authoritative and up-to-date security guidance, making the system more robust and trustworthy. By externalizing the knowledge base, the framework can be easily updated to reflect new standards or threat intelligence without needing to retrain or fine-tune the underlying LLM. For the prototype, a high-performance model available through AWS Bedrock, such as one from the Anthropic Claude family, is utilized for its advanced reasoning and code generation capabilities.
 % subsection Integration of GenAI-Driven Security Automation (end)
 
 \subsection{Leveraging LLMs for Deeper Contextual Analysis} % (fold)
