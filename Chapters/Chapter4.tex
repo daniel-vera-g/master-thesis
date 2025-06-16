@@ -8,11 +8,14 @@
 % TODO
 % Sources of Security Data
 % Data Ingestion and Preprocessing
+% Quellen für alle Abschnitte hinzufügen
 
 \subsection{Core components} % (fold)
 \label{sub:Core components}
 
-The core components are meant to...
+The core components of the proposed framework constitute a modular, multi-layered architecture designed to systematically process Infrastructure-as-Code (IaC) artifacts and automate the generation of security policies. This architecture is organized into a logical pipeline comprising four distinct layers, as outlined in the prototype design: the Data Ingestion Layer, the Data Processing Layer, the Code Generation Layer, and the Validation Layer. Each layer performs a specific function, building upon the output of the preceding one.
+
+Together, these components create an end-to-end workflow that begins with the intake of Terraform code, proceeds through multi-stage static and AI-driven analysis, generates corresponding security policies in Rego, and concludes with rigorous validation of the generated artifacts. This layered approach is intended to create a comprehensive and efficient system for enhancing cloud security posture by translating identified vulnerabilities directly into preventative controls. The following subsections detail the specific roles and functions of each of these core layers.
 
 \subsubsection{Data Ingestion Layer} % (fold)
 \label{sec:Data Ingestion Layer}
