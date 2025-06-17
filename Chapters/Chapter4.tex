@@ -72,10 +72,25 @@ From a governance standpoint, the layer integrates robust security controls. Acc
 % subsubsection Code Generation Laye (end)
 
 \subsubsection{Validation Layer} % (fold)
-% \label{sec:Validation Layer}
+\label{sec:Validation Layer}
 
+The Validation Layer is a critical automated quality assurance component that directly follows the Code Generation Layer. Its primary purpose is to rigorously verify the integrity, correctness, and security of the AI-generated Rego policies before they are committed to a repository or presented for human review. This layer functions as an essential trust and safety mechanism, mitigating the risks associated with AI-generated code, such as syntactic errors, logical flaws, or the introduction of new security loopholes. It ensures that only high-quality, effective, and secure policies proceed to the final enforcement and review stages within the CI/CD pipeline.
 
+The validation process is executed through a sequence of automated checks, each designed to test a different aspect of the generated policy's quality:
 
+\begin{itemize}
+    \item \textbf{Syntactic Validation:} This is the initial and most fundamental check. The layer uses a standard Rego parser and validator to confirm that the generated code is syntactically correct and adheres to the language specifications. Any policy that fails this check is immediately rejected and logged, preventing malformed code from entering the system.
+    \item \textbf{Security Self-Scan:} To prevent the AI from inadvertently introducing new vulnerabilities, the generated Rego policy itself is subjected to a security scan. This process uses static analysis tools to check the policy code for insecure patterns or anti-patterns that could be exploited. This "self-scan" ensures the remediation code does not create new security problems while attempting to solve another.
+
+    % \item \textbf{Functional and Logical Validation:} This stage verifies that the policy is not only syntactically correct but also logically effective. It involves testing the policy against a set of predefined unit tests to confirm its intended behavior. This includes:
+    % \begin{itemize}
+    %     \item \textbf{Negative Testing:} The policy is tested against a known-bad Infrastructure-as-Code (IaC) configuration that contains the target vulnerability. The validation passes if the policy correctly identifies the misconfiguration and blocks it.
+    %     \item \textbf{Positive Testing:} The policy is tested against a known-good, compliant IaC configuration. The validation passes if the policy correctly allows the configuration, ensuring it is not overly restrictive and does not impede valid operations.
+    % \end{itemize}
+    % \item \textbf{Audit Trail Generation:} A core function of this layer is to document every validation step and its outcome. A detailed validation report is generated for each policy, providing an immutable audit log that includes the results of syntactic, security, and functional checks. This report provides the necessary traceability for compliance and serves as crucial evidence for the human reviewer.
+\end{itemize}
+
+Only after a generated policy successfully passes all stages of this automated validation gauntlet is it considered "validated". The validated policy, along with its comprehensive audit report, is then passed to the CI/CD pipeline, where it can be reviewed and approved by a human expert before being enforced as part of the organization's Policy-as-Code repository. This structured validation process builds a high degree of trust in the automated system and ensures that human oversight is applied to well-vetted, high-quality security artifacts.
 
 % subsubsection Validation Layer (end)
 
