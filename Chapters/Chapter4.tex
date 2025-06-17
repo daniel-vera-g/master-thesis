@@ -200,6 +200,24 @@ These metrics assess the reliability and correctness of the framework's AI-drive
 \subsection{Human-in-the-Loop for Review and Approval} % (fold)
 \label{sub:Human-in-the-Loop for Review and Approval}
 
+While the framework is designed to maximize automation, the integration of a Human-in-the-Loop (HITL) process for review and approval is a foundational principle, reflecting a core theme identified in the literature review regarding the balance between automation and human oversight. The complete automation of security policy generation and enforcement without human intervention introduces unacceptable risks, particularly in complex cloud environments. This subsection outlines the conceptual design of the HITL workflow, which serves as a critical control point to ensure the safety, accuracy, and contextual appropriateness of the AI-generated security artifacts.
+
+The necessity for human oversight is a principle strongly articulated within established risk management frameworks, which says that no "high-risk" AI system should be operated without a meaningful human role. In this framework, the HITL process is not merely a final checkpoint but an integrated function designed to mitigate the inherent risks of GenAI, such as the generation of incorrect policies (hallucinations), the introduction of new security flaws, or the creation of overly restrictive rules that could impede business operations. It operationalizes the \textit{MANAGE} function of the NIST AI Risk Management Framework by providing a mechanism to validate, override, or reject the AI's output before it can impact the production environment\cite{barrett_actionable_2023}.
+
+The HITL review and approval workflow is triggered under specific, risk-informed conditions. As defined by the prototype architecture, a manual review by a qualified security engineer is mandatory for any AI-generated policies that address high-severity or critical vulnerabilities. A review can also be triggered when the AI model indicates a low confidence score for its generated output or when the proposed change targets a particularly sensitive component of the cloud infrastructure. This risk-based approach ensures that human expertise is focused where it is most needed, optimizing for both security and operational efficiency.
+
+During the review process, the human expert is presented with a comprehensive set of information to facilitate an informed decision. This includes:
+
+\begin{itemize}
+    \item The original vulnerability report from the Data Processing Layer.
+    \item The raw Infrastructure-as-Code (IaC) snippet containing the vulnerability.
+    \item The AI-generated Rego policy intended to remediate the issue.
+    \item The results of the automated validation checks performed on the generated policy.
+    \item An AI-generated explanation of the policy's logic and how it addresses the specific vulnerability.
+\end{itemize}
+
+This curated context allows the reviewer to assess the generated artifact's accuracy, effectiveness, and potential side effects. The reviewer can then approve the policy, allowing it to proceed to the CI/CD pipeline for enforcement, or reject it. Rejected policies are flagged and can be used as part of a feedback loop to refine the system prompts and knowledge base used by the Code Generation Layer, contributing to the system's continuous improvement\cite{zanzotto_human---loop_2019, wu_survey_2022}. Ultimately, this symbiotic relationship between the automated capabilities of GenAI and the contextual wisdom of human experts ensures that the framework operates not only with speed and scale but also with the necessary accountability and safety.
+
 % subsection Human-in-the-Loop for Review and Approval (end)
 
 \subsection{Integration with CI/CD Pipelines for Policy-as-Code} % (fold)
