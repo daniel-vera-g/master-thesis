@@ -1,7 +1,4 @@
-% Chapter Template
-
-\chapter{Conceptual Framework for GenAI-Driven Security Automation} % Main chapter title
-% \chapter{Framework Development} % Main chapter title
+\chapter{Conceptual Framework for GenAI-Driven Security Automation}
 
 \section{Architectural Overview of the Proposed Framework}
 
@@ -9,6 +6,8 @@
 % Sources of Security Data
 % Data Ingestion and Preprocessing
 % Quellen für alle Abschnitte hinzufügen
+% TODO add references
+% TOOD add diagramm
 
 \subsection{Core components} % (fold)
 \label{sub:Core components}
@@ -73,39 +72,17 @@ From a governance standpoint, the layer integrates robust security controls. Acc
 % subsubsection Code Generation Laye (end)
 
 \subsubsection{Validation Layer} % (fold)
-\label{sec:Validation Layer}
+% \label{sec:Validation Layer}
 
- **Purpose:**  
-  Ensures the integrity, correctness, and security of both the analysis results and any generated artifacts before they progress further in the pipeline.
-- **Key Functions:**  
-  - Validates outputs from both static and GenAI analysis for consistency and accuracy.
-  - Applies automated and, where necessary, human-in-the-loop review mechanisms to mitigate risks of false positives, hallucinations, or overlooked vulnerabilities[1][5].
-- **Security and Compliance:**  
-  - Enforces policy compliance and auditability, supporting traceability and regulatory requirements[1][5].
-  - Functions as a critical checkpoint to prevent propagation of errors or insecure code downstream.
+
+
 
 % subsubsection Validation Layer (end)
 
-
 % subsection Core components (end)
 
-\subsection{Integration of GenAI-Driven Security Automation} % (fold)
+\section{Integration of GenAI-Driven Security Automation} % (fold)
 \label{sub:Integration of GenAI-Driven Security Automation}
-
-% TODO add references
-% TOOD add diagramm
-% TODO integrate this here
-% \subsection{Integration with Hyperscale Cloud Platforms} % (fold)
-% \label{sec:Integration with Hyperscale Cloud Platforms}
-% subsubsection Integration with Hyperscale Cloud Platforms (end)
-
-% \subsection{Using LLMs to Generate Security Policies} % (fold)
-% \label{sec:Using LLMs to Generate Security Policies}
-% TODO
-% Incorporating Security Standards and Best Practices into Policy Generation
-% Validation of Generated Policies (JSON/Rego Validators) 
-% Validation and Trust Mechanisms
-% subsubsection Using LLMs to Generate Security Policies (end)
 
 The core of the proposed security automation framework is centered around the integration of Generative AI (GenAI), specifically through the use of Large Language Models (LLMs) provided as a managed cloud service. For the implementation of this prototype, the framework accesses foundation models via AWS Bedrock. This approach was deliberately chosen over deploying and managing local, open-source models for several strategic reasons. Utilizing a hyperscale cloud provider's managed AI service offers access to powerful, state-of-the-art models without the substantial computational and financial overhead associated with self-hosting. It abstracts away the complexities of MLOps, such as infrastructure provisioning, scaling, and maintenance, allowing the focus to remain on the application logic. Furthermore, this model aligns with the Shared Responsibility Model discussed in the literature review, where the cloud provider manages the security and availability of the underlying AI service.
 
@@ -117,9 +94,10 @@ To ensure the generation of accurate, contextually relevant, and reliable securi
 \end{enumerate}
 
 This RAG-based approach ensures that the generated policies are not only syntactically correct but are also directly informed by authoritative and up-to-date security guidance, making the system more robust and trustworthy. By externalizing the knowledge base, the framework can be easily updated to reflect new standards or threat intelligence without needing to retrain or fine-tune the underlying LLM. For the prototype, a high-performance model available through AWS Bedrock, such as one from the Anthropic Claude family, is utilized for its advanced reasoning and code generation capabilities.
+
 % subsection Integration of GenAI-Driven Security Automation (end)
 
-\subsection{Leveraging LLMs for Deeper Contextual Analysis} % (fold)
+\section{Leveraging LLMs for Deeper Contextual Analysis} % (fold)
 \label{sec:Leveraging LLMs for Deeper Contextual Analysis}
 
 % TODO describe special cases
@@ -131,14 +109,14 @@ This RAG-based approach ensures that the generated policies are not only syntact
 
 % subsubsection Leveraging LLMs for Deeper Contextual Analysis (end)
 
-\subsection{Metrics for Security Posture Assessment} % (fold)
+\section{Metrics for Security Posture Assessment} % (fold)
 \label{sec:Metrics for Security Posture Assessment}
 
 To empirically evaluate the effectiveness and efficiency of the proposed GenAI-driven framework, a set of quantitative metrics is essential. These metrics serve not only to measure the overall improvement in security posture but also to provide feedback for refining the system's components, from the analysis engines to the policy generation models. This practice aligns with established risk management principles, such as the \texttt{MEASURE} function of the NIST AI Risk Management Framework, which advocates for the application of methods to assess and track AI risks and trustworthiness characteristics. As defined in the prototype architecture, the framework's validation engine is responsible for gathering and comparing these metrics before and after the application of generated security policies.
 
 The following key metrics provide specific, measurable indicators of the framework's performance:
 
-\subsubsection*{Vulnerability and Coverage Metrics}
+\subsection*{Vulnerability and Coverage Metrics}
 These metrics quantify the raw state of security and the comprehensiveness of the analysis.
 
 \paragraph{Vulnerability Count and Severity Distribution} This fundamental metric provides a baseline by quantifying the total number of vulnerabilities detected and categorizing them by severity. The change in these counts is a direct measure of risk reduction.
@@ -159,8 +137,9 @@ These metrics quantify the raw state of security and the comprehensiveness of th
     \item \textbf{Example:} A project contains 120 Terraform resources (\( R_{\text{total}} \)). The Data Ingestion Layer successfully parses and analyzes 117 of them, yielding a \( C_{\text{scan}} \) of 97.5\%. The analysis identifies 10 unique vulnerability types (\( V_{\text{unique}} \)). The Code Generation Layer successfully produces valid Rego policies for 9 of them, resulting in a \( C_{\text{policy}} \) of 90\%. The one failure may indicate a novel vulnerability requiring refinement of the knowledge base or system prompt.
 \end{itemize}
 
-\subsubsection*{Efficiency and Speed Metrics}
-These metrics evaluate the framework's contribution to operational agility and responsiveness.
+\subsection*{Efficiency and Speed Metrics}
+% These metrics evaluate the framework's contribution to operational agility and responsiveness.
+This metric evaluates the framework's contribution to operational agility and responsiveness.
 
 \paragraph{Policy Generation Speed} This measures the time required for the Code Generation Layer to produce a syntactically valid Rego policy from a confirmed vulnerability input.
 \begin{itemize}
@@ -168,13 +147,13 @@ These metrics evaluate the framework's contribution to operational agility and r
     \item \textbf{Example:} In a test run with 50 distinct misconfigurations, the total time for the LLM to generate and validate the syntax of all 50 Rego policies is 300 seconds. The average \( T_{\text{gen}} \) is 6 seconds per policy, demonstrating the system's high-speed performance.
 \end{itemize}
 
-\paragraph{Mean Time to Remediate (MTTR)} A key industry metric, MTTR in this context measures the average time from the initial detection of a vulnerability to the moment a human-approved policy is ready for deployment\cite{ref1}.
-\begin{itemize}
-    \item \textbf{Calculation:} \[ MTTR = \frac{1}{N} \sum_{i=1}^{N} (t_{\text{approved},i} - t_{\text{detect},i}) \] This includes automated generation and human review time.
-    \item \textbf{Example:} A manual process for creating, testing, and approving a new Rego policy typically takes a security team 4-6 hours. With the proposed framework, a critical vulnerability is detected at \texttt{T=0}. A policy is generated in 8 seconds and flagged for mandatory human review. A security engineer reviews and approves the policy in 10 minutes. The MTTR for this instance is 10 minutes and 8 seconds, representing a reduction of over 95\% compared to the manual baseline.
-\end{itemize}
+% \paragraph{Mean Time to Remediate (MTTR)} A key industry metric, MTTR in this context measures the average time from the initial detection of a vulnerability to the moment a human-approved policy is ready for deployment.
+% \begin{itemize}
+%     \item \textbf{Calculation:} \[ MTTR = \frac{1}{N} \sum_{i=1}^{N} (t_{\text{approved},i} - t_{\text{detect},i}) \] This includes automated generation and human review time.
+%     \item \textbf{Example:} A manual process for creating, testing, and approving a new Rego policy typically takes a security team 4-6 hours. With the proposed framework, a critical vulnerability is detected at \texttt{T=0}. A policy is generated in 8 seconds and flagged for mandatory human review. A security engineer reviews and approves the policy in 10 minutes. The MTTR for this instance is 10 minutes and 8 seconds, representing a reduction of over 95\% compared to the manual baseline.
+% \end{itemize}
 
-\subsubsection*{Quality and Accuracy Metrics}
+\subsection*{Quality and Accuracy Metrics}
 These metrics assess the reliability and correctness of the framework's AI-driven outputs.
 
 \paragraph{Policy Accuracy and Effectiveness} This composite metric evaluates the quality of the generated policies.
@@ -197,7 +176,7 @@ These metrics assess the reliability and correctness of the framework's AI-drive
 
 % subsubsection Metrics for Security Posture Assessment (end)
 
-\subsection{Human-in-the-Loop for Review and Approval} % (fold)
+\section{Human-in-the-Loop for Review and Approval} % (fold)
 \label{sub:Human-in-the-Loop for Review and Approval}
 
 While the framework is designed to maximize automation, the integration of a Human-in-the-Loop (HITL) process for review and approval is a foundational principle, reflecting a core theme identified in the literature review regarding the balance between automation and human oversight. The complete automation of security policy generation and enforcement without human intervention introduces unacceptable risks, particularly in complex cloud environments. This subsection outlines the conceptual design of the HITL workflow, which serves as a critical control point to ensure the safety, accuracy, and contextual appropriateness of the AI-generated security artifacts.
@@ -220,7 +199,7 @@ This curated context allows the reviewer to assess the generated artifact's accu
 
 % subsection Human-in-the-Loop for Review and Approval (end)
 
-\subsection{Integration with CI/CD Pipelines for Policy-as-Code} % (fold)
+\section{Integration with CI/CD Pipelines for Policy-as-Code} % (fold)
 \label{sec:Integration with CI/CD Pipelines for Policy-as-Code}
 
 The ultimate objective of the conceptual framework is to translate its analytical outputs and AI-generated artifacts into tangible, preventative controls that are seamlessly embedded within an organization's development lifecycle. This is achieved by integrating the framework into a Continuous Integration and Continuous Delivery (CI/CD) pipeline, operationalizing a Policy-as-Code (PaC) workflow. This approach embodies the "shift left" security principle, where security checks and policy enforcement are automated and moved to the earliest stages of the development process, rather than being an afterthought.
