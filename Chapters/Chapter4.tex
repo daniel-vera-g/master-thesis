@@ -1,33 +1,37 @@
 \chapter{Conceptual Framework for GenAI-Driven Security Automation}
 
-\section{Architectural Overview of the Proposed Framework}
-
 % TODO
 % Sources of Security Data
-% Data Ingestion and Preprocessing
 % Quellen für alle Abschnitte hinzufügen
 % TODO add references
 % TOOD add diagramm
 
-\subsection{Core components} % (fold)
-\label{sub:Core components}
+\section{Architectural Overview of the Proposed Framework}
 
-The core components of the proposed framework constitute a modular, multi-layered architecture designed to systematically process Infrastructure-as-Code (IaC) artifacts and automate the generation of security policies. This architecture is organized into a logical pipeline comprising four distinct layers, as outlined in the prototype design: the Data Ingestion Layer, the Data Processing Layer, the Code Generation Layer, and the Validation Layer. Each layer performs a specific function, building upon the output of the preceding one.
+This chapter introduces the conceptual framework designed to address the critical challenges of automated security analysis and policy generation for cloud infrastructure. The proposed architecture, illustrated in Figure~\ref{fig:prototype-architecture}, presents a comprehensive, multi-layered approach that systematically processes Infrastructure-as-Code (IaC) artifacts and automatically generates corresponding security policies. At its core, the framework leverages the power of traditional static analysis tools and advanced Large Language Models (LLMs) to create a robust security automation pipeline.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Figures/prototype.pdf}
+\caption{Architectural Overview of the Proposed GenAI-Driven Security Automation Framework}
+\label{fig:prototype-architecture}
+\end{figure}
 
-Together, these components create an end-to-end workflow that begins with the intake of Terraform code, proceeds through multi-stage static and AI-driven analysis, generates corresponding security policies in Rego, and concludes with rigorous validation of the generated artifacts. This layered approach is intended to create a comprehensive and efficient system for enhancing cloud security posture by translating identified vulnerabilities directly into preventative controls. The following subsections detail the specific roles and functions of each of these core layers.
+This hybrid model is intentionally designed for efficacy, combining the reliability of established security scanners for identifying known vulnerability patterns with the contextual intelligence of generative AI. This allows for deeper analytical capabilities, necessary for uncovering complex, context-dependent security issues that traditional tools often miss. Furthermore, the architecture is conceived for seamless integration into modern DevOps workflows, particularly CI/CD pipelines, to operationalize a Policy-as-Code model and enforce security throughout the development lifecycle.
 
-\subsubsection{Data Ingestion Layer} % (fold)
+The framework is organized into a logical pipeline comprising four distinct layers: the Data Ingestion Layer, the Data Processing Layer, the Code Generation Layer, and the Validation Layer. Each layer performs a specific function, building upon the output of the preceding one to create an end-to-end workflow. This process begins with the intake of Terraform code, proceeds through multi-stage static and AI-driven analysis, generates preventative security policies in the Rego language, and concludes with the rigorous validation of these AI-generated artifacts. This layered design aims to provide a comprehensive and efficient system for enhancing cloud security posture by translating identified vulnerabilities directly into enforceable controls. The following subsections will detail the specific roles and functions of each of these core layers.
+
+\subsection{Data Ingestion Layer} % (fold)
 \label{sec:Data Ingestion Layer}
 
 The Data Ingestion Layer serves as the foundational entry point for security artifacts into the automation framework. Its primary function is to ingest Infrastructure-as-Code (IaC) configurations, with a specific focus on Terraform code, which is a prevalent standard for provisioning and managing cloud infrastructure. The reliance on IaC, while enhancing automation and consistency, introduces significant risks such as misconfigurations, coding errors, and embedded secrets, making automated analysis a critical requirement for secure cloud operations \cite{hayagreevan_security_2024}.
 
 This layer is designed to support both batch and real-time ingestion modes, a flexible approach that aligns with modern data pipeline architectures emphasizing scalability and performance \cite{ismail_big_2025}. Batch ingestion allows for comprehensive, scheduled scans of entire code repositories, while real-time ingestion facilitates immediate analysis within continuous integration and continuous delivery (CI/CD) pipelines. The framework accepts Terraform code through a command-line interface, ensuring seamless integration into existing developer workflows and automated systems.
 
-Upon ingestion, the layer initiates a multi-stage preliminary analysis process as defined by the prototype architecture diagram. First, the raw Terraform code is parsed for programmatic analysis. Following this step, a suite of established static analysis security testing (SAST) tools—including tfsec, Trivy, Checkov, and Terrascan—is executed. This initial scan generates a baseline vulnerability report by checking the code against a comprehensive database of known misconfigurations, security vulnerabilities, and compliance violations. The structured output from this layer, comprising the original code, its AST representation, and the baseline vulnerability report, is then passed to the Data Processing Layer for the deeper, context-aware analysis powered by generative AI that is the focus of this research. In the following, the processes of the Data processing layer are explained more in Detail
+Upon ingestion, the layer initiates a multi-stage preliminary analysis process. First, the raw Terraform code is parsed for programmatic analysis. Following this step, a suite of established static analysis security testing (SAST) tools—including tfsec, Trivy, Checkov, and Terrascan—is executed. This initial scan generates a baseline vulnerability report by checking the code against a comprehensive database of known misconfigurations, security vulnerabilities, and compliance violations. The structured output from this layer, comprising the original code, its AST representation, and the baseline vulnerability report, is then passed to the Data Processing Layer for the deeper, context-aware analysis powered by generative AI that is the focus of this research. In the following, the processes of the Data processing layer are explained more in Detail
 
 % subsubsection Data Ingestion Layer (end)
 
-\subsubsection{Data Processing Layer} % (fold)
+\subsection{Data Processing Layer} % (fold)
 \label{sec:Data Processing Layer}
 
 Following the Data Ingestion Layer, the Data Processing Layer is responsible for the core analysis of the ingested Infrastructure-as-Code (IaC) artifacts. A central design principle of this framework is the segregation of processing activities into two distinct but complementary sub-layers: a traditional Static Code Analysis engine and an advanced Generative AI (GenAI) Analysis Engine.
@@ -52,7 +56,7 @@ By synthesizing information from the code and the initial scan, the GenAI Analys
 
 % subsubsection Data Processing Layer (end)
 
-\subsubsection{Code Generation Layer} % (fold)
+\subsection{Code Generation Layer} % (fold)
 \label{sec:Code Generation Laye}
 
 The Code Generation Layer operationalizes the insights derived from the Data Processing Layer, acting as the primary action-oriented The Code Generation Layer operationalizes the insights derived from the Data Processing Layer, acting as the primary action-oriented component of the framework. Its purpose is to automate the creation of security artifacts, in the context of this prototype, preventative policies—using Generative AI. This layer directly addresses a core aspect of this research: leveraging LLMs to not only analyze but also actively generate security policies. The integration of GenAI into the security architecture in this manner marks a significant shift, promising to streamline development workflows and accelerate remediation cycles\cite{kumar_generative_nodate}.
@@ -71,7 +75,7 @@ From a governance standpoint, the layer integrates robust security controls. Acc
 
 % subsubsection Code Generation Laye (end)
 
-\subsubsection{Validation Layer} % (fold)
+\subsection{Validation Layer} % (fold)
 \label{sec:Validation Layer}
 
 The Validation Layer is a critical automated quality assurance component that directly follows the Code Generation Layer. Its primary purpose is to rigorously verify the integrity, correctness, and security of the AI-generated Rego policies before they are committed to a repository or presented for human review. This layer functions as an essential trust and safety mechanism, mitigating the risks associated with AI-generated code, such as syntactic errors, logical flaws, or the introduction of new security loopholes. It ensures that only high-quality, effective, and secure policies proceed to the final enforcement and review stages within the CI/CD pipeline.
@@ -115,12 +119,21 @@ This RAG-based approach ensures that the generated policies are not only syntact
 \section{Leveraging LLMs for Deeper Contextual Analysis} % (fold)
 \label{sec:Leveraging LLMs for Deeper Contextual Analysis}
 
-% TODO describe special cases
-% Identifying Context-Sensitive Security Weaknesses
-% Detecting Wrongly Flagged Issues
-% Uncovering Suboptimal or Inefficient Configurations
-% Spotting Violations of Complex Organizational Policies
-% Identifying Logical Flaws and Missing Security Basics
+% TODO more concrete examples?
+
+The deployment of Large Language Models (LLMs) within the security automation framework fundamentally transforms the depth and quality of Infrastructure-as-Code (IaC) analysis by introducing a level of contextual understanding previously unattainable with traditional static analysis tools\cite{li_iris_2025, andrade_enhancing_2025-1}. Unlike rule-based scanners, which are limited to identifying known vulnerability patterns and syntactic misconfigurations, LLMs can synthesize information across multiple resources, configuration layers, and organizational policies to surface nuanced, context-sensitive security issues\cite{li_iris_2025}.
+
+By integrating a Bedrock LLM with outputs from static code analyzers and a curated knowledge base, the framework is capable of identifying misconfigurations and policy violations that arise from complex interactions within the cloud environment\cite{andrade_enhancing_2025-1}. This deeper insight is made possible by the LLM’s ability to reason about architectural relationships, resource dependencies, and the intent behind configurations, allowing it to detect security weaknesses that would otherwise remain hidden\cite{li_iris_2025, andrade_enhancing_2025-1}.
+
+A key advantage of this approach is the identification of context-sensitive security weaknesses. The LLM is able to analyze configurations in light of their broader environment and operational context, flagging settings that may be technically valid in isolation but become risky when considered alongside other resources or data sensitivity. For example, an overly permissive security group rule might not trigger an alert in a development environment, but if linked to production data or exposed to the public internet, it becomes a significant risk—a nuance the LLM can discern by analyzing tags, naming conventions, and architectural metadata\cite{andrade_enhancing_2025-1}.
+
+Beyond identifying outright vulnerabilities, the LLM can uncover suboptimal or inefficient configurations that deviate from best practices for performance, cost-efficiency, or resilience, tailored to the specific needs of the application\cite{andrade_enhancing_2025-1}. It can also interpret and enforce complex internal policies that are difficult to codify with static rules, such as intricate naming conventions, tagging strategies for governance, or architectural patterns mandated by the organization\cite{li_iris_2025}. This capability extends to spotting logical flaws in resource deployment and interconnections, such as circular dependencies, misconfigured network routing, or resource configurations that do not align with their intended purpose\cite{li_iris_2025, andrade_enhancing_2025-1}.
+
+The LLM’s contextual reasoning also enables it to detect deviations from evolving best practices and industry standards by leveraging its knowledge base of security benchmarks and official documentation. This ensures that the framework remains adaptive to new vulnerability patterns and compliance requirements as they emerge\cite{li_iris_2025, andrade_enhancing_2025-1}. Furthermore, the LLM can analyze how combinations of individually acceptable configurations or permissions might aggregate into an elevated risk profile, identifying attack paths that arise only when multiple minor issues are considered together\cite{andrade_enhancing_2025-1}.
+
+A practical example illustrates this capability: consider an AWS S3 bucket that appears secure in isolation, with a restrictive policy allowing access only to a specific IAM role. The associated IAM role is properly scoped, and the S3 bucket policy adheres to the principle of least privilege. However, an EC2 instance in a development environment, which has this IAM role attached, is exposed to the internet via an open SSH port and is running a vulnerable operating system\cite{andrade_enhancing_2025-1}. While static analyzers might flag the open SSH port and OS vulnerability separately, and pass the S3 bucket and IAM role as secure, the LLM can connect these findings. It recognizes that the EC2 instance’s exposure and vulnerability, combined with its privileged IAM role, create a critical attack path to sensitive data in the S3 bucket\cite{li_iris_2025}. This context-sensitive weakness would likely be missed or deprioritized by traditional tools, but the LLM’s holistic analysis surfaces it as a high-priority risk\cite{li_iris_2025, andrade_enhancing_2025-1}.
+
+In summary, leveraging LLMs for deeper contextual analysis enables the framework to move beyond pattern-based detection, offering a comprehensive understanding of security posture that accounts for the dynamic and interconnected nature of modern cloud environments\cite{li_iris_2025, andrade_enhancing_2025-1}. This results in the proactive identification of genuine risks, reduction of false positives, and the continuous alignment of security controls with evolving organizational and industry standards.
 
 % subsubsection Leveraging LLMs for Deeper Contextual Analysis (end)
 
@@ -200,15 +213,7 @@ The necessity for human oversight is a principle strongly articulated within est
 
 The HITL review and approval workflow is triggered under specific, risk-informed conditions. As defined by the prototype architecture, a manual review by a qualified security engineer is mandatory for any AI-generated policies that address high-severity or critical vulnerabilities. A review can also be triggered when the AI model indicates a low confidence score for its generated output or when the proposed change targets a particularly sensitive component of the cloud infrastructure. This risk-based approach ensures that human expertise is focused where it is most needed, optimizing for both security and operational efficiency.
 
-During the review process, the human expert is presented with a comprehensive set of information to facilitate an informed decision. This includes:
-
-\begin{itemize}
-    \item The original vulnerability report from the Data Processing Layer.
-    \item The raw Infrastructure-as-Code (IaC) snippet containing the vulnerability.
-    \item The AI-generated Rego policy intended to remediate the issue.
-    \item The results of the automated validation checks performed on the generated policy.
-    \item An AI-generated explanation of the policy's logic and how it addresses the specific vulnerability.
-\end{itemize}
+During the review process, the human expert is presented with a comprehensive set of information to facilitate an informed decision. This includes the original vulnerability report, the raw Infrastructure-as-Code snippet containing the vulnerability, the AI-generated Rego policy for remediation, the results of automated validation checks, and an AI-generated explanation of the policy’s logic and how it addresses the issue.
 
 This curated context allows the reviewer to assess the generated artifact's accuracy, effectiveness, and potential side effects. The reviewer can then approve the policy, allowing it to proceed to the CI/CD pipeline for enforcement, or reject it. Rejected policies are flagged and can be used as part of a feedback loop to refine the system prompts and knowledge base used by the Code Generation Layer, contributing to the system's continuous improvement\cite{zanzotto_human---loop_2019, wu_survey_2022}. Ultimately, this symbiotic relationship between the automated capabilities of GenAI and the contextual wisdom of human experts ensures that the framework operates not only with speed and scale but also with the necessary accountability and safety.
 
