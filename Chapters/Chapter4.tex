@@ -42,8 +42,6 @@ The first stage of this layer employs a suite of established static analysis sec
 
 The second stage is the GenAI Analysis Engine, which represents the core innovation of this framework and directly addresses the research interest in applying generative AI to cloud security. This engine utilizes Large Language Models (LLMs) to perform a deeper, contextual analysis that transcends the limitations of traditional static scanners\cite{hayagreevan_security_2024, ling_enhancing_2024}. It takes as input both the original Terraform code and the baseline vulnerability report from the previous stage, using the initial findings to enrich its analytical context.
 
-% TODO hier ein paar Beispiele
-
 This engine is designed to identify security weaknesses that require an understanding of developer intent, architectural relationships, and complex business logic\cite{noseevich_towards_2015}. Its capabilities include:
 
 \begin{itemize}
@@ -86,6 +84,7 @@ The validation process is executed through a sequence of automated checks, each 
     \item \textbf{Syntactic Validation:} This is the initial and most fundamental check. The layer uses a standard Rego parser and validator to confirm that the generated code is syntactically correct and adheres to the language specifications. Any policy that fails this check is immediately rejected and logged, preventing malformed code from entering the system.
     \item \textbf{Security Self-Scan:} To prevent the AI from inadvertently introducing new vulnerabilities, the generated Rego policy itself is subjected to a security scan. This process uses static analysis tools to check the policy code for insecure patterns or anti-patterns that could be exploited. This "self-scan" ensures the remediation code does not create new security problems while attempting to solve another.
 
+    % Add maybe
     % \item \textbf{Functional and Logical Validation:} This stage verifies that the policy is not only syntactically correct but also logically effective. It involves testing the policy against a set of predefined unit tests to confirm its intended behavior. This includes:
     % \begin{itemize}
     %     \item \textbf{Negative Testing:} The policy is tested against a known-bad Infrastructure-as-Code (IaC) configuration that contains the target vulnerability. The validation passes if the policy correctly identifies the misconfiguration and blocks it.
@@ -107,7 +106,7 @@ The core of the proposed security automation framework is centered around the in
 
 To ensure the generation of accurate, contextually relevant, and reliable security policies, the framework employs a Retrieval-Augmented Generation (RAG) architecture. This pattern is crucial for grounding the LLM's output in factual data, thereby mitigating the risk of model "hallucinations", a significant concern in GenAI systems where plausible but incorrect information may be generated. The RAG process within this framework functions as follows:
 \begin{enumerate}
-    \item Upon receiving a vulnerability finding from the Data Processing Layer, the system queries a dedicated Knowledge Base. As specified in the prototype architecture, this knowledge base is a curated repository containing security standards (e.g., CIS Benchmarks), vulnerability information, best practices for Terraform, and official Rego language documentation.
+    \item Upon receiving a vulnerability finding from the Data Processing Layer, the system queries a dedicated Knowledge Base.This knowledge base is a curated repository containing security standards (e.g., CIS Benchmarks), vulnerability information, best practices for Terraform, and official Rego language documentation.
     \item The retrieved documents, which provide specific context for the detected vulnerability, are then combined with a custom System Prompt. This prompt instructs the LLM on its role, the task to be performed (e.g., "You are a security expert. Generate a precise Rego policy to prevent the following vulnerability"), and the required output format.
     \item This enriched context, consisting of the vulnerability data, retrieved knowledge, and the system prompt, is then sent to the selected LLM via the AWS Bedrock API to generate the security policy.
 \end{enumerate}
@@ -118,8 +117,6 @@ This RAG-based approach ensures that the generated policies are not only syntact
 
 \section{Leveraging LLMs for Deeper Contextual Analysis} % (fold)
 \label{sec:Leveraging LLMs for Deeper Contextual Analysis}
-
-% TODO more concrete examples?
 
 The deployment of Large Language Models (LLMs) within the security automation framework fundamentally transforms the depth and quality of Infrastructure-as-Code (IaC) analysis by introducing a level of contextual understanding previously unattainable with traditional static analysis tools\cite{li_iris_2025, andrade_enhancing_2025-1}. Unlike rule-based scanners, which are limited to identifying known vulnerability patterns and syntactic misconfigurations, LLMs can synthesize information across multiple resources, configuration layers, and organizational policies to surface nuanced, context-sensitive security issues\cite{li_iris_2025}.
 
@@ -140,7 +137,7 @@ In summary, leveraging LLMs for deeper contextual analysis enables the framework
 \section{Metrics for Security Posture Assessment} % (fold)
 \label{sec:Metrics for Security Posture Assessment}
 
-To empirically evaluate the effectiveness and efficiency of the proposed GenAI-driven framework, a set of quantitative metrics is essential. These metrics serve not only to measure the overall improvement in security posture but also to provide feedback for refining the system's components, from the analysis engines to the policy generation models. This practice aligns with established risk management principles, such as the \texttt{MEASURE} function of the NIST AI Risk Management Framework, which advocates for the application of methods to assess and track AI risks and trustworthiness characteristics. As defined in the prototype architecture, the framework's validation engine is responsible for gathering and comparing these metrics before and after the application of generated security policies.
+To empirically evaluate the effectiveness and efficiency of the proposed GenAI-driven framework, a set of quantitative metrics is essential. These metrics serve not only to measure the overall improvement in security posture but also to provide feedback for refining the system's components, from the analysis engines to the policy generation models. This practice aligns with established risk management principles, such as the \texttt{MEASURE} function of the NIST AI Risk Management Framework, which advocates for the application of methods to assess and track AI risks and trustworthiness characteristics. The framework's validation engine is responsible for gathering and comparing these metrics before and after the application of generated security policies.
 
 The following key metrics provide specific, measurable indicators of the framework's performance:
 
@@ -211,7 +208,7 @@ While the framework is designed to maximize automation, the integration of a Hum
 
 The necessity for human oversight is a principle strongly articulated within established risk management frameworks, which says that no "high-risk" AI system should be operated without a meaningful human role. In this framework, the HITL process is not merely a final checkpoint but an integrated function designed to mitigate the inherent risks of GenAI, such as the generation of incorrect policies (hallucinations), the introduction of new security flaws, or the creation of overly restrictive rules that could impede business operations. It operationalizes the \textit{MANAGE} function of the NIST AI Risk Management Framework by providing a mechanism to validate, override, or reject the AI's output before it can impact the production environment\cite{barrett_actionable_2023}.
 
-The HITL review and approval workflow is triggered under specific, risk-informed conditions. As defined by the prototype architecture, a manual review by a qualified security engineer is mandatory for any AI-generated policies that address high-severity or critical vulnerabilities. A review can also be triggered when the AI model indicates a low confidence score for its generated output or when the proposed change targets a particularly sensitive component of the cloud infrastructure. This risk-based approach ensures that human expertise is focused where it is most needed, optimizing for both security and operational efficiency.
+The HITL review and approval workflow is triggered under specific, risk-informed conditions. A manual review by a qualified security engineer is mandatory for any AI-generated policies that address high-severity or critical vulnerabilities. A review can also be triggered when the AI model indicates a low confidence score for its generated output or when the proposed change targets a particularly sensitive component of the cloud infrastructure. This risk-based approach ensures that human expertise is focused where it is most needed, optimizing for both security and operational efficiency.
 
 During the review process, the human expert is presented with a comprehensive set of information to facilitate an informed decision. This includes the original vulnerability report, the raw Infrastructure-as-Code snippet containing the vulnerability, the AI-generated Rego policy for remediation, the results of automated validation checks, and an AI-generated explanation of the policy’s logic and how it addresses the issue.
 
@@ -224,7 +221,7 @@ This curated context allows the reviewer to assess the generated artifact's accu
 
 The ultimate objective of the conceptual framework is to translate its analytical outputs and AI-generated artifacts into tangible, preventative controls that are seamlessly embedded within an organization's development lifecycle. This is achieved by integrating the framework into a Continuous Integration and Continuous Delivery (CI/CD) pipeline, operationalizing a Policy-as-Code (PaC) workflow. This approach embodies the "shift left" security principle, where security checks and policy enforcement are automated and moved to the earliest stages of the development process, rather than being an afterthought.
 
-As outlined in the prototype architecture, the integration follows a defined workflow, typically initiated within a version control system like GitHub through a pull request. When a developer proposes changes to the cloud infrastructure by modifying Terraform code, a CI/CD pipeline (e.g., using GitHub Actions) is automatically triggered. This pipeline orchestrates the core functions of the framework in a sequence designed to enforce security before insecure code is merged:
+The integration follows a defined workflow, typically initiated within a version control system like GitHub through a pull request. When a developer proposes changes to the cloud infrastructure by modifying Terraform code, a CI/CD pipeline (e.g., using GitHub Actions) is automatically triggered. This pipeline orchestrates the core functions of the framework in a sequence designed to enforce security before insecure code is merged:
 
 \begin{enumerate}
     \item \textbf{Automated Scanning and Analysis:} The pipeline first invokes the Data Ingestion and Data Processing layers to scan the proposed Terraform changes. It generates a comprehensive vulnerability report, leveraging both static analysis and the deeper contextual analysis from the GenAI engine.
