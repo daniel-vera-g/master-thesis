@@ -6,7 +6,7 @@ $(TEXFILE).pdf: $(TEXFILE).tex
 
 
 clean:
-	latexmk -c main.tex && rm main.bbl main.lol main.pdf main.synctex.gz && rm */*.aux
+	latexmk -c main.tex && rm main.bbl main.lol main.pdf main.synctex.gz main.ist main.acn main.glo && rm */*.aux
 #   latexmk -c -outdir=build -output-directory=build -aux-directory=build $(TEXFILE).tex && rm *.aux */*.aux
 
 # reset:
