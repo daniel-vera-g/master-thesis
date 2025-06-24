@@ -32,7 +32,7 @@ Upon ingestion, the layer initiates a multi-stage preliminary analysis process. 
 
 % subsubsection Data Ingestion Layer (end)
 
-\subsection{Data Processing Layer} % (fold)
+\section{Data Processing Layer}
 \label{sec:data-processing-layer}
 
 Following the Data Ingestion Layer, the Data Processing Layer is responsible for the core analysis of the ingested \gls{iac} artifacts. A central design principle of this framework is the segregation of processing activities into two distinct but complementary sub-layers: a traditional Static Analysis Engine and an advanced \gls{genai} Analysis Engine.
@@ -55,22 +55,22 @@ By synthesizing information from the configuration and the initial scan, the \gl
 
 % subsubsection Data Processing Layer (end)
 
-\subsection{Code Generation Layer} % (fold)
-\label{sec:Code Generation Laye}
+\section{Code Generation Layer}
+\label{sec:code-generation-layer}
 
 The Code Generation Layer operationalizes the insights derived from the Data Processing Layer, acting as the primary action-oriented component of the framework. Its purpose is to automate the creation of security artifacts, in the context of this prototype, preventative policies using \gls{genai}. This layer directly addresses a core aspect of this research: leveraging \glspl{llm} to not only analyze but also actively generate security policies. The integration of \gls{genai} into the security architecture in this manner marks a significant shift, promising to streamline development workflows and accelerate remediation cycles\cite{kumar_generative_nodate}.
 
-this layer leverages \glspl{llm}, specifically models provided by \gls{aws} Bedrock, to generate code tailored to the vulnerabilities identified in the preceding analysis stages. The generated artifacts are formal policies written in the Rego language, designed to be enforced by policy engines like \gls{opa}. The \gls{llm} is guided by system prompts and a curated knowledge base of security standards to produce precise, context-aware rules. This process of generating platform-specific code from a higher-level analysis aligns with established methods in automated systems engineering, where abstract requirements are translated into concrete, executable artifacts for a target platform.\cite{chen_platform-specific_2025}.
+This layer leverages \glspl{llm} to generate security policies tailored to the vulnerabilities identified in the preceding analysis stages. The generated artifacts are formal policies written in a declarative, machine-readable language, designed for automated enforcement. The \gls{llm} is guided by system prompts and a curated knowledge base of security standards to produce precise, context-aware rules. This process of generating platform-specific policies from a higher-level analysis aligns with established methods in automated systems engineering, where abstract requirements are translated into concrete, executable artifacts for a target platform\cite{chen_platform-specific_code_2025}.
 
-A critical aspect of this layer is its multi-stage validation process, designed to mitigate risks associated with \gls{ai}-generated code, such as factual inaccuracies (hallucinations) or the introduction of new security flaws\cite{kumar_generative_nodate}. Raw, unvalidated output is never trusted for deployment. The workflow, as specified in the prototype design, includes several checkpoints:
+A critical aspect of this layer is its multi-stage validation process, designed to mitigate risks associated with \gls{ai}-generated artifacts, such as factual inaccuracies (hallucinations) or the introduction of new security flaws\cite{kumar_generative_nodate}. Raw, unvalidated output is never trusted for deployment. The workflow, as specified in the prototype design, includes several checkpoints:
 
 \begin{itemize}
-\item \textbf{Automated Validation:} Generated code undergoes initial automated checks for syntactic correctness, such as using a Rego or \gls{json} validator. Following this, the code is subjected to the same suite of static analysis tools used in the Data Ingestion Layer to ensure no new vulnerabilities have been introduced.
+\item \textbf{Automated Validation:} Generated policies undergo initial automated checks for syntactic correctness. Following this, the policies are subjected to the same suite of static analysis tools used in the Data Ingestion Layer to ensure no new vulnerabilities have been introduced.
 \item \textbf{Human-in-the-Loop Review:} The framework mandates a human-in-the-loop review process, which is indispensable for high-impact changes or when the \gls{ai} model's confidence in its output is low. This approach maintains a crucial balance between automation and human oversight, a central theme identified in the literature review.
-\item \textbf{Advanced Testing:} For more accuracy, the architecture can incorporate further testing to detect subtle inconsistencies or unintended behaviors in the generated policies or code.
+\item \textbf{Advanced Testing:} For more accuracy, the architecture can incorporate further testing to detect subtle inconsistencies or unintended behaviors in the generated policies.
 \end{itemize}
 
-From a governance standpoint, the layer integrates robust security controls. Access controls and authentication mechanisms restrict the code generation function to authorized entities and automated processes. Comprehensive audit logs are maintained for all generated and validated artifacts, ensuring traceability for compliance and forensic analysis, a key element in modern data architectures\cite{ismail_big_2025-1}. Ultimately, this layer ensures that only validated, secure, and compliant code is promoted to subsequent deployment or enforcement stages within a \gls{cicd} pipeline.
+From a governance standpoint, the layer integrates robust security controls. Access controls and authentication mechanisms restrict the policy generation function to authorized entities and automated processes. Comprehensive audit logs are maintained for all generated and validated artifacts, ensuring traceability for compliance and forensic analysis, a key element in modern data architectures\cite{ismail_big_2025-1}. Ultimately, this layer ensures that only validated, secure, and compliant policies are promoted to subsequent deployment or enforcement stages within a \gls{cicd} pipeline.
 
 % subsubsection Code Generation Laye (end)
 
