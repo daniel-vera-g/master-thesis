@@ -47,6 +47,11 @@ headsepline, % Uncomment to get a line under the header
 % use listings package for programming languages
 \usepackage{listings}
 
+% Setup glossaries
+\usepackage[automake,acronym]{glossaries}
+\makeglossaries
+\loadglsentries{glossary}
+
 % Use the bober backend with the authoryear citation style 
 % (which resembles APA)
 % Use the biber backend instead of bibtex whenever possible.
@@ -119,10 +124,14 @@ headsepline, % Uncomment to get a line under the header
 
 \include{Frontpage/Frontpage}
 \include{Frontpage/Declaration}
+\include{Frontpage/DeclarationAI}
 \include{Frontpage/Quotation}
 \include{Frontpage/Abstract}
 \include{Frontpage/Acknowledgements}
+
 \include{Frontpage/Tables}
+% Print the glossaries
+\printglossaries
 \include{Frontpage/Dedication}
 
 
@@ -139,10 +148,12 @@ headsepline, % Uncomment to get a line under the header
 
 \include{Chapters/Chapter1}
 \include{Chapters/Chapter2} 
-% \include{Chapters/Chapter3}
-% \include{Chapters/Chapter4} 
-% \include{Chapters/Chapter5} 
-% \include{Chapters/Chapter6} 
+\include{Chapters/Chapter3}
+\include{Chapters/Chapter4} 
+\include{Chapters/Chapter5} 
+\include{Chapters/Chapter6} 
+\include{Chapters/Chapter7} 
+\include{Chapters/Chapter8} 
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
