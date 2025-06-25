@@ -140,7 +140,7 @@ In summary, leveraging \glspl{llm} for deeper contextual analysis enables the fr
 \section{Metrics for Security Posture Assessment} % (fold)
 \label{sec:Metrics for Security Posture Assessment}
 
-To empirically evaluate the effectiveness and efficiency of the proposed \gls{genai}-driven framework, a set of quantitative metrics is essential. These metrics serve not only to measure the overall improvement in security posture but also to provide feedback for refining the system's components, from the analysis engines to the policy generation models. This practice aligns with established risk management principles, such as the \texttt{MEASURE} function of the \gls{nist} \gls{airmf}, which advocates for the application of methods to assess and track \gls{ai} risks and trustworthiness characteristics. The framework's validation engine is responsible for gathering and comparing these metrics before and after the application of generated security policies.
+To empirically evaluate the effectiveness and efficiency of the proposed \gls{genai}-driven framework, a set of quantitative metrics is essential. These metrics serve not only to measure the overall improvement in security posture but also to provide feedback for refining the system's components, from the analysis engines to the policy generation models. This practice aligns with established principles for trustworthy AI, which advocate for the application of defined methods to assess and track system risks and performance characteristics. The framework's validation engine is responsible for gathering and comparing these metrics before and after the application of generated security policies.
 
 The following key metrics provide specific, measurable indicators of the framework's performance:
 
@@ -150,7 +150,7 @@ These metrics quantify the raw state of security and the comprehensiveness of th
 \paragraph{Vulnerability Count and Severity Distribution} This fundamental metric provides a baseline by quantifying the total number of vulnerabilities detected and categorizing them by severity. The change in these counts is a direct measure of risk reduction.
 \begin{itemize}
     \item \textbf{Calculation:} Let \( V_c, V_h, V_m, V_l \) be the counts of critical, high, medium, and low severity vulnerabilities. The assessment tracks the change (\( \Delta V \)) in these values pre- and post-policy application.
-    \item \textbf{Example:} An initial scan of Terraform code for a new application deployment reveals \( V_{\text{total, pre}} = 15 \) vulnerabilities, distributed as \( V_c = 2 \), \( V_h = 5 \), \( V_m = 8 \). After the framework generates and applies Rego policies, a re-scan shows a new distribution: \( V_{\text{total, post}} = 3 \), with \( V_c = 0 \), \( V_h = 0 \), \( V_m = 3 \). This represents a risk reduction of 100\% for critical and high-severity vulnerabilities and an 80\% reduction in total vulnerabilities.
+    \item \textbf{Example:} An initial scan of \gls{iac} configurations for a new application deployment reveals \( V_{\text{total, pre}} = 15 \) vulnerabilities, distributed as \( V_c = 2 \), \( V_h = 5 \), \( V_m = 8 \). After the framework generates and applies security policies, a re-scan shows a new distribution: \( V_{\text{total, post}} = 3 \), with \( V_c = 0 \), \( V_h = 0 \), \( V_m = 3 \). This represents a risk reduction of 100\% for critical and high-severity vulnerabilities and an 80\% reduction in total vulnerabilities.
 \end{itemize}
 
 \paragraph{Scan and Policy Coverage} This metric assesses the breadth and completeness of the framework's analysis and generation capabilities.
@@ -162,7 +162,7 @@ These metrics quantify the raw state of security and the comprehensiveness of th
             \item Policy Coverage (\( C_{\text{policy}} \)) is the percentage of unique vulnerabilities for which a valid policy was successfully generated:
             \[ C_{\text{policy}} = \left(\frac{V_{\text{policy\_generated}}}{V_{\text{unique}}}\right) \times 100\% \]
         \end{itemize}
-    \item \textbf{Example:} A project contains 120 Terraform resources (\( R_{\text{total}} \)). The Data Ingestion Layer successfully parses and analyzes 117 of them, yielding a \( C_{\text{scan}} \) of 97.5\%. The analysis identifies 10 unique vulnerability types (\( V_{\text{unique}} \)). The Code Generation Layer successfully produces valid Rego policies for 9 of them, resulting in a \( C_{\text{policy}} \) of 90\%. The one failure may indicate a novel vulnerability requiring refinement of the knowledge base or system prompt.
+        \item \textbf{Example:} A project contains 120 infrastructure resources (\( R_{\text{total}} \)). The Data Ingestion Layer successfully parses and analyzes 117 of them, yielding a \( C_{\text{scan}} \) of 97.5\%. The analysis identifies 10 unique vulnerability types (\( V_{\text{unique}} \)). The Code Generation Layer successfully produces valid security policies for 9 of them, resulting in a \( C_{\text{policy}} \) of 90\%. The one failure may indicate a novel vulnerability requiring refinement of the knowledge base or system prompt.
 \end{itemize}
 
 \subsection*{Efficiency and Speed Metrics}
@@ -172,7 +172,7 @@ This metric evaluates the framework's contribution to operational agility and re
 \paragraph{Policy Generation Speed} This measures the time required for the Code Generation Layer to produce a syntactically valid Rego policy from a confirmed vulnerability input.
 \begin{itemize}
     \item \textbf{Calculation:} The average time \( T_{\text{gen}} = \frac{1}{N} \sum_{i=1}^{N} (t_{\text{end},i} - t_{\text{start},i}) \), where \( t_{\text{start}} \) is when the vulnerability is sent to the layer and \( t_{\text{end}} \) is when the validated policy is output.
-    \item \textbf{Example:} In a test run with 50 distinct misconfigurations, the total time for the \gls{llm} to generate and validate the syntax of all 50 Rego policies is 300 seconds. The average \( T_{\text{gen}} \) is 6 seconds per policy, demonstrating the system's high-speed performance.
+    \item \textbf{Example:} In a test run with 50 distinct misconfigurations, the total time for the \gls{llm} to generate and validate the syntax of all 50 security policies is 300 seconds. The average \( T_{\text{gen}} \) is 6 seconds per policy, demonstrating the system's high-speed performance.
 \end{itemize}
 
 % \paragraph{Mean Time to Remediate (MTTR)} A key industry metric, MTTR in this context measures the average time from the initial detection of a vulnerability to the moment a human-approved policy is ready for deployment.
@@ -193,7 +193,7 @@ These metrics assess the reliability and correctness of the framework's AI-drive
             \item Effectiveness (\( E_{\text{policy}} \)) is the percentage of valid policies that correctly prevent the misconfiguration during testing:
             \[ E_{\text{policy}} = \left(\frac{P_{\text{effective}}}{P_{\text{valid}}}\right) \times 100\% \]
         \end{itemize}
-    \item \textbf{Example:} The system generates 100 policies (\( P_{\text{generated}} \)). The automated validator confirms 98 are syntactically correct Rego (\( A_{\text{policy}} = 98\% \)). These 98 policies are then tested in a staging environment. 95 of them successfully block non-compliant code while allowing compliant code, yielding an effectiveness (\( E_{\text{policy}} \)) of approximately 96.9\%.
+    \item \textbf{Example:} The system generates 100 policies (\( P_{\text{generated}} \)). The automated validator confirms 98 are syntactically correct (\( A_{\text{policy}} = 98\% \)). These 98 policies are then tested in a staging environment. 95 of them successfully block non-compliant configurations while allowing compliant ones, yielding an effectiveness (\( E_{\text{policy}} \)) of approximately 96.9\%.
 \end{itemize}
 
 \paragraph{False Positive Reduction Rate} This measures the GenAI Analysis Engine's ability to reduce alert fatigue by filtering out non-issues identified by initial static scans.
