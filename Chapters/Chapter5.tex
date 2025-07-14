@@ -1,33 +1,66 @@
-% Chapter Template
+\chapter{Implementation & System Architecture}
 
-\chapter{Implementation} % Main chapter title
+\section{Chapter Overview}
+% State the chapter's goal, list the two codebases, and explain how the section ties back to the theoretical framework presented earlier.
 
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
+\section{Design Objectives & Functional Requirements}
+% Summarise the practical goals (e.g., fully-managed GenAl pipeline, reproducible infrastructure, policy accuracy ≥ 95%). Map them to the research questions.
 
-\section{Main Section 1}
+\section{Technology & Tooling Stack}
+% Briefly justify all key technologies (AWS Bedrock, Terraform, Rego, Python 3.12, etc.). A table works well.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
+\section{High-Level Architecture}
+% Component diagram
+% Data-flow diagram
+% Responsibilities of each tier (ingestion, processing, code-gen, validation).
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Subsection 1}
+\section{Cloud-Infrastructure Codebase (IaC)}
 
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+\subsection{Repository Layout}
+% Explain folder structure shown in the screenshot (e.g., terraform/database, terraform/knowledge_base).
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
+\subsection{Core Terraform Modules}
+% Describe Bedrock, knowledge-base S3 buckets, Lambda warmers, IAM roles, VPC endpoints, etc.
 
-\subsection{Subsection 2}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+\subsection{Prompt & Knowledge-Base Management}
+% Outline prompt-versioning strategy and RAG storage schema.
 
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
+\subsection{Security Controls}
+% Shared-responsibility matrix, least-privilege IAM, S3 encryption, logging.
 
-\section{Main Section 2}
+\subsection{Deployment Workflow}
+% GitHub Actions “deploy_knowledgebase.yml", artefact promotion, environment parity.
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+\section{Prototype Application Codebase}
+
+\subsection{Repository Layout}
+% Summarise folders in src/,config/, tests/.
+
+\subsection{Module-Level Description}
+% - analyzer: static-scanner wrapper
+% policy_generator: RAG prompt builder & Bedrock client
+% validator: Rego syntax & semantic checks
+% metrics: coverage, false-positive reduction
+% Explain main control loop in main.py.
+
+\subsection{Testing Strategy}
+% PyTest layout, fixture design, Cl gate, coverage targets.
+
+\subsection{Packaging & Dependency Management}
+% requirements.txt, Dockerfile (if any), version pinning.
+
+\section{End-to-End Workflow}
+% Step-by-step sequence from Terraform push → static scan → GenAl analysis → policy commit → Rego evaluation. A sequence diagram is helpful here.
+
+\section{CI/CD & DevSecOps Integration}
+% - GitHub Actions pipelines (deploy_knowledgebase, destroy_knowledgebase, prototype checks)
+% Quality gates (unit tests, Rego tests, policy coverage ≥ 90%).
+
+\section{Observability & Runtime Telemetry}
+% Metrics (MTTD, policy-generation latency), structured logging (JSON Logs + AWS CloudWatch), dashboards.
+
+\section{Limitations & Trade-offs}
+% Model latency vs. cost, Terraform state confidentiality, policy false-negatives, Bedrock service quotas.
+
+\section{Summary}
+% Recap key design choices and link forward to the Results chapter.
