@@ -96,9 +96,28 @@ CI/CD & GitHub Actions & Provides a tightly integrated platform for version cont
 \end{table}
 
 \section{High-Level Architecture}
-% Component diagram
-% Data-flow diagram
-% Responsibilities of each tier (ingestion, processing, code-gen, validation).
+
+This section presents the high-level architecture of the GenAI-driven security automation framework. The design translates the conceptual model from Chapter 4 into a concrete system that orchestrates static analysis tools, generative AI, and validation workflows. The architecture is best understood as a sequential data pipeline, illustrated in Figure~\ref{fig:component_diagram}, which depicts the primary components and their interactions.
+
+\begin{figure}[h!]
+\centering
+% Placeholder for component diagram
+\caption{High-Level Component Diagram}
+\label{fig:component_diagram}
+\end{figure}
+
+The end-to-end data flow, visualized in Figure~\ref{fig:data_flow_diagram}, begins with a developer committing Terraform code and culminates in a validated Rego policy.
+
+\begin{figure}[h!]
+\centering
+% Placeholder for data-flow diagram
+\caption{End-to-End Data Flow Diagram}
+\label{fig:data_flow_diagram}
+\end{figure}
+
+The system's responsibilities are segregated into four logical tiers, directly corresponding to the layers of the conceptual framework. The process begins at the \textbf{Data Ingestion Layer}, which serves as the entry point, receiving Terraform configurations from a CI/CD trigger, parsing the IaC files, and preparing them for analysis. From there, the artifacts are passed to the \textbf{Data Processing Layer}, the core analysis engine. This layer first subjects the IaC to a baseline scan using a traditional SAST tool (Checkov) to identify known vulnerability patterns. The resulting report, along with the original IaC, is then fed into the GenAI Analysis Engine (AWS Bedrock) for a deep, contextual analysis to identify complex misconfigurations and reduce false positives. Subsequently, the \textbf{Code Generation Layer} takes the enriched vulnerability report as input, queries the RAG-enabled knowledge base for relevant security best practices, and prompts the LLM via the AWS Bedrock API to generate a corresponding Rego policy. Finally, the \textbf{Validation Layer} acts as a quality gate. Here, the newly generated Rego policy is subjected to automated checks, including syntax validation with the OPA parser and a security self-scan, before being presented to the Human-in-the-Loop for final approval.
+
+This layered architecture ensures a clear separation of concerns and provides a robust, end-to-end workflow for translating identified risks in IaC into validated, enforceable security policies.
 
 \section{Cloud-Infrastructure Codebase (IaC)}
 
