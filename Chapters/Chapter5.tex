@@ -1,7 +1,13 @@
 \chapter{Implementation & System Architecture}
 
-\section{Chapter Overview}
-% State the chapter's goal, list the two codebases, and explain how the section ties back to the theoretical framework presented earlier.
+% TODO use abreviations from list
+% TODO add references
+
+This chapter details the design and implementation of the prototype system, a practical realization of the conceptual framework for GenAI-driven security automation introduced in Chapter 4. The work is impemented through two distinct but interconnected codebases: a cloud-native infrastructure for the generative AI backend, and a Python-based application that orchestrates the analysis and policy generation workflow.
+
+The primary goal of this implementation is to empirically validate the central hypothesis of the theoretical framework: that a hybrid approach, combining traditional static analysis with advanced Large Language Model (LLM) capabilities, can significantly enhance the automation of security policy generation for Infrastructure-as-Code (IaC). This chapter will demonstrate how the system architecture directly maps to the four-layered conceptual model—Data Ingestion, Data Processing, Code Generation, and Validation—and realizes the core principles of leveraging Retrieval-Augmented Generation (RAG) for contextual accuracy and integrating a Human-in-the-Loop (HITL) for safety and oversight.
+
+We will first present the high-level architecture and the technology stack chosen to satisfy the functional requirements of a robust, scalable, and reproducible security pipeline. Subsequently, the chapter will provide a detailed examination of both the cloud infrastructure, deployed via Terraform, and the Python prototype, focusing on the specific modules that implement the core logic of the system. The chapter will conclude by illustrating the end-to-end workflow, from the initial analysis of a Terraform file to the generation and validation of a corresponding Rego security policy, thereby providing a comprehensive account of the system's practical application.
 
 \section{Design Objectives & Functional Requirements}
 % Summarise the practical goals (e.g., fully-managed GenAl pipeline, reproducible infrastructure, policy accuracy ≥ 95%). Map them to the research questions.
