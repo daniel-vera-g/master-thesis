@@ -69,7 +69,31 @@ CI/CD Integration & Allow the system to be triggered and run within a CI/CD pipe
 This structured approach ensures that the implementation of the prototype directly contributes to answering the core research questions of this thesis.
 
 \section{Technology & Tooling Stack}
-% Briefly justify all key technologies (AWS Bedrock, Terraform, Rego, Python 3.12, etc.). A table works well.
+
+The selection of the technology and tooling stack for this project was a deliberate process, guided by the design objectives of creating a reproducible, scalable, and industry-relevant prototype. The choices reflect a modern, cloud-native approach, emphasizing managed services and open standards to validate the conceptual framework effectively. This section briefly justifies the key technologies that constitute the system's foundation. The chosen stack is summarized in Table~\ref{tab:tech_stack}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Component} & \textbf{Technology} & \textbf{Justification} \\
+\hline
+Cloud Platform & Amazon Web Services (AWS) & As the leading hyperscale cloud provider, AWS offers a mature and extensive ecosystem of services, robust APIs, and comprehensive documentation. Its managed AI service, AWS Bedrock, is central to the project's architecture. \\
+\hline
+Generative AI Service & AWS Bedrock & Provides API access to a variety of high-performance foundation models without the operational overhead of self-hosting. This aligns with the objective of a fully-managed GenAI pipeline and allows the research to focus on application logic rather than MLOps. The Anthropic Claude model was selected for its advanced reasoning capabilities and large context window. \\
+\hline
+Infrastructure as Code & HashiCorp Terraform & As the de-facto industry standard for IaC, Terraform's declarative syntax and cloud-agnostic nature ensure the approach is both reproducible and broadly applicable. It is the input format for the security analysis pipeline. \\
+\hline
+Policy as Code & OPA (Rego) & The Open Policy Agent (OPA) is a CNCF-graduated project and a general-purpose policy engine. Its declarative language, Rego, is purpose-built for expressing policies over complex JSON/YAML data, making it an ideal target for generating preventative controls for IaC. \\
+\hline
+Orchestration & Python 3.12 & Python's extensive ecosystem, including the Boto3 library for AWS, and its strength in scripting and automation make it the ideal choice for orchestrating the multi-stage workflow, which involves invoking external scanners, calling cloud APIs, and managing file I/O. \\
+\hline
+CI/CD & GitHub Actions & Provides a tightly integrated platform for version control and workflow automation. It enables the seamless implementation of a CI/CD pipeline to trigger scans, orchestrate the policy generation and validation, and manage the Human-in-the-Loop approval process. \\
+\hline
+\end{tabular}
+\caption{Technology and Tooling Stack}
+\label{tab:tech_stack}
+\end{table}
 
 \section{High-Level Architecture}
 % Component diagram
