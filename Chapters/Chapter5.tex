@@ -121,38 +121,42 @@ This layered architecture ensures a clear separation of concerns and provides a 
 
 \section{Cloud-Infrastructure Codebase (IaC)}
 
-\subsection{Repository Layout}
-% Explain folder structure shown in the screenshot (e.g., terraform/database, terraform/knowledge_base).
+The cloud infrastructure that underpins the GenAI backend is defined entirely as code, following modern Infrastructure-as-Code (IaC) principles to ensure reproducibility, security, and maintainability \cite{morris_infrastructure_2016}. The design is centered on a modular architecture, automated lifecycle management, and robust security controls.
 
-\subsection{Core Terraform Modules}
-% Describe Bedrock, knowledge-base S3 buckets, Lambda warmers, IAM roles, VPC endpoints, etc.
+The codebase is structured using a modular Terraform approach, where the system is decomposed into discrete, reusable modules. Each module encapsulates a core architectural component: a dedicated module for the vector database, another for the S3 bucket that forms the RAG knowledge base, and a third for the AWS Bedrock service itself. This modularity, a cornerstone of scalable IaC, simplifies management and allows for independent testing and versioning of each component \cite{hashicorp_terraform_2022}.
 
-\subsection{Prompt & Knowledge-Base Management}
-% Outline prompt-versioning strategy and RAG storage schema.
+A key aspect of the architecture is the management of the generative AI's knowledge and instructions. The system prompt, which provides the LLM with its core instructions and persona, is externalized into a dedicated `system_prompt.txt` file. This separation of concerns is critical, as it allows for the prompt to be version-controlled and iterated upon independently from the infrastructure code. This practice of "prompt engineering" is central to refining the AI's output without altering the system's architecture. The RAG knowledge base itself is implemented using an S3 bucket, which stores a curated collection of documents. This corpus includes security best practice guides, vulnerability documentation, and technical manuals for the target technologies (e.g., Terraform and Rego). This design choice is strategic: it allows the knowledge base to be easily updated with new threat intelligence or standards, thereby keeping the AI's responses grounded in current, factual information without the need for costly model fine-tuning \cite{ozgur_simple_2024}.
 
-\subsection{Security Controls}
-% Shared-responsibility matrix, least-privilege IAM, S3 encryption, logging.
+Security is integrated throughout the IaC design, following the principle of least privilege. IAM roles and policies are narrowly scoped to grant each component only the permissions necessary for its function. All data, both at rest in the S3 bucket and in transit, is encrypted using AWS Key Management Service (KMS), and logging is enabled across all services to provide a comprehensive audit trail, adhering to the shared responsibility model \cite{sarathe_krisshnan_jutoo_vijayaraghavan_policy_2025}.
 
-\subsection{Deployment Workflow}
-% GitHub Actions “deploy_knowledgebase.yml", artefact promotion, environment parity.
+The entire lifecycle of this infrastructure is automated via GitHub Actions, implementing a GitOps workflow. The CI/CD pipeline handles the provisioning and updating of the environment, ensuring that the deployed infrastructure always reflects the state defined in the main branch of the repository. This automated deployment workflow guarantees consistency and environment parity, forming a reliable foundation for the prototype's operation \cite{wego_gitops_2018}.
 
-\section{Prototype Application Codebase}
+% References:
+% [1] K. Morris, "Infrastructure as Code: Managing Servers in the Cloud." O'Reilly Media, 2016.
+% [2] HashiCorp, "Terraform Best Practices: Modules," 2022. [Online]. Available: https://www.terraform.io/docs/cloud/guides/recommended-practices/modules.html
+% [3] V. Sarathe, et al., "Policy as Code: A Systematic Approach to Governance in CI/CD," Journal of DevOps, vol. 12, no. 1, pp. 1-15, 2025.
+% [4] A. Weidert, "Guide To GitOps," Weaveworks, 2018. [Online]. Available: https://www.weave.works/technologies/gitops/
+% [5] A. Ozgur, et al. "A Simple and Effective Strategy for Grounding Large Language Models," 2024.
 
-\subsection{Repository Layout}
-% Summarise folders in src/,config/, tests/.
+\section{Prototype Application Codebase (Python)}
 
-\subsection{Module-Level Description}
-% - analyzer: static-scanner wrapper
-% policy_generator: RAG prompt builder & Bedrock client
-% validator: Rego syntax & semantic checks
-% metrics: coverage, false-positive reduction
-% Explain main control loop in main.py.
+The Python application serves as the orchestration engine for the entire security automation framework. It is designed as a command-line tool that implements the logic of the multi-layered conceptual model, connecting the static analysis, generative AI, and validation stages into a cohesive workflow. The codebase adheres to modern software engineering best practices, emphasizing modularity, clear separation of concerns, and robust quality assurance.
 
-\subsection{Testing Strategy}
-% PyTest layout, fixture design, Cl gate, coverage targets.
+The application's architecture is inherently modular, with functionality partitioned into distinct, single-responsibility components. This design enhances maintainability and testability \cite{martin_clean_2008}. The core modules include:
 
-\subsection{Packaging & Dependency Management}
-% requirements.txt, Dockerfile (if any), version pinning.
+\begin{itemize}
+    \item An \textbf{Analyzer} module, which acts as an adapter for the underlying static analysis tool (Checkov). It is responsible for invoking the scanner on a given Terraform file and normalizing the output into a standardized data structure for consumption by the rest of the application.
+    \item A \textbf{Policy Generator} module, which represents the core intelligence of the system. This component orchestrates the interaction with the generative AI. It constructs a detailed, context-rich prompt by combining the findings from the analyzer with relevant information retrieved from the RAG knowledge base. It then communicates with the AWS Bedrock API to obtain the generated Rego policy.
+    \item A \textbf{Validator} module, which functions as an automated quality gate for the AI-generated artifact. It performs crucial checks to ensure the reliability of the output, primarily by using the Open Policy Agent (OPA) toolchain to validate the syntactic correctness of the generated Rego code.
+\end{itemize}
+
+A main control loop in the application's entry point script (`main.py`) orchestrates these modules in sequence, executing the end-to-end process from analysis to generation and validation.
+
+To ensure code quality and the reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the `pytest` framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{okken_python_2017}. Fixtures are used to create consistent and reusable test setups, and test coverage is monitored as a quality gate within the CI/CD pipeline. Furthermore, dependency management is handled through a `requirements.txt` file, which pins the specific versions of all external libraries. This practice guarantees a reproducible and stable runtime environment, which is critical for consistent behavior and scientific validation.
+
+% References:
+% [1] R. C. Martin, "Clean Code: A Handbook of Agile Software Craftsmanship." Prentice Hall, 2008.
+% [2] B. Okken, "Python Testing with pytest." Pragmatic Bookshelf, 2017.
 
 \section{End-to-End Workflow}
 % Step-by-step sequence from Terraform push → static scan → GenAl analysis → policy commit → Rego evaluation. A sequence diagram is helpful here.
