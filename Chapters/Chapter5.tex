@@ -10,7 +10,63 @@ The primary goal of this implementation is to empirically validate the central h
 We will first present the high-level architecture and the technology stack chosen to satisfy the functional requirements of a robust, scalable, and reproducible security pipeline. Subsequently, the chapter will provide a detailed examination of both the cloud infrastructure, deployed via Terraform, and the Python prototype, focusing on the specific modules that implement the core logic of the system. The chapter will conclude by illustrating the end-to-end workflow, from the initial analysis of a Terraform file to the generation and validation of a corresponding Rego security policy, thereby providing a comprehensive account of the system's practical application.
 
 \section{Design Objectives & Functional Requirements}
-% Summarise the practical goals (e.g., fully-managed GenAl pipeline, reproducible infrastructure, policy accuracy ≥ 95%). Map them to the research questions.
+
+% Refined Research Questions:
+
+
+%    * RQ1 (Effectiveness and Automation): How can Generative AI technologies be effectively leveraged to automate security policy generation and management across
+%      hyperscale cloud platforms?
+%    * RQ2 (Architecture and Orchestration): What specific architectural patterns and validation mechanisms are required to ensure trust, accuracy, and effective
+%      multi-cloud orchestration in GenAI-driven security automation?
+%    * RQ3 (Measurement and Validation): How can the effectiveness of GenAI-driven security automation be quantitatively measured and validated, particularly in terms
+%      of accuracy, reliability, and efficiency gains?
+%    * RQ4 (Human-in-the-Loop): What is the optimal balance between automation and human oversight (Human-in-the-Loop) to maximize security outcomes and mitigate the
+%      risks of GenAI-driven policy generation?
+
+%   These questions are more closely aligned with the language and focus of your exposé.
+
+The practical implementation of the prototype is guided by a set of specific design objectives and functional requirements. These objectives are derived directly from the core research questions and serve to translate the high-level scientific inquiry into concrete, measurable goals for the system. This section outlines these requirements and explicitly maps them to the corresponding research questions they are designed to address.
+
+The primary design objectives for the prototype are as follows:
+
+\begin{itemize}
+    \item \textbf{Automated Policy Generation (RQ1):} The system must be able to automatically generate syntactically correct and logically sound security policies (in Rego) based on vulnerability findings in IaC (Terraform) files. This directly addresses the central question of how GenAI can be leveraged for automation.
+    \item \textbf{Hybrid Analysis (RQ2):} The system must implement a hybrid analysis engine that combines traditional static analysis (SAST) with GenAI-driven contextual analysis. This is a core architectural requirement for exploring how to achieve accurate and trustworthy results.
+    \item \textbf{Reproducible Infrastructure (RQ2):} The entire cloud-native backend, including the knowledge base and the GenAI service integration, must be defined and deployed using IaC (Terraform). This ensures the architecture is reproducible and verifiable.
+    \item \textbf{High-Fidelity Policy Generation (RQ3):} The system must aim for a high degree of accuracy in its generated policies, with a target of \textbf{≥ 95\%} of generated policies being effective in mitigating the identified vulnerability. This provides a quantitative measure to validate the system's effectiveness.
+    \item \textbf{Automated Validation (RQ3):} The system must include a multi-stage validation pipeline to automatically check generated policies for syntactic correctness and to ensure they do not introduce new security flaws. This is a key mechanism for measuring and ensuring the reliability of the output.
+    \item \textbf{Human-in-the-Loop (HITL) Integration (RQ4):} The system must be designed to support a HITL workflow, allowing for human review and approval of generated policies, particularly for high-severity findings. This directly addresses the question of balancing automation with human oversight.
+    \item \textbf{CI/CD Integration (RQ1, RQ4):} The prototype must be designed for seamless integration into a standard CI/CD pipeline. This demonstrates its practical utility in a modern DevOps environment and provides a mechanism for enforcing the HITL workflow.
+\end{itemize}
+
+The following table provides a clear mapping between these functional requirements and the research questions:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|p{6cm}|l|}
+\hline
+\textbf{Functional Requirement} & \textbf{Description} & \textbf{Corresponding RQ(s)} \\
+\hline
+Automated Policy Generation & Generate Rego policies from Terraform vulnerabilities. & RQ1 \\
+\hline
+Hybrid Analysis & Combine SAST and GenAI for deep, contextual analysis. & RQ2 \\
+\hline
+Reproducible Infrastructure & Define all cloud components as code (Terraform). & RQ2 \\
+\hline
+High-Fidelity Policy Generation & Achieve ≥ 95\% effectiveness in generated policies. & RQ3 \\
+\hline
+Automated Validation & Automatically verify syntax and security of generated policies. & RQ3 \\
+\hline
+Human-in-the-Loop (HITL) & Enable human review and approval of generated artifacts. & RQ4 \\
+\hline
+CI/CD Integration & Allow the system to be triggered and run within a CI/CD pipeline. & RQ1, RQ4 \\
+\hline
+\end{tabular}
+\caption{Mapping of Functional Requirements to Research Questions}
+\label{tab:req_rq_mapping}
+\end{table}
+
+This structured approach ensures that the implementation of the prototype directly contributes to answering the core research questions of this thesis.
 
 \section{Technology & Tooling Stack}
 % Briefly justify all key technologies (AWS Bedrock, Terraform, Rego, Python 3.12, etc.). A table works well.
