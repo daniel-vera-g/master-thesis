@@ -1,4 +1,4 @@
-\chapter{Implementation & System Architecture}
+\chapter{Implementation \& System Architecture}
 
 % TODO use abreviations from list
 % TODO add references
@@ -9,7 +9,7 @@ The primary goal of this implementation is to empirically validate the central h
 
 We will first present the high-level architecture and the technology stack chosen to satisfy the functional requirements of a robust, scalable, and reproducible security pipeline. Subsequently, the chapter will provide a detailed examination of both the cloud infrastructure, deployed via \gls{terraform}, and the Python prototype, focusing on the specific modules that implement the core logic of the system. The chapter will conclude by illustrating the end-to-end workflow, from the initial analysis of a \gls{terraform} file to the generation and validation of a corresponding Rego security policy, thereby providing a comprehensive account of the system's practical application.
 
-\section{Design Objectives & Functional Requirements}
+\section{Design Objectives \& Functional Requirements}
 
 % Refined Research Questions:
 
@@ -28,7 +28,7 @@ We will first present the high-level architecture and the technology stack chose
 The practical implementation of the prototype is guided by a set of specific design objectives and functional requirements. These objectives are derived directly from the core research questions and serve to translate the high-level scientific inquiry into concrete, measurable goals for the system. The following objectives define the core functionality of the prototype:
 
 \begin{itemize}
-\item \textbf{Automated, High-Fidelity Policy Generation:} The system's primary function is to automatically generate syntactically correct and logically sound security policies in the Rego language from vulnerabilities found in \gls{terraform} files. This objective directly addresses the central research question on the effectiveness of \gls{genai} for security automation \textbf{(RQ1)}. A key requirement is to achieve high fidelity, with a target of \textbf{≥ 95\%} of generated policies being effective in mitigating the identified vulnerability, providing a core metric for validation \textbf{(RQ3)}.
+\item \textbf{Automated, High-Fidelity Policy Generation:} The system's primary function is to automatically generate syntactically correct and logically sound security policies in the Rego language from vulnerabilities found in \gls{terraform} files. This objective directly addresses the central research question on the effectiveness of \gls{genai} for security automation \textbf{(RQ1)}. A key requirement is to achieve high fidelity, with a target of \textbf{$\geq$ 95\%} of generated policies being effective in mitigating the identified vulnerability, providing a core metric for validation \textbf{(RQ3)}.
 text
 \item \textbf{Hybrid and Reproducible Analysis Architecture:} The system is built on a hybrid analysis model that is both reproducible and architecturally sound. Reproducibility is achieved by defining the entire \gls{cloud-native} backend as code using \gls{terraform}. The analysis engine is hybrid, combining traditional \gls{sast} for baseline coverage with \gls{genai}-driven contextual analysis for deeper insights. These architectural choices are fundamental to investigating how to build a trustworthy and effective \gls{genai}-driven system \textbf{(RQ2)}.
 
@@ -39,32 +39,31 @@ text
 
 This structured set of objectives ensures that the implementation of the prototype directly and comprehensively contributes to answering the core research questions of this thesis.
 
-\section{Technology & Tooling Stack}
+\section{Technology \& Tooling Stack}
 
 The selection of the technology and tooling stack for this project was a deliberate process, guided by the design objectives of creating a reproducible, scalable, and industry-relevant prototype. The choices reflect a modern, cloud-native approach, emphasizing managed services and open standards to validate the conceptual framework effectively. This section briefly justifies the key technologies that constitute the system's foundation. The chosen stack is summarized in Table~\ref{tab:tech_stack}.
 
-\begin{table}[h!]
-\centering
+\begin{center}
 \begin{tabular}{|l|l|p{7cm}|}
 \hline
 \textbf{Component} & \textbf{Technology} & \textbf{Justification} \\
 \hline
-Cloud Platform & Amazon Web Services (AWS) & As the leading hyperscale cloud provider, AWS offers a mature and extensive ecosystem of services, robust APIs, and comprehensive documentation. Its managed AI service, AWS Bedrock, is central to the project's architecture. \\
+Cloud Platform & Amazon Web Services (AWS) \cite{noauthor_welcome_nodate} & As the leading hyperscale cloud provider, AWS offers a mature and extensive ecosystem of services, robust APIs, and comprehensive documentation. Its managed AI service, AWS Bedrock, is central to the project's architecture. \\
 \hline
-Generative AI Service & AWS Bedrock & Provides API access to a variety of high-performance foundation models without the operational overhead of self-hosting. This aligns with the objective of a fully-managed GenAI pipeline and allows the research to focus on application logic rather than MLOps. The Anthropic Claude model was selected for its advanced reasoning capabilities and large context window. \\
+Generative AI Service & AWS Bedrock \cite{noauthor_claude_nodate} & Provides API access to a variety of high-performance foundation models without the operational overhead of self-hosting. This aligns with the objective of a fully-managed GenAI pipeline and allows the research to focus on application logic rather than MLOps. The Anthropic Claude model was selected for its advanced reasoning capabilities and large context window. \\
 \hline
-Infrastructure as Code & HashiCorp Terraform & As the de-facto industry standard for IaC, Terraform's declarative syntax and cloud-agnostic nature ensure the approach is both reproducible and broadly applicable. It is the input format for the security analysis pipeline. \\
+Infrastructure as Code & HashiCorp Terraform \cite{noauthor_terraform_nodate} & As the de-facto industry standard for IaC, Terraform's declarative syntax and cloud-agnostic nature ensure the approach is both reproducible and broadly applicable. It is the input format for the security analysis pipeline. \\
 \hline
-Policy as Code & OPA (Rego) & The Open Policy Agent (OPA) is a CNCF-graduated project and a general-purpose policy engine. Its declarative language, Rego, is purpose-built for expressing policies over complex JSON/YAML data, making it an ideal target for generating preventative controls for IaC. \\
+Policy as Code & OPA (Rego) \cite{noauthor_introduction_nodate} & The Open Policy Agent (OPA) is a CNCF-graduated project and a general-purpose policy engine. Its declarative language, Rego, is purpose-built for expressing policies over complex JSON/YAML data, making it an ideal target for generating preventative controls for IaC. \\
 \hline
-Orchestration & Python 3.12 & Python's extensive ecosystem, including the Boto3 library for AWS, and its strength in scripting and automation make it the ideal choice for orchestrating the multi-stage workflow, which involves invoking external scanners, calling cloud APIs, and managing file I/O. \\
+Orchestration & Python 3.12 \cite{noauthor_whats_nodate} & Python's extensive ecosystem, including the Boto3 library for AWS, and its strength in scripting and automation makes it the ideal choice for orchestrating the multi-stage workflow, which involves invoking external scanners, calling cloud APIs, and managing file I/O. \\
 \hline
-CI/CD & GitHub Actions & Provides a tightly integrated platform for version control and workflow automation. It enables the seamless implementation of a CI/CD pipeline to trigger scans, orchestrate the policy generation and validation, and manage the Human-in-the-Loop approval process. \\
+CI/CD & GitHub Actions \cite{noauthor_github_2025} & Provides a tightly integrated platform for version control and workflow automation. It enables the seamless implementation of a CI/CD pipeline to trigger scans, orchestrate the policy generation and validation, and manage the Human-in-the-Loop approval process. \\
 \hline
 \end{tabular}
-\caption{Technology and Tooling Stack}
+\captionof{table}{Technology and Tooling Stack}
 \label{tab:tech_stack}
-\end{table}
+\end{center}
 
 \section{High-Level Architecture}
 
