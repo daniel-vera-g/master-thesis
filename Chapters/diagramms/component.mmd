@@ -1,0 +1,80 @@
+classDiagram
+    direction LR
+
+    class CICD_Pipeline {
+        +triggerWorkflow()
+        +enforcePolicy()
+    }
+
+    class DataIngestionLayer {
+        +ingestIaC(iac_config)
+        +parseConfiguration()
+    }
+
+    class DataProcessingLayer {
+        +analyzeArtifacts()
+    }
+
+    class StaticAnalysisEngine {
+        +scan(iac_config)
+    }
+
+    class GenAI_AnalysisEngine {
+        +deepContextualAnalysis()
+    }
+
+    class CodeGenerationLayer {
+        +generatePolicy()
+    }
+
+    class ValidationLayer {
+        +validatePolicy()
+        +syntacticValidation()
+        +securitySelfScan()
+        +gatherMetrics()
+    }
+
+    class HumanInTheLoop {
+        +reviewAndApprove()
+    }
+
+    class KnowledgeBase {
+        +query()
+    }
+
+    class AWS_Bedrock {
+        +generate()
+    }
+
+    class TerraformCode {
+      <<Artifact>>
+    }
+
+    class RegoPolicy {
+      <<Artifact>>
+    }
+
+    CICD_Pipeline --> DataIngestionLayer : triggers
+    DataIngestionLayer --> TerraformCode : receives
+    DataIngestionLayer --> DataProcessingLayer : passes artifacts
+
+    DataProcessingLayer o-- StaticAnalysisEngine
+    DataProcessingLayer o-- GenAI_AnalysisEngine
+
+    StaticAnalysisEngine --|> DataProcessingLayer
+    GenAI_AnalysisEngine --|> DataProcessingLayer
+    
+    DataProcessingLayer --> CodeGenerationLayer : passes analysis results
+    DataProcessingLayer --> ValidationLayer : sends results for baseline metrics
+
+    GenAI_AnalysisEngine --> KnowledgeBase : queries
+    GenAI_AnalysisEngine --> AWS_Bedrock : uses
+    
+    CodeGenerationLayer --> KnowledgeBase : queries
+    CodeGenerationLayer --> AWS_Bedrock : uses
+    CodeGenerationLayer --> RegoPolicy : generates
+    
+    CodeGenerationLayer --> ValidationLayer : sends for validation & post-metrics
+    ValidationLayer --> HumanInTheLoop : requests approval
+    
+    HumanInTheLoop --> CICD_Pipeline : approves/rejects

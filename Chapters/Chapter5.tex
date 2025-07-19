@@ -69,20 +69,13 @@ CI/CD & GitHub Actions \cite{noauthor_github_2025} & Provides a tightly integrat
 
 This section presents the high-level architecture of the GenAI-driven security automation framework. The design translates the conceptual model from Chapter 4 into a concrete system that orchestrates static analysis tools, generative AI, and validation workflows. The architecture is best understood as a sequential data pipeline, illustrated in Figure~\ref{fig:component_diagram}, which depicts the primary components and their interactions.
 
+The diagram illustrates the four-layered architecture that forms the backbone of the security automation system. At the foundation, the \textbf{Data Ingestion Layer} receives Terraform configurations from CI/CD triggers and prepares them for analysis. The \textbf{Data Processing Layer} forms the analytical core, where traditional static analysis tools (Checkov) perform initial vulnerability detection, followed by the GenAI Analysis Engine (AWS Bedrock) conducting deeper contextual analysis to reduce false positives and identify complex misconfigurations. The \textbf{Code Generation Layer} leverages the RAG-enabled knowledge base to construct context-aware prompts for the LLM, ultimately generating targeted Rego policies via the AWS Bedrock API. Finally, the \textbf{Validation Layer} serves as a quality gate, employing OPA syntax validation and security self-scanning before presenting policies to the Human-in-the-Loop for final approval. The diagram emphasizes the sequential flow of data transformation from raw Terraform code through vulnerability analysis to validated security policies while highlighting the integration points with cloud services and the critical role of automated validation in ensuring output reliability.
+
 \begin{figure}[h!]
 \centering
-% Placeholder for component diagram
+\includegraphics[width=\textwidth]{Figures/diagramm.png}
 \caption{High-Level Component Diagram}
 \label{fig:component_diagram}
-\end{figure}
-
-The end-to-end data flow, visualized in Figure~\ref{fig:data_flow_diagram}, begins with a developer committing Terraform code and culminates in a validated Rego policy.
-
-\begin{figure}[h!]
-\centering
-% Placeholder for data-flow diagram
-\caption{End-to-End Data Flow Diagram}
-\label{fig:data_flow_diagram}
 \end{figure}
 
 The system's responsibilities are segregated into four logical tiers, directly corresponding to the layers of the conceptual framework. The process begins at the \textbf{Data Ingestion Layer}, which serves as the entry point, receiving Terraform configurations from a CI/CD trigger, parsing the IaC files, and preparing them for analysis. From there, the artifacts are passed to the \textbf{Data Processing Layer}, the core analysis engine. This layer first subjects the IaC to a baseline scan using a traditional SAST tool (Checkov) to identify known vulnerability patterns. The resulting report, along with the original IaC, is then fed into the GenAI Analysis Engine (AWS Bedrock) for a deep, contextual analysis to identify complex misconfigurations and reduce false positives. Subsequently, the \textbf{Code Generation Layer} takes the enriched vulnerability report as input, queries the RAG-enabled knowledge base for relevant security best practices, and prompts the LLM via the AWS Bedrock API to generate a corresponding Rego policy. Finally, the \textbf{Validation Layer} acts as a quality gate. Here, the newly generated Rego policy is subjected to automated checks, including syntax validation with the OPA parser and a security self-scan, before being presented to the Human-in-the-Loop for final approval.
@@ -95,7 +88,7 @@ The cloud infrastructure that underpins the GenAI backend is defined entirely as
 
 The codebase is structured using a modular Terraform approach, where the system is decomposed into discrete, reusable modules. Each module encapsulates a core architectural component: a dedicated module for the vector database, another for the S3 bucket that forms the RAG knowledge base, and a third for the AWS Bedrock service itself. This modularity, a cornerstone of scalable IaC, simplifies management and allows for independent testing and versioning of each component \cite{hashicorp_terraform_2022}.
 
-A key aspect of the architecture is the management of the generative AI's knowledge and instructions. The system prompt, which provides the LLM with its core instructions and persona, is externalized into a dedicated `system_prompt.txt` file. This separation of concerns is critical, as it allows for the prompt to be version-controlled and iterated upon independently from the infrastructure code. This practice of "prompt engineering" is central to refining the AI's output without altering the system's architecture. The RAG knowledge base itself is implemented using an S3 bucket, which stores a curated collection of documents. This corpus includes security best practice guides, vulnerability documentation, and technical manuals for the target technologies (e.g., Terraform and Rego). This design choice is strategic: it allows the knowledge base to be easily updated with new threat intelligence or standards, thereby keeping the AI's responses grounded in current, factual information without the need for costly model fine-tuning \cite{ozgur_simple_2024}.
+A key aspect of the architecture is the management of the generative AI's knowledge and instructions. The system prompt, which provides the LLM with its core instructions and persona, is externalized into a dedicated `system\_prompt.txt` file. This separation of concerns is critical, as it allows for the prompt to be version-controlled and iterated upon independently from the infrastructure code. This practice of "prompt engineering" is central to refining the AI's output without altering the system's architecture. The RAG knowledge base itself is implemented using an S3 bucket, which stores a curated collection of documents. This corpus includes security best practice guides, vulnerability documentation, and technical manuals for the target technologies (e.g., Terraform and Rego). This design choice is strategic: it allows the knowledge base to be easily updated with new threat intelligence or standards, thereby keeping the AI's responses grounded in current, factual information without the need for costly model fine-tuning \cite{ozgur_simple_2024}.
 
 Security is integrated throughout the IaC design, following the principle of least privilege. IAM roles and policies are narrowly scoped to grant each component only the permissions necessary for its function. All data, both at rest in the S3 bucket and in transit, is encrypted using AWS Key Management Service (KMS), and logging is enabled across all services to provide a comprehensive audit trail, adhering to the shared responsibility model \cite{sarathe_krisshnan_jutoo_vijayaraghavan_policy_2025}.
 
@@ -129,16 +122,53 @@ To ensure code quality and the reliability of the prototype, a comprehensive tes
 % [2] B. Okken, "Python Testing with pytest." Pragmatic Bookshelf, 2017.
 
 \section{End-to-End Workflow}
-% Step-by-step sequence from Terraform push → static scan → GenAl analysis → policy commit → Rego evaluation. A sequence diagram is helpful here.
 
-\section{CI/CD & DevSecOps Integration}
-% - GitHub Actions pipelines (deploy_knowledgebase, destroy_knowledgebase, prototype checks)
-% Quality gates (unit tests, Rego tests, policy coverage ≥ 90%).
+The practical application of the framework is best understood by examining the end-to-end workflow of the command-line tool. This process describes the sequence of operations from the moment a user invokes the application to the final output of a validated security policy. The entire sequence is designed to be a self-contained, automated process, as illustrated in the sequence diagram \ref{fig:e2e_workflow}.
 
-\section{Observability & Runtime Telemetry}
+The sequence diagram depicts the temporal flow of interactions between the key actors in the system: the User, the Python Command-Line Application, and the external services (Checkov, AWS Bedrock, and OPA). The diagram illustrates how control and data flow through the system in a step-by-step manner, beginning with the user's command-line invocation and proceeding through each processing stage. The vertical lifelines represent the different system components, while the horizontal arrows show the sequence of method calls, API requests, and data exchanges. This visualization clearly demonstrates the orchestration role of the Python application as it coordinates between traditional security tools, cloud-based AI services, and validation frameworks to deliver a comprehensive security policy generation workflow.
+
+\begin{landscape}
+\thispagestyle{empty}
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.9\linewidth,height=0.7\textheight,keepaspectratio]{Figures/image.pdf}
+\caption{End-to-End Workflow Sequence Diagram}
+\label{fig:e2e_workflow}
+\end{figure}
+\end{landscape}
+
+The workflow is initiated when a user executes the main Python script from the command line, providing the path to a target Terraform (`.tf`) file as an argument. The application then proceeds through the following automated steps:
+
+\begin{enumerate}
+    \item \textbf{Static Scan:} The \textbf{Analyzer} module is invoked. It runs the Checkov static analysis tool on the specified Terraform file to identify any known misconfigurations or vulnerabilities.
+    \item \textbf{GenAI Contextual Analysis:} The structured findings from the static scan are fed into the GenAI Analysis Engine (AWS Bedrock) for deep, contextual analysis to reduce false positives and identify complex misconfigurations that traditional tools might miss.
+    \item \textbf{Policy Generation:} The enriched vulnerability report from the GenAI analysis is passed to the \textbf{Policy Generator} module. This component constructs a detailed, context-rich prompt by combining the analysis findings with relevant information retrieved from the RAG knowledge base, then communicates with the AWS Bedrock API to generate a targeted Rego policy specifically designed to mitigate the identified risks.
+    \item \textbf{Validation:} The raw, generated Rego policy is immediately passed to the \textbf{Validator} module. This component uses the OPA toolchain to verify that the policy is syntactically correct and well-formed.
+    \item \textbf{Output:} If the policy successfully passes validation, the application saves the new Rego policy as a `.rego` file to a designated output directory. The application's execution concludes by printing the path to the generated file to the console.
+\end{enumerate}
+
+This self-contained workflow—from file input to policy output—is designed for both interactive use by a security analyst and for integration into larger automated systems. For example, it can be executed as a script within a CI/CD pipeline, where the resulting policy artifact can then be automatically committed to a repository and used as a quality gate.
+
+\section{CI/CD \& DevSecOps Integration}
+
+While the prototype is a self-contained command-line tool, its primary intended application is within a CI/CD pipeline to enable a proactive DevSecOps workflow. This integration automates the process of security analysis and policy enforcement, "shifting left" to catch and remediate vulnerabilities before they reach production. The implementation uses GitHub Actions as the CI/CD platform.
+
+The integration is achieved through a GitHub Actions workflow that is triggered whenever a developer opens a pull request containing changes to Terraform files. This workflow acts as an automated quality gate and performs the following steps:
+
+\begin{enumerate}
+    \item \textbf{Code Checkout \& Setup:} The pipeline begins by checking out the source code and setting up the Python environment, including installing the dependencies from `requirements.txt`.
+    \item \textbf{Execute Security Scan:} The core command-line application is executed. It is pointed at the modified Terraform files within the pull request, running the end-to-end workflow of scanning, generation, and validation.
+    \item \textbf{Commit New Policy:} If the tool successfully generates a new, validated Rego policy, the workflow commits this new policy file to a dedicated directory within the repository.
+    \item \textbf{Enforce Policy as a Quality Gate:} The pipeline then uses the OPA toolchain to evaluate the proposed Terraform changes against the *entire* set of Rego policies in the repository, including the one that was just generated. If the proposed changes violate any policy, the OPA evaluation fails.
+    \item \textbf{Block or Approve:} A failure in the OPA evaluation causes the entire CI/CD pipeline to fail. This automatically blocks the pull request from being merged and provides immediate feedback to the developer that their changes are not compliant with security standards. This gating mechanism ensures that only secure and compliant infrastructure code can be merged into the main branch.
+\end{enumerate}
+
+By integrating the command-line tool in this manner, the framework moves from being a simple analysis utility to a powerful, automated control that is seamlessly embedded in the software development lifecycle.
+
+\section{Observability \& Runtime Telemetry}
 % Metrics (MTTD, policy-generation latency), structured logging (JSON Logs + AWS CloudWatch), dashboards.
 
-\section{Limitations & Trade-offs}
+\section{Limitations \& Trade-offs}
 % Model latency vs. cost, Terraform state confidentiality, policy false-negatives, Bedrock service quotas.
 
 \section{Summary}

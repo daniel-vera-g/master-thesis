@@ -1,0 +1,39 @@
+sequenceDiagram
+    participant Developer
+    participant Git_Repository
+    participant CICD_Pipeline
+    participant Static_Analysis_Engine
+    participant GenAI_Analysis_Engine
+    participant Metrics_Collector
+    participant GenAI_Policy_Generator
+    participant Policy_Validator
+    participant Policy_Repository
+
+    Developer->>Git_Repository: 1. Commit Terraform Code (*.tf)
+    Git_Repository->>CICD_Pipeline: 2. Trigger Workflow (on Pull Request)
+    
+    CICD_Pipeline->>Static_Analysis_Engine: 3. Scan for Baseline Vulnerabilities
+    Static_Analysis_Engine-->>CICD_Pipeline: 4. Return Baseline Report
+    CICD_Pipeline->>Metrics_Collector: 4.1 Gather Baseline Metrics
+    
+    CICD_Pipeline->>GenAI_Analysis_Engine: 5. Perform Deep Contextual Analysis
+    GenAI_Analysis_Engine-->>CICD_Pipeline: 6. Return Enriched Vulnerability Report
+    CICD_Pipeline->>Metrics_Collector: 6.1 Gather Post-Analysis Metrics
+    
+    alt Enriched Report contains Vulnerabilities
+        CICD_Pipeline->>GenAI_Policy_Generator: 7. Generate Policy from Enriched Report
+        GenAI_Policy_Generator-->>CICD_Pipeline: 8. Return Generated Rego Policy (*.rego)
+        
+        CICD_Pipeline->>Policy_Validator: 9. Validate Generated Policy (Syntax & Security Scan)
+        Policy_Validator-->>CICD_Pipeline: 10. Return Validation Result
+        
+        alt Policy is Valid
+            CICD_Pipeline->>Policy_Repository: 11. Commit Validated Rego Policy
+            Policy_Repository-->>Developer: 12. Notify (Policy added, review metrics)
+            CICD_Pipeline->>Developer: Block Merge (pending remediation)
+        else Policy is Invalid
+            CICD_Pipeline->>Developer: Flag Generation Error & Block Merge
+        end
+    else No Vulnerabilities
+        CICD_Pipeline->>Developer: Approve Merge
+    end
