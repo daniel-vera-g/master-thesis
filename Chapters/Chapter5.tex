@@ -1,8 +1,5 @@
 \chapter{Implementation \& System Architecture}
 
-% TODO use abreviations from list
-% TODO add references
-
 This chapter details the design and implementation of the prototype system, a practical realization of the conceptual framework for \gls{genai}-driven security automation introduced in Chapter 4. The work is implemented through two distinct but interconnected codebases: a cloud-native infrastructure for the \gls{genai} backend, and a Python-based application that orchestrates the analysis and \gls{pg} workflow.
 
 The primary goal of this implementation is to empirically validate the central hypothesis of the theoretical framework: that a hybrid approach, combining traditional static analysis with advanced \gls{llm} capabilities, can significantly enhance the automation of security \gls{pg} for \gls{iac}. This chapter will demonstrate how the system architecture directly maps to the four-layered conceptual model Data Ingestion, Data Processing, Code Generation, and Validation. It will further illustrate how this architecture realizes the core principles of leveraging \gls{rag} for contextual accuracy and integrating a \gls{hitl} for safety and oversight.
@@ -12,7 +9,6 @@ We will first present the high-level architecture and the technology stack chose
 \section{Design Objectives \& Functional Requirements}
 
 % Refined Research Questions:
-
 
 %    * RQ1 (Effectiveness and Automation): How can Generative AI technologies be effectively leveraged to automate security policy generation and management across
 %      hyperscale cloud platforms?
