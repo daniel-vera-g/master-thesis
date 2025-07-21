@@ -5,7 +5,7 @@
 
 This chapter details the design and implementation of the prototype system, a practical realization of the conceptual framework for \gls{genai}-driven security automation introduced in Chapter 4. The work is implemented through two distinct but interconnected codebases: a cloud-native infrastructure for the \gls{genai} backend, and a Python-based application that orchestrates the analysis and \gls{pg} workflow.
 
-The primary goal of this implementation is to empirically validate the central hypothesis of the theoretical framework: that a hybrid approach, combining traditional static analysis with advanced \gls{llm} capabilities, can significantly enhance the automation of security \gls{pg} for \gls{iac}. This chapter will demonstrate how the system architecture directly maps to the four-layered conceptual model—Data Ingestion, Data Processing, Code Generation, and Validation. It will further illustrate how this architecture realizes the core principles of leveraging \gls{rag} for contextual accuracy and integrating a \gls{hitl} for safety and oversight.
+The primary goal of this implementation is to empirically validate the central hypothesis of the theoretical framework: that a hybrid approach, combining traditional static analysis with advanced \gls{llm} capabilities, can significantly enhance the automation of security \gls{pg} for \gls{iac}. This chapter will demonstrate how the system architecture directly maps to the four-layered conceptual model Data Ingestion, Data Processing, Code Generation, and Validation. It will further illustrate how this architecture realizes the core principles of leveraging \gls{rag} for contextual accuracy and integrating a \gls{hitl} for safety and oversight.
 
 We will first present the high-level architecture and the technology stack chosen to satisfy the functional requirements of a robust, scalable, and reproducible security pipeline. Subsequently, the chapter will provide a detailed examination of both the cloud infrastructure, deployed via \gls{terraform}, and the Python prototype, focusing on the specific modules that implement the core logic of the system. The chapter will conclude by illustrating the end-to-end workflow, from the initial analysis of a \gls{terraform} file to the generation and validation of a corresponding Rego security policy, thereby providing a comprehensive account of the system's practical application.
 
@@ -136,7 +136,7 @@ The workflow is initiated when a user executes the main Python script from the c
     \item \textbf{Output:} If the policy successfully passes validation, the application saves the new Rego policy as a `.rego` file to a designated output directory. The application's execution concludes by printing the path to the generated file to the console.
 \end{enumerate}
 
-This self-contained workflow—from file input to policy output—is designed for both interactive use by a security analyst and for integration into larger automated systems. For example, it can be executed as a script within a CI/CD pipeline, where the resulting policy artifact can then be automatically committed to a repository and used as a quality gate.
+This self-contained workflow from file input to policy output is designed for both interactive use by a security analyst and for integration into larger automated systems. For example, it can be executed as a script within a CI/CD pipeline, where the resulting policy artifact can then be automatically committed to a repository and used as a quality gate.
 
 \section{CI/CD \& DevSecOps Integration}
 
