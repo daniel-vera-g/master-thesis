@@ -37,12 +37,12 @@ graph TD
     GenAIAnalysis -- "Queries" --> GenAIService;
     
     Metrics -- "Consolidated Vulnerability Report" --> PolicyGen;
-    PolicyGen -- "5\. Generate Policy" --> GenAIService;
+    PolicyGen -- "4\. Generate Policy" --> GenAIService;
     
     GenAIService -- "Generated Policy" --> PolicyGen;
     PolicyGen -- "Raw Policy" --> Validation;
     Validation -- "Validated Policy" --> RegoPolicy;
     
-    RegoPolicy -- "6\. Integrate Policy" --> CICD;
-    CICD -- "7\. Enforce & provide Feedback" --> FixIaC;
+    RegoPolicy -- "5\. Integrate Policy" --> CICD;
+    CICD -- "6\. Enforce & provide Feedback" --> FixIaC;
     FixIaC -- "Remediated Code" --> IaC;
