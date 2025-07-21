@@ -1,0 +1,48 @@
+graph TD
+    direction LR
+    
+    subgraph "Input"
+        IaC["Infrastructure-as-Code Artifact"];
+    end
+
+    subgraph "Analysis Pipeline"
+        Scanning["Scanning Module"];
+        StaticAnalysis["Static Baseline Analysis"];
+        GenAIAnalysis["Deep GenAI Analysis"];
+        Metrics["Gather Security Metrics"];
+    end
+
+    subgraph "Generative AI Core"
+        GenAIService["Generative AI Service (LLM, Knowledge Base, System Prompt)"];
+    end
+
+    subgraph "Policy & Enforcement"
+        PolicyGen["Policy Generator"];
+        Validation["Validation Engine"];
+        CICD["CI/CD Pipeline"];
+    end
+
+    subgraph "Output & Remediation"
+        RegoPolicy["Generated Rego Policy"];
+        FixIaC["Manual or Automated Code Fix"];
+    end
+
+    IaC -- "1\. Scan Code" --> Scanning;
+    
+    Scanning -- "2\. Perform Baseline Scan" --> StaticAnalysis;
+    StaticAnalysis -- "Baseline Results" --> Metrics;
+    
+    Scanning -- "3\. Perform Deep Analysis" --> GenAIAnalysis;
+    GenAIAnalysis -- "Enriched Results" --> Metrics;
+    GenAIAnalysis -- "Queries" --> GenAIService;
+    
+    Metrics -- "Consolidated Vulnerability Report" --> PolicyGen;
+    PolicyGen -- "5\. Generate Policy" --> GenAIService;
+    
+    GenAIService -- "Generated Policy" --> PolicyGen;
+    PolicyGen -- "Raw Policy" --> Validation;
+    Validation -- "Validated Policy" --> RegoPolicy;
+    
+    RegoPolicy -- "6\. Integrate Policy" --> CICD;
+    CICD -- "7\. Enforce & provide Feedback" --> FixIaC;
+    FixIaC -- "Remediated Code" --> IaC;
