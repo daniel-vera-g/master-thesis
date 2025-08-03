@@ -1,0 +1,78 @@
+@startuml
+!theme materia-outline
+
+title GenAI Security Automation
+
+' --- Define Styles for Clarity ---
+
+' Use a stereotyped component for the datastore for formal compliance
+skinparam component {
+    StereotypeFontColor #333
+    StereotypeFontSize 11
+}
+skinparam artifact {
+    BackgroundColor #EEE
+}
+
+' --- Define Actors and External Artifacts ---
+actor "CI/CD Pipeline" as CICD
+artifact "Terraform IaC" as IaC
+actor "Human Reviewer" as Human
+
+' Define the two states of the policy artifact
+artifact "Generated Policy" as GeneratedPolicy
+artifact "Validated Policy" as ValidatedPolicy
+
+' --- Main System Boundary ---
+package "GenAI Security System" {
+    
+    ' Layer 1: Data Ingestion
+    package "Ingestion Layer" {
+        component "Data Ingestion" as Ingestion
+    }
+
+    ' Layer 2: Analysis
+    package "Analysis Layer" {
+        component "Static Analysis" as SAST
+        component "GenAI Analysis" as GenAI
+    }
+
+    ' Layer 3: Policy Lifecycle
+    package "Policy Layer" {
+        component "Policy Generator" as Generator
+        component "Policy Validator" as Validator
+    }
+
+    ' Datastore is now a stereotyped component for stricter compliance
+    component "Knowledge Base" as KB <<datastore>>
+}
+
+' --- Define Relationships with Corrected Logic ---
+
+' 1. CI/CD Pipeline triggers the process
+CICD -d-> Ingestion : Triggers with IaC
+Ingestion ..> IaC : "<<consumes>>"
+
+' 2. Data flows through the analysis layers
+Ingestion -d-> SAST : IaC Data
+SAST -d-> GenAI : Baseline Report
+
+' 3. GenAI uses the Knowledge Base (Corrected to a dependency)
+GenAI ..> KB : "<<queries>>"
+
+' 4. GenAI provides its report to the Policy Generator
+GenAI -d-> Generator : Enriched Report
+
+' 5. Policy Generator now creates the initial, unvalidated policy artifact
+Generator ..> GeneratedPolicy : "<<manifests>>"
+Generator -d-> Validator : Forwards Generated Policy
+
+' 6. The Policy Validator creates the final, validated artifact after processing
+Validator ..> ValidatedPolicy : "<<creates>>"
+Validator -d-> Human : Requests Final Review
+
+' 7. Human reviews the *validated* policy and approves it
+Human ..> ValidatedPolicy : "<<reviews>>"
+Human -u-> CICD : Approves & Commits Policy
+
+@enduml

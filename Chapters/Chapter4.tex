@@ -11,12 +11,12 @@ As illustrated in Figure~\ref{fig:prototype-architecture}, the framework operate
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.95\textwidth]{Figures/component.png}
+    \includegraphics[width=0.95\textwidth]{Figures/component-abstract.png}
     \caption{Component Diagram of the Proposed GenAI-Driven Security Automation Framework}
     \label{fig:prototype-architecture}
 \end{figure}
 
-The enriched findings proceed to the Policy Layer, where the Policy Generator component leverages both the enriched report and the Knowledge Base to manifest a preventative Generated Rego Policy. This artifact is immediately forwarded to a Policy Validator for automated checks. Following validation, the policy is presented to a Human Reviewer, a critical step that ensures oversight. Once approved, the now Validated Rego Policy is committed back to the repository by the \gls{cicd} pipeline, closing the loop. This layered design provides a comprehensive and efficient system for enhancing cloud security posture by translating identified vulnerabilities directly into enforceable controls \cite{fakih_llm4cve_2025}. The following subsections will detail the specific roles and functions of each of these core layers.
+The enriched findings proceed to the Policy Layer, where the Policy Generator component leverages both the enriched report and the Knowledge Base to manifest a preventative Generated Policy. This artifact is immediately forwarded to a Policy Validator for automated checks. Following validation, the policy is presented to a Human Reviewer, a critical step that ensures oversight. Once approved, the now Validated Policy is committed back to the repository by the \gls{cicd} pipeline, closing the loop. This layered design provides a comprehensive and efficient system for enhancing cloud security posture by translating identified vulnerabilities directly into enforceable controls \cite{fakih_llm4cve_2025}. The following subsections will detail the specific roles and functions of each of these core layers.
 
 \subsection{Ingestion Layer} % (fold)
 \label{subsec:data-ingestion-layer}
