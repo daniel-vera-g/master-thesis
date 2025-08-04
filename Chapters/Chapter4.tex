@@ -1,36 +1,37 @@
 \chapter{Conceptual Framework for GenAI-Driven Security Automation}
-
-\section{Architectural Overview of the Proposed Framework}
+\label{chap:conceptual_framework}
 
 This chapter introduces the conceptual framework designed to address the critical challenges of automated security analysis and policy generation for cloud infrastructure. The proposed architecture presents a comprehensive, multi-layered approach that systematically processes \gls{iac} artifacts and automatically generates corresponding security policies. At its core, the framework leverages the power of traditional static analysis tools and advanced \glspl{llm} to create a robust security automation pipeline.
 
-This hybrid model is intentionally designed for efficacy, combining the reliability of established security scanners for identifying known vulnerability patterns with the contextual intelligence of generative AI \cite{khanna_enhancing_2024}. This allows for deeper analytical capabilities, necessary for uncovering complex, context-dependent security issues that traditional tools often miss \cite{akiri_generative_2025}. Furthermore, the architecture is conceived for seamless integration into modern \gls{devops} workflows, particularly \gls{cicd} pipelines, to operationalize a \gls{pac} model and enforce security throughout the development lifecycle \cite{khanna_enhancing_2024}.
+\section{Architectural Overview of the Proposed Framework}
+\label{sec:architectural-overview}
 
-As illustrated in Figure~\ref{fig:prototype-architecture}, the conceptual framework is visualized to provide an overview of its architectural layers and data flow.
+The proposed architecture is founded on a hybrid model intentionally designed for efficacy, combining the reliability of established security scanners for identifying known vulnerability patterns with the contextual intelligence of generative AI \cite{khanna_enhancing_2024}. This approach allows for deeper analytical capabilities, necessary for uncovering complex, context-dependent security issues that traditional tools often miss \cite{akiri_generative_2025}. Furthermore, the architecture is conceived for seamless integration into modern \gls{devops} workflows, particularly \gls{cicd} pipelines, to operationalize a \gls{pac} model and enforce security throughout the development lifecycle \cite{khanna_enhancing_2024}.
 
-\begin{center}
-    \includegraphics[width=0.95\textwidth]{Figures/conceptual.png}
-    \captionof{figure}{Architectural Overview of the Proposed GenAI-Driven Security Automation Framework}
+As illustrated in Figure~\ref{fig:prototype-architecture}, the framework operates as a cohesive GenAI Security System triggered by external development workflows. The process begins when a \gls{cicd} pipeline initiates the workflow, providing \gls{iac} artifacts to the Ingestion Layer. This layer consumes the raw configurations and prepares them for analysis. The data is then passed to the Analysis Layer, which performs a two-stage evaluation. First, a Static Analysis component generates a baseline vulnerability report. This report is then fed into the GenAI Analysis component, which queries a curated Knowledge Base to produce an enriched, context-aware report, reducing false positives and identifying nuanced flaws.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figures/component-abstract.png}
+    \caption{Component Diagram of the Proposed GenAI-Driven Security Automation Framework}
     \label{fig:prototype-architecture}
-\end{center}
+\end{figure}
 
-The framework is organized into a logical pipeline comprising four distinct layers: the Data Ingestion Layer, the Data Processing Layer, the Code Generation Layer, and the Validation Layer. Each layer performs a specific function, building upon the output of the preceding one to create an end-to-end workflow. This process begins with the intake of infrastructure configuration definitions, proceeds through multi-stage static and AI-driven analysis, generates preventative security policies in a declarative, machine-readable format, and concludes with the strict validation of these AI-generated artifacts. This layered design aims to provide a comprehensive and efficient system for enhancing cloud security posture by translating identified vulnerabilities directly into enforceable controls \cite{fakih_llm4cve_2025}. The following subsections will detail the specific roles and functions of each of these core layers.
+The enriched findings proceed to the Policy Layer, where the Policy Generator component leverages both the enriched report and the Knowledge Base to manifest a preventative Generated Policy. This artifact is immediately forwarded to a Policy Validator for automated checks. Following validation, the policy is presented to a Human Reviewer, a critical step that ensures oversight. Once approved, the now Validated Policy is committed back to the repository by the \gls{cicd} pipeline, closing the loop. This layered design provides a comprehensive and efficient system for enhancing cloud security posture by translating identified vulnerabilities directly into enforceable controls \cite{fakih_llm4cve_2025}. The following subsections will detail the specific roles and functions of each of these core layers.
 
-\subsection{Data Ingestion Layer} % (fold)
-\label{sec:data-ingestion-layer}
+\subsection{Ingestion Layer} % (fold)
+\label{subsec:data-ingestion-layer}
 
 The Data Ingestion Layer serves as the foundational entry point for security artifacts into the automation framework. Its primary function is to ingest \gls{iac} configurations, a prevalent standard for provisioning and managing cloud infrastructure. The reliance on \gls{iac}, while enhancing automation and consistency, introduces significant risks such as misconfigurations, coding errors, and embedded secrets, making automated analysis a critical requirement for secure cloud operations.
 
 This layer is designed to support both batch and real-time ingestion modes, a flexible approach that aligns with modern data pipeline architectures emphasizing scalability and performance\cite{alevizos_towards_2024}. Batch ingestion allows for comprehensive, scheduled scans of entire code repositories, while real-time ingestion facilitates immediate analysis within \gls{cicd} pipelines \cite{gunathilaka_context-aware_2025}. The framework is designed to receive these \gls{iac} configurations via programmatic interfaces, ensuring seamless integration into existing developer workflows and automated systems.
 
-Upon ingestion, the layer initiates a multi-stage preliminary analysis process. First, the raw \gls{iac} configuration is parsed for programmatic analysis. Following this step, a suite of established \gls{sast} tools is executed. This initial scan generates a baseline vulnerability report by checking the configurations against a comprehensive database of known misconfigurations, security vulnerabilities, and compliance violations. The structured output from this layer includes the original \gls{iac} configuration, its parsed form, and the baseline vulnerability report. These results are then passed to the Data Processing Layer. There, deeper, context-aware analysis is performed using \gls{genai}. The following section details the processes of the Data Processing Layer.
+Upon ingestion, the Data Ingestion Layer reads and parses the raw \gls{iac} configuration files, transforming them into a structured format suitable for further analysis. This foundational step ensures that the input artifacts are normalized and ready for systematic evaluation. Once parsing is complete, the processed configurations are handed off to the subsequent Analysis Layer, where both static and GenAI-driven analyses are performed to identify vulnerabilities and misconfigurations. The following subsection details the design and operation of this core analytical component.
 
-% subsubsection Data Ingestion Layer (end)
+\subsection{Analysis Layer}
+\label{subsec:analysis-layer}
 
-\section{Data Processing Layer}
-\label{sec:data-processing-layer}
-
-Following the Data Ingestion Layer, the Data Processing Layer is responsible for the core analysis of the ingested \gls{iac} artifacts. A central design principle of this framework is the segregation of processing activities into two distinct but complementary sub-layers: a traditional Static Analysis Engine and an advanced \gls{genai} Analysis Engine.
+Following the Data Ingestion Layer, the Analysis Layer is responsible for the core analysis of the ingested \gls{iac} artifacts. A central design principle of this framework is the segregation of processing activities into two distinct but complementary sub-layers: a traditional Static Analysis Engine and an advanced \gls{genai} Analysis Engine.
 
 The rationale for this dual-layer architecture is to create a highly efficient and comprehensive security analysis pipeline. This approach leverages the respective strengths of each technology. Static analysis provides a rapid, reliable, and computationally inexpensive method for identifying a wide range of known, pattern-based vulnerabilities. By filtering out these common issues first, the framework can then employ the more resource-intensive \gls{genai} engine to focus on complex, context-dependent security flaws that traditional tools are ill-equipped to detect \cite{zhang_empirical_2024}. This layered methodology optimizes analytical depth while maintaining operational efficiency, ensuring that both well-defined and nuanced vulnerabilities are addressed \cite{khanna_enhancing_2024}.
 
@@ -48,53 +49,28 @@ This engine is designed to identify security weaknesses that require an understa
 
 By synthesizing information from the configuration and the initial scan, the \gls{genai} Analysis Engine bridges the gap between traditional, rule-based detection and adaptive, context-aware threat identification, producing a consolidated and enriched vulnerability report.
 
-% subsubsection Data Processing Layer (end)
+\subsection{Policy Layer}
+\label{subsec:policy-layer}
 
-\section{Code Generation Layer}
-\label{sec:code-generation-layer}
-
-The Code Generation Layer operationalizes the insights derived from the Data Processing Layer, acting as the primary action-oriented component of the framework. Its purpose is to automate the creation of security artifacts, in the context of this prototype, preventative policies using \gls{genai}. This layer directly addresses a core aspect of this research: leveraging \glspl{llm} to not only analyze but also actively generate security policies. The integration of \gls{genai} into the security architecture in this manner marks a significant shift, promising to streamline development workflows and accelerate remediation cycles.
+The Policy and Validation Layer operationalizes the insights derived from the Analysis Layer, acting as the primary action-oriented component of the framework. Its purpose is to automate the creation of security artifacts in the context of this prototype, preventative policies using \gls{genai}. This layer directly addresses a core aspect of this research: leveraging \glspl{llm} to not only analyze but also actively generate security policies. The integration of \gls{genai} into the security architecture in this manner marks a significant shift, promising to streamline development workflows and accelerate remediation cycles.
 
 This layer leverages \glspl{llm} to generate security policies tailored to the vulnerabilities identified in the preceding analysis stages. The generated artifacts are formal policies written in a declarative, machine-readable language, designed for automated enforcement. The \gls{llm} is guided by system prompts and a curated knowledge base of security standards to produce precise, context-aware rules. This process of generating platform-specific policies from a higher-level analysis aligns with established methods in automated systems engineering, where abstract requirements are translated into concrete, executable artifacts for a target platform\cite{fakih_llm4cve_2025}.
 
-A critical aspect of this layer is its multi-stage validation process, designed to mitigate risks associated with \gls{ai}-generated artifacts, such as factual inaccuracies (hallucinations) or the introduction of new security flaws. Raw, unvalidated output is never trusted for deployment. The workflow, as specified in the prototype design, includes several checkpoints:
+A critical aspect of this layer is its multi-stage validation process, which functions as an essential trust and safety mechanism. It is designed to rigorously verify the integrity, correctness, and security of the \gls{ai}-generated security policies before they are committed to a repository or presented for human review. This mitigates risks associated with \gls{ai}-generated artifacts, such as factual inaccuracies (hallucinations) or the introduction of new security flaws. Raw, unvalidated output is never trusted for deployment. The workflow includes several checkpoints:
 
 \begin{itemize}
-    \item \textbf{Automated Validation:} Generated policies undergo initial automated checks for syntactic correctness. Following this, the policies are subjected to the same suite of static analysis tools used in the Data Ingestion Layer to ensure no new vulnerabilities have been introduced.
+    \item \textbf{Automated Validation:} Generated policies undergo initial automated checks. This is a critical quality assurance step to ensure that only high-quality, effective, and secure policies proceed. The process includes:
+        \begin{itemize}
+            \item \textbf{Syntactic Validation:} The layer uses standard parsers and validators to confirm that the generated policy is syntactically correct and adheres to the relevant language specifications. Any policy that fails this check is immediately rejected and logged.
+            \item \textbf{Security Self-Scan:} To prevent the \gls{ai} from inadvertently introducing new vulnerabilities, the generated security policy itself is subjected to a security scan using static analysis tools. This "self-scan" ensures the remediation policy does not create new security problems while attempting to solve another.
+        \end{itemize}
 
     \item \textbf{Human-in-the-Loop Review:} The framework mandates a human-in-the-loop review process, which is indispensable for high-impact changes or when the \gls{ai} model's confidence in its output is low. This approach maintains a crucial balance between automation and human oversight, a central theme identified in the literature \cite{lim_explicate_2025}.
     
     \item \textbf{Advanced Testing:} For more accuracy, the architecture can incorporate further testing to detect subtle inconsistencies or unintended behaviors in the generated policies.
 \end{itemize}
 
-From a governance standpoint, the layer integrates robust security controls. Access controls and authentication mechanisms restrict the policy generation function to authorized entities and automated processes. Comprehensive audit logs are maintained for all generated and validated artifacts, ensuring traceability for compliance and forensic analysis, a key element in modern data architectures\cite{noauthor_testbed_2025}. Ultimately, this layer ensures that only validated, secure, and compliant policies are promoted to subsequent deployment or enforcement stages within a \gls{cicd} pipeline.
-
-% subsubsection Code Generation Laye (end)
-
-\section{Validation Layer}
-\label{sec:validation-layer}
-
-The Validation Layer is a critical automated quality assurance component that directly follows the Code Generation Layer. Its primary purpose is to rigorously verify the integrity, correctness, and security of the \gls{ai}-generated security policies before they are committed to a repository or presented for human review. This layer functions as an essential trust and safety mechanism, mitigating the risks associated with \gls{ai}-generated policies, such as syntactic errors, logical flaws, or the introduction of new security loopholes. It ensures that only high-quality, effective, and secure policies proceed to the final enforcement and review stages within the \gls{cicd} pipeline.
-
-The validation process is executed through a sequence of automated checks, each designed to test a different aspect of the generated policy's quality:
-
-\begin{itemize}
-    \item \textbf{Syntactic Validation:} This is the initial and most fundamental check. The layer uses standard parsers and validators to confirm that the generated policy is syntactically correct and adheres to the relevant language specifications. Any policy that fails this check is immediately rejected and logged, preventing malformed policies from entering the system.
-    \item \textbf{Security Self-Scan:} To prevent the \gls{ai} from inadvertently introducing new vulnerabilities, the generated security policy itself is subjected to a security scan. This process uses static analysis tools to check the policy for insecure patterns or anti-patterns that could be exploited. This "self-scan" ensures the remediation policy does not create new security problems while attempting to solve another.
-    % Add maybe
-    % \item \textbf{Functional and Logical Validation:} This stage verifies that the policy is not only syntactically correct but also logically effective. It involves testing the policy against a set of predefined unit tests to confirm its intended behavior. This can be achieved in controlled, realistic environments such as a dedicated cloud testbed \cite{noauthor_testbed_2025} \cite{bucur_security_2019}. This includes:
-    % \begin{itemize}
-    % \item \textbf{Negative Testing:} The policy is tested against a known-bad \gls{iac} configuration that contains the target vulnerability. The validation passes if the policy correctly identifies the misconfiguration and blocks it.
-    % \item \textbf{Positive Testing:} The policy is tested against a known-good, compliant \gls{iac} configuration. The validation passes if the policy correctly allows the configuration, ensuring it is not overly restrictive and does not impede valid operations.
-    % \end{itemize}
-    % \item \textbf{Audit Trail Generation:} A core function of this layer is to document every validation step and its outcome. A detailed validation report is generated for each policy, providing an immutable audit log that includes the results of syntactic, security, and functional checks. This report provides the necessary traceability for compliance and serves as crucial evidence for the human reviewer, with cryptographic proofs offering a potential method to verify provenance and correctness \cite{a_framework_for_2025} \cite{ai-powered_security_policy_2025}.
-\end{itemize}
-
-Only after a generated policy successfully passes all stages of this automated validation gauntlet is it considered "validated". The validated policy, along with its comprehensive audit report, is then passed to the \gls{cicd} pipeline, where it can be reviewed and approved by a human expert before being enforced as part of the organization's \gls{pac} repository. This structured validation process builds a high degree of trust in the automated system and ensures that human oversight is applied to well-vetted, high-quality security artifacts.
-
-% subsubsection Validation Layer (end)
-
-% subsection Core components (end)
+From a governance standpoint, the layer integrates robust security controls. Access controls and authentication mechanisms restrict the policy generation function to authorized entities and automated processes. Comprehensive audit logs are maintained for all generated and validated artifacts, ensuring traceability for compliance and forensic analysis, a key element in modern data architectures\cite{noauthor_testbed_2025}. Only after a generated policy successfully passes all stages of this validation gauntlet is it considered "validated". The validated policy, along with its comprehensive audit report, is then passed to the \gls{cicd} pipeline, where it can be reviewed and approved by a human expert before being enforced as part of the organization's \gls{pac} repository.
 
 \section{Integration of GenAI-Driven Security Automation} % (fold)
 \label{sub:Integration of GenAI-Driven Security Automation}
@@ -110,8 +86,6 @@ To ensure the generation of accurate, contextually relevant, and reliable securi
 \end{enumerate}
 
 This \gls{rag}-based approach ensures that the generated policies are not only syntactically correct but are also directly informed by authoritative and up-to-date security guidance, making the system more robust and trustworthy \cite{noauthor_ground_nodate}. By externalizing the knowledge base, the framework can be easily updated to reflect new standards or threat intelligence without needing to retrain or fine-tune the underlying \gls{llm} \cite{ozgur_simple_2024}. A high-performance foundation model is utilized for its advanced reasoning and code generation capabilities.
-
-% subsection Integration of GenAI-Driven Security Automation (end)
 
 \section{Leveraging LLMs for Deeper Contextual Analysis} % (fold)
 \label{sec:Leveraging LLMs for Deeper Contextual Analysis}
@@ -129,8 +103,6 @@ The \gls{llm}’s contextual reasoning also enables it to detect deviations from
 A practical example illustrates this capability: consider a storage resource that appears secure in isolation, with a restrictive access policy allowing permissions only to a specific role. The associated role is properly scoped, and the storage policy adheres to the principle of least privilege. However, a compute instance in a development environment, which has this role attached, is exposed to the internet via an open management port and is running a vulnerable operating system. While static analyzers might flag the open port and operating system vulnerability separately, and pass the storage resource and role as secure, the \gls{llm} can connect these findings. It recognizes that the instance’s exposure and vulnerability, combined with its privileged role, create a critical attack path to sensitive data in the storage resource. This context-sensitive weakness would likely be missed or deprioritized by traditional tools, but the \gls{llm}’s holistic analysis surfaces it as a high-priority risk.
 
 In summary, leveraging \glspl{llm} for deeper contextual analysis enables the framework to move beyond pattern-based detection, offering a comprehensive understanding of security posture that accounts for the dynamic and interconnected nature of modern cloud environments. This results in the proactive identification of genuine risks, reduction of false positives, and the continuous alignment of security controls with evolving organizational and industry standards \cite{haque_sok_2025}.
-
-% subsubsection Leveraging LLMs for Deeper Contextual Analysis (end)
 
 \section{Metrics for Security Posture Assessment} % (fold)
 \label{sec:Metrics for Security Posture Assessment}
