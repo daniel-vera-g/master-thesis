@@ -121,19 +121,136 @@ The entire lifecycle of this infrastructure is automated via \gls{github} Action
 
 \section{Prototype Application Codebase (Python)}
 
-The Python application serves as the \gls{orchestration} engine for the entire \gls{security-automation} framework. It is designed as a command-line tool that implements the logic of the multi-layered conceptual model, connecting the static analysis, \gls{genai}, and validation stages into a cohesive workflow. The codebase adheres to modern software engineering best practices, emphasizing modularity, clear separation of concerns, and robust quality assurance.
+The Python application serves as the \gls{orchestration} engine for the entire \gls{security-automation} framework. It is designed as a command-line tool that implements the logic of the multi-layered conceptual model, connecting the static analysis, \gls{genai}, and validation stages into a cohesive workflow. The codebase adheres to modern software engineering best practices, emphasizing modularity, clear separation of concerns, and robust quality assurance, which are detailed in the following subsections.
 
-The application's architecture is inherently modular, with functionality partitioned into distinct, single-responsibility components. This design enhances maintainability and testability \cite{martin_clean_2009}. The core modules include:
+\subsubsection{Modular Architecture and Orchestration}
+
+The application's architecture is inherently modular, following the principle of Separation of Concerns. Functionality is partitioned into distinct, single-responsibility components located within the src/ directory. This design enhances maintainability and testability \cite{martin_clean_2009}.
+
+The \gls{orchestration} of these modules is handled by the main entry point script, main.py, which implements a sequential pipeline. To structure the command-line interface (CLI), the application employs the Command Pattern through the click library. The @cli.command() decorator encapsulates a request as an object, which decouples the code that invokes an operation from the object that performs it. This results in a robust, user-friendly, and extensible CLI that enables automation and integration into larger workflows.
+
+The core modules orchestrated by this pipeline include:
 
 \begin{itemize}
-    \item An \textbf{Analyzer} module, which acts as an adapter for the underlying \gls{sast} tool (Checkov). It is responsible for invoking the scanner on a given \gls{terraform} file and normalizing the output into a standardized data structure for consumption by the rest of the application.
-    \item A \textbf{Policy Generation} module, which represents the core intelligence of the system. This component orchestrates the interaction with the \gls{genai}. It constructs a detailed, context-rich prompt by combining the findings from the analyzer with relevant information retrieved from the \gls{rag} \gls{kb}. It then communicates with the \gls{aws} Bedrock \gls{api} to obtain the generated \gls{rego} policy.
-    \item A \textbf{Validator} module, which functions as an automated quality gate for the \gls{ai}-generated artifact. It performs crucial checks to ensure the reliability of the output, primarily by using the \gls{opa} toolchain to validate the syntactic correctness of the generated \gls{rego} code.
+\item An \textbf{Analyzer} module, which acts as an adapter for the underlying \gls{sast} tool.
+\item A \textbf{Policy Generation} module, which represents the core intelligence of the system by orchestrating the interaction with the \gls{genai}.
+\item A \textbf{Validator} module, which functions as an automated quality gate for the \gls{ai}-generated artifact.
 \end{itemize}
 
-A main control loop in the application's entry point script (`main.py`) orchestrates these modules in sequence, executing the end-to-end process from analysis to generation and validation.
+\subsubsection{Integration with External Security Tools}
+The prototype application seamlessly integrates with external, best-of-breed security tools to perform its functions, thereby leveraging the robust capabilities of specialized tools and avoiding the need to reinvent core functionalities.
 
-To ensure code quality and the reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the pytest framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. Fixtures are used to create consistent and reusable test setups, and test coverage is monitored as a quality gate within the \gls{cicd} pipeline. Furthermore, dependency management is handled through a ''requirements.txt'' file, which pins the specific versions of all external libraries. This practice guarantees a reproducible and stable runtime environment, which is critical for consistent behavior and scientific validation.
+The Analyzer module serves as an adapter for the underlying \gls{sast} tool, Checkov. It is responsible for invoking the scanner on a given \gls{terraform} file and normalizing the output into a standardized data structure for consumption by the rest of the application. This is achieved by utilizing Python's subprocess module to execute checkov as an external command-line tool for static analysis.
+
+In the final stage, the Validator module leverages the \gls{opa} toolchain to validate the syntactic correctness of the generated \gls{rego} code, ensuring that only valid policies are produced. Similar to the Analyzer, the Validator module employs Python's subprocess module to run the opa toolchain for this syntactic validation of the generated Rego policies.
+
+\subsubsection{LLM-Powered Policy Generation and Refinement}
+
+The Policy Generation module represents the core intelligence of the system. This component orchestrates the interaction with the \gls{genai} and implements several key patterns to ensure the quality and accuracy of its output. It communicates with the \gls{llm} through a dedicated client that abstracts the complex implementation details of the underlying cloud provider's \gls{sdk} (e.g., boto3 for \gls{aws}). This abstraction makes the core logic cleaner and, crucially, provides the flexibility to switch between different \gls{llm} providers, such as those from \gls{aws}, Azure, or \gls{gcp}, without significant code changes. This multi-cloud readiness is a key architectural advantage, preventing vendor lock-in and allowing the system to leverage the best-in-class model for a given task.
+
+To enhance the accuracy and relevance of the generated policies, the client utilizes Retrieval-Augmented Generation (RAG). It specifically calls Bedrock's retrieve\_and\_generate functionality, passing a knowledgeBaseId. This grounds the \gls{llm}'s responses in a specific, curated knowledge base containing \gls{opa}/\gls{rego} best practices and Regal linting rules, which significantly reduces the risk of hallucinations. It constructs a detailed, context-rich prompt by combining the security findings from the analyzer with relevant contextual information retrieved from this \gls{rag} \gls{kb}. It then communicates with the \gls{aws} Bedrock \gls{api} to obtain the generated \gls{rego} policy.
+
+The \gls{llm}'s behavior is guided by Systematic Prompt Engineering. Prompts are centralized in a `config/prompts.py` file, separating them from application logic. They are carefully engineered with best practices such as assigning a role ("you are a senior cloud security and Terraform expert"), providing clear constraints (e.g., "Output JSON object only"), and using placeholders for dynamic context. This is crucial for obtaining correctly formatted and relevant outputs. A sample prompt for the policy generation is shown in ~\ref{lst:rego_generator_prompt}.
+
+\begin{figure}[htbp]
+\begin{verbatim}
+# Prompt for the Rego Policy Generator LLM
+REGO_GENERATOR_PROMPT = """
+Generate a Rego policy for the attached 
+Vulnerability. Policy must deny the vulnerability, 
+OPA v0.46.0+ compatible, and follow best practices. 
+The code should be compliant with all regal linting 
+rules you can find in the knowledge base. Output 
+only rego code no other text or description.
+{vulnerability_info}
+"""
+\end{verbatim}
+\caption{Sample Prompt for Rego Policy Generation}
+\label{lst:rego_generator_prompt}
+\end{figure}
+
+To handle inconsistencies in the \gls{llm}'s response, the application uses Robust Output Parsing. A dedicated function, extract\_rego\_code, reliably extracts the desired code block from the \gls{llm}'s output, filtering out potential conversational text or other formatting issues to ensure that only clean, executable code is passed to the validator.
+
+Most significantly, the prototype implements an Iterative Refinement (Self-Correction Loop), a key mechanism for enhancing the reliability of \gls{ai}-generated code. As illustrated in the Python code snippet in Listing~\ref{lst:self_correction_loop}, this process is not a simple one-shot generation. After a \gls{rego} policy is first generated, it is automatically sent to the Validator module. If validation fails, the system does not simply discard the policy. Instead, it constructs a new prompt that includes the flawed code and the specific validation errors, then re-prompts the \gls{llm} to correct its own mistake. This automated feedback loop, which runs for a configurable number of retries, significantly improves the quality and correctness of the generated code, enhancing system reliability. The subsequent validation step thus acts as a crucial quality gate, ensuring the reliability and correctness of this \gls{ai}-generated artifact.
+
+\begin{figure}[htbp]
+\begin{lstlisting}[language=Python, caption={Self-Correction Loop for Policy Generation}, label={lst:self_correction_loop}, breaklines=true, basicstyle=\footnotesize\ttfamily]
+for attempt in range(max_retries):
+            try:
+                response = self.bedrock_client.retrieve_and_generate(
+                    input_text=prompt,
+                    knowledge_base_id=settings.KNOWLEDGE_BASE_ID
+                )
+
+                rego_code = self._extract_rego_code(response['output']['text'])
+
+                # Save the generated Rego code to a file
+                output_dir = "out/debug_generated_policies"
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+                
+                file_path = os.path.join(output_dir, f"{check_identifier.replace('/', '_')}_{attempt}.rego")
+                if rego_code:
+                    with open(file_path, 'w') as f:
+                        f.write(rego_code)
+
+                if not rego_code:
+                    prompt = "Please provide the Rego code in the correct format."
+                    continue
+
+                validator = PolicyValidator(rego_code)
+                is_valid, errors = validator.validate_policy(check_identifier)
+
+                if is_valid:
+                    return rego_code, None
+                else:
+                    prompt = prompts.REGO_GENERATOR_RETRY_PROMPT.format(
+                        rego_code=rego_code,
+                        lint_errors=errors
+                    )
+
+            except Exception as e:
+                return None, f"Error during Rego policy generation for {check_identifier}: {e}"
+\end{lstlisting}
+\end{figure}
+
+\subsubsection{Engineering for Performance and Resilience}
+To ensure the quality and reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the pytest framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. Fixtures are used to create consistent and reusable test setups, and test coverage is monitored as a quality gate within the \gls{cicd} pipeline.
+
+Furthermore, to ensure the prototype is both efficient and stable, it incorporates modern software engineering practices for performance and resilience. For performance, especially in a workflow that may involve multiple \gls{api} calls, the application uses Concurrency. As shown in Listing~\ref{lst:parallel_policy_generation}, the concurrent.futures.ThreadPoolExecutor is used in main.py to parallelize the policy generation process for multiple findings. This is an intentional design choice to improve performance for I/O-bound tasks, such as making multiple network requests to the \gls{llm} service. The code snippet also demonstrates a practical resilience pattern: to prevent overwhelming the service and triggering \gls{api} rate limits, a 30-second pause is introduced after every five requests.
+
+\begin{figure}[htbp]
+\begin{lstlisting}[language=Python, caption={Parallel Policy Generation with ThreadPoolExecutor}, label={lst:parallel_policy_generation}, breaklines=true, basicstyle=\footnotesize\ttfamily]
+task = progress.add_task("[cyan]Generating policies...", total=len(consolidated_findings))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            futures = []
+            for i, finding in enumerate(consolidated_findings):
+                if i > 0 and i % 5 == 0:
+                    console.print(f"Submitted {i} policies for generation, sleeping for 30 seconds to avoid rate limiting...")
+                    time.sleep(30)
+                futures.append(executor.submit(generate_policy_worker, finding, rego_generator))
+
+            for future in concurrent.futures.as_completed(futures):
+                policy = future.result()
+                if policy['code']:
+                    generated_policies.append(policy)
+                else:
+                    failed_policies.append(policy)
+\end{lstlisting}
+\end{figure}
+
+The Validator module further enhances the system's resilience by performing crucial checks to ensure the reliability of the output before it is used.
+
+The application also features Robust Error Handling to improve its stability and provide informative feedback. This includes comprehensive try-except blocks for all external calls (to the \gls{llm}, \gls{opa}, and Checkov), checks for FileNotFoundError when handling user input, and handling of subprocess.CalledProcessError. A Retry Pattern is also implemented for transient failures, such as network issues when communicating with the \gls{aws} \gls{api} as shown in \ref{lst:self_correction_loop}.
+
+
+\subsubsection{Configuration, Dependency, and Environment Management}
+
+Robust environment and dependency management is critical for consistent behavior and scientific validation. To this end, this is handled through a requirements.txt file, which pins the specific versions of all external libraries. This practice, combined with the use of a virtual environment, guarantees a reproducible and stable runtime environment, preventing issues that could arise from dependency updates and ensuring that the results of the research are consistently replicable.
+
+To enhance security and portability, the prototype practices strict Configuration Management. Application settings and prompts are separated from logic and stored in config files. Sensitive data, such as \gls{api} keys and other credentials, are managed through environment variables and loaded from a .env file using the python-dotenv library, ensuring that secrets are not hardcoded into the source code.
+
+To ensure code quality and the reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the pytest framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. This is complemented by a policy of Version Control and Continuous Integration (CI), where Git is used for source control and GitHub Actions are used for automated testing, ensuring code quality and catching regressions early.
 
 \section{End-to-End Workflow}
 
@@ -157,7 +274,7 @@ The workflow is initiated when a user executes the main Python script from the c
     \item \textbf{Static Scan:} The \textbf{Analyzer} module is invoked. It runs the Checkov \gls{sast} tool on the specified \gls{terraform} file to identify any known misconfigurations or vulnerabilities.
     \item \textbf{GenAI Contextual Analysis:} The structured findings from the static scan are fed into the \gls{genai} Analysis Engine (\gls{aws} Bedrock) for deep, contextual analysis to reduce \glspl{false-positive} and identify complex misconfigurations that traditional tools might miss.
     \item \textbf{Policy Generation:} The enriched vulnerability report from the \gls{genai} analysis is passed to the \gls{pg} module. This component constructs a detailed, context-rich prompt by combining the analysis findings with relevant information retrieved from the \gls{rag} \gls{kb}, then communicates with the \gls{aws} Bedrock \gls{api} to generate a targeted \gls{rego} policy specifically designed to mitigate the identified risks.
-    \item \textbf{Validation:} The raw, generated \gls{rego} policy is immediately passed to the \textbf{Validator} module. This component uses the \gls{opa} toolchain to verify that the policy is syntactically correct and well-formed.
+    \item \textbf{Validation:} The raw, generated \gls{rego} policy is immediately passed to the Validator module. This component uses the \gls{opa} toolchain to verify that the policy is syntactically correct and well-formed.
     \item \textbf{Output:} If the policy successfully passes validation, the application saves the new Rego policy as a `.rego` file to a designated output directory. The application's execution concludes by printing the path to the generated file to the console.
 \end{enumerate}
 
@@ -165,24 +282,36 @@ This self-contained workflow from file input to policy output is designed for bo
 
 \section{CI/CD \& DevSecOps Integration}
 
-While the prototype is a self-contained command-line tool, its primary intended application is within a \gls{cicd} pipeline to enable a proactive \gls{devsecops} workflow. This integration automates the process of security analysis and policy enforcement, "shifting left" to catch and remediate vulnerabilities before they reach production \cite{delicheh_mitigating_2024}. The implementation uses \gls{github} Actions as the \gls{cicd} platform.
+The prototype is designed for integration into a modern \gls{devsecops} workflow, leveraging established best practices for Version Control and Continuous Integration. The entire process is built upon a foundation of reliable Dependency and Environment Management to ensure consistency between development and automated execution.
+
+While the prototype is a self-contained command-line tool, its primary intended application is within a \gls{cicd} pipeline to enable a proactive \gls{devsecops} workflow. This integration automates the process of security analysis and policy enforcement, "shifting left" to catch and remediate vulnerabilities before they reach production \cite{delicheh_mitigating_2024}. The implementation uses \gls{github} Actions as the \gls{cicd} platform, indicated by the presence of a `.github/workflows/main.yml` file, which enables automated testing and tracks code history \cite{attached_file:1}.
 
 The integration is achieved through a \gls{github} Actions workflow that is triggered whenever a developer opens a pull request containing changes to \gls{terraform} files. This workflow acts as an automated quality gate and performs the following steps:
-
 \begin{enumerate}
-    \item \textbf{Code Checkout \& Setup:} The pipeline begins by checking out the source code and setting up the Python environment, including installing the dependencies from ''requirements.txt''.
+    \item \textbf{Code Checkout \& Setup:} The pipeline begins by checking out the source code, which is managed using Git for version control, and setting up the Python environment. This setup includes installing the dependencies from `requirements.txt` and utilizing a virtual environment (`.venv`) for isolation, guaranteeing a consistent, reproducible development and execution environment \cite{attached_file:1}.
     \item \textbf{Execute Security Scan:} The core command-line application is executed. It is pointed at the modified Terraform files within the pull request, running the end-to-end workflow of scanning, generation, and validation.
     \item \textbf{Commit New Policy:} If the tool successfully generates a new, validated Rego policy, the workflow commits this new policy file to a dedicated directory within the repository.
     \item \textbf{Enforce Policy as a Quality Gate:} The pipeline then uses the \gls{opa} toolchain to evaluate the proposed \gls{terraform} changes against the entire set of \gls{rego} policies in the repository, including the one that was just generated. If the proposed changes violate any policy, the \gls{opa} evaluation fails.
     \item \textbf{Block or Approve:} A failure in the \gls{opa} evaluation causes the entire \gls{cicd} pipeline to fail. This automatically blocks the pull request from being merged and provides immediate feedback to the developer that their changes are not compliant with security standards. This gating mechanism ensures that only secure and compliant \gls{iac} can be merged into the main branch.
 \end{enumerate}
-
 By integrating the command-line tool in this manner, the framework moves from being a simple analysis utility to a powerful, automated control that is seamlessly embedded in the software development lifecycle.
 
-\section{Observability \& Runtime Telemetry}
-% Metrics (MTTD, policy-generation latency), structured logging (JSON Logs + AWS CloudWatch), dashboards.
-
 \section{Limitations \& Trade-offs}
+\label{sec:limitations}
+
+While the prototype successfully demonstrates the core concepts of \gls{genai}-driven security automation, its design and implementation involve several inherent limitations and trade-offs. These were consciously accepted to focus on the primary research questions but are important to acknowledge for a complete understanding of the system's practical applicability.
+
+\begin{itemize}
+    \item \textbf{Model Performance vs. Cost and Latency:} The choice of the \gls{llm} (Anthropic Claude on \gls{aws} Bedrock) represents a trade-off between reasoning capability, cost, and response time. While powerful, the model introduces latency into the \gls{cicd} pipeline, which could impact developer velocity in a high-frequency deployment environment. Using smaller, faster models could reduce latency and cost but might compromise the quality and accuracy of the generated policies.
+    
+    \item \textbf{Analysis Scope and State Confidentiality:} The current implementation analyzes stateless \gls{terraform} configuration files (`.tf`). It does not parse the \gls{terraform} state file (`.tfstate`), which contains the real-world state of the deployed infrastructure. This decision was made to avoid the significant security risk of handling a state file that often contains sensitive data and secrets. However, this limits the analysis, as it prevents the system from detecting configuration drift or vulnerabilities that only manifest in the deployed state.
+
+    \item \textbf{Risk of Policy False Negatives:} While the system includes a validation step for syntactic correctness and a self-correction loop, there remains a risk of logical errors or "false negatives" in the generated \gls{rego} policies. A policy might be syntactically valid but fail to fully or correctly mitigate the intended vulnerability. This limitation underscores the critical importance of the \gls{hitl} review process as a final safeguard against flawed automated controls.
+
+    \item \textbf{Dependency on External Service Quotas:} The system's reliance on the \gls{aws} Bedrock service makes it subject to external factors such as service availability, regional limitations, and \gls{api} rate limits (quotas). In a large-scale enterprise environment with many parallel \gls{cicd} pipelines, high-volume usage could potentially exceed these quotas, leading to failed pipeline runs. This dependency requires careful monitoring and potentially a more resilient architecture with fallback mechanisms.
+    
+    \item \textbf{Knowledge Base Maintenance:} The effectiveness of the \gls{rag} system is directly tied to the quality and currency of its knowledge base. Keeping the documentation for \gls{terraform}, \gls{aws}, and \gls{rego} up-to-date requires a manual maintenance effort. As technologies evolve, this \gls{kb} must be actively managed to prevent the \gls{llm} from generating outdated or incorrect policies based on stale information.
+\end{itemize}
 % Model latency vs. cost, Terraform state confidentiality, policy false-negatives, Bedrock service quotas.
 
 \section{Summary}
