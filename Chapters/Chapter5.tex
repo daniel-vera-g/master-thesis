@@ -214,10 +214,15 @@ for attempt in range(max_retries):
 \end{lstlisting}
 \end{figure}
 
-\subsubsection{Engineering for Performance and Resilience}
-To ensure the quality and reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the pytest framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. Fixtures are used to create consistent and reusable test setups, and test coverage is monitored as a quality gate within the \gls{cicd} pipeline.
+\subsubsection{Engineering for Quality, Resilience, and Maintainability}
 
-Furthermore, to ensure the prototype is both efficient and stable, it incorporates modern software engineering practices for performance and resilience. For performance, especially in a workflow that may involve multiple \gls{api} calls, the application uses Concurrency. As shown in Listing~\ref{lst:parallel_policy_generation}, the concurrent.futures.ThreadPoolExecutor is used in main.py to parallelize the policy generation process for multiple findings. This is an intentional design choice to improve performance for I/O-bound tasks, such as making multiple network requests to the \gls{llm} service. The code snippet also demonstrates a practical resilience pattern: to prevent overwhelming the service and triggering \gls{api} rate limits, a 30-second pause is introduced after every five requests.
+To ensure the prototype is not only functional but also robust, maintainable, and its results scientifically valid, the application was developed following modern software engineering best practices. This section details the strategies for dependency management, configuration, performance, resilience, and testing.
+
+Robust environment and dependency management is critical for consistent behavior and scientific validation. To this end, all external libraries are pinned to specific versions in a \texttt{requirements.txt} file. This practice, combined with the use of a virtual environment, guarantees a reproducible and stable runtime, preventing issues that could arise from dependency updates and ensuring that the research results are consistently replicable.
+
+To enhance security and portability, the prototype practices strict Configuration Management. Application settings and prompts are separated from application logic and stored in dedicated \texttt{config/} files. This separation simplifies updates and maintenance. Sensitive data, such as \gls{api} keys and other credentials, are managed through environment variables and loaded from a \texttt{.env} file using the \texttt{python-dotenv} library, ensuring that secrets are not hardcoded into the source code.
+
+The application is also engineered to be both efficient and stable, incorporating practices for performance and resilience. For performance, especially in a workflow that may involve multiple \gls{api} calls, the application uses concurrency. As shown in Listing~\ref{lst:parallel_policy_generation}, the \texttt{concurrent.futures.ThreadPoolExecutor} is used in \texttt{main.py} to parallelize the policy generation process for multiple findings. This design choice improves performance for I/O-bound tasks, such as making multiple network requests to the \gls{llm} service. The code snippet also demonstrates a practical resilience pattern: to prevent overwhelming the service and triggering \gls{api} rate limits, a 30-second pause is introduced after every five requests.
 
 \begin{figure}[htbp]
 \begin{lstlisting}[language=Python, caption={Parallel Policy Generation with ThreadPoolExecutor}, label={lst:parallel_policy_generation}, breaklines=true, basicstyle=\footnotesize\ttfamily]
@@ -239,18 +244,9 @@ task = progress.add_task("[cyan]Generating policies...", total=len(consolidated_
 \end{lstlisting}
 \end{figure}
 
-The Validator module further enhances the system's resilience by performing crucial checks to ensure the reliability of the output before it is used.
+Further resilience is built-in through Robust Error Handling. This includes comprehensive \texttt{try-except} blocks for all external calls (to the \gls{llm}, \gls{opa}, and Checkov), checks for \texttt{FileNotFoundError} when handling user input, and handling of \texttt{subprocess.CalledProcessError}. A Retry Pattern, as shown previously in Listing~\ref{lst:self_correction_loop}, is also implemented for transient failures, such as network issues when communicating with the \gls{aws} \gls{api}.
 
-The application also features Robust Error Handling to improve its stability and provide informative feedback. This includes comprehensive try-except blocks for all external calls (to the \gls{llm}, \gls{opa}, and Checkov), checks for FileNotFoundError when handling user input, and handling of subprocess.CalledProcessError. A Retry Pattern is also implemented for transient failures, such as network issues when communicating with the \gls{aws} \gls{api} as shown in \ref{lst:self_correction_loop}.
-
-
-\subsubsection{Configuration, Dependency, and Environment Management}
-
-Robust environment and dependency management is critical for consistent behavior and scientific validation. To this end, this is handled through a requirements.txt file, which pins the specific versions of all external libraries. This practice, combined with the use of a virtual environment, guarantees a reproducible and stable runtime environment, preventing issues that could arise from dependency updates and ensuring that the results of the research are consistently replicable.
-
-To enhance security and portability, the prototype practices strict Configuration Management. Application settings and prompts are separated from logic and stored in config files. Sensitive data, such as \gls{api} keys and other credentials, are managed through environment variables and loaded from a .env file using the python-dotenv library, ensuring that secrets are not hardcoded into the source code.
-
-To ensure code quality and the reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the pytest framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. This is complemented by a policy of Version Control and Continuous Integration (CI), where Git is used for source control and GitHub Actions are used for automated testing, ensuring code quality and catching regressions early.
+To ensure the quality and reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the \texttt{pytest} framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. Fixtures are used to create consistent and reusable test setups. This is complemented by a policy of Version Control and Continuous Integration (CI). Git is used for source control, and GitHub Actions are used for automated testing, ensuring code quality, monitoring test coverage, and catching regressions early.
 
 \section{End-to-End Workflow}
 
