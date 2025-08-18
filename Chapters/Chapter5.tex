@@ -37,6 +37,7 @@ text
 This structured set of objectives ensures that the implementation of the prototype directly and comprehensively contributes to answering the core research questions of this thesis.
 
 \section{Technology \& Tooling Stack}
+\label{sec:tech_stack}
 
 The selection of the technology and tooling stack for this project was a deliberate process, guided by the design objectives of creating a reproducible, scalable, and industry-relevant prototype. The choices reflect a modern, \gls{cloud-native} approach, emphasizing managed services and open standards to validate the conceptual framework effectively. This section briefly justifies the key technologies that constitute the system's foundation. The chosen stack is summarized in Table~\ref{tab:tech_stack}.
 
@@ -62,6 +63,11 @@ Cloud Platform & \gls{aws} & As the leading hyperscale cloud provider, \gls{aws}
 \label{tab:tech_stack}
 \end{center}
 
+It is noteworthy that the selected technology stack is predominantly composed of solutions from US-based companies. This decision is a direct reflection of the current state of the global cloud computing and \gls{ai} industries, where providers like \gls{aws}, Microsoft Azure, and \gls{gcp} are the established market leaders\cite{n_koritala_cloud-first_2025}.
+
+The chosen tools and platforms, such as AWS, represent the state-of-the-art and are widely regarded as the best-in-class for their respective domains. These platforms offer a comprehensive suite of services, including advanced computing, storage, and machine learning capabilities, which are essential for developing cutting-edge applications. Their technical excellence is demonstrated by factors such as high performance and robust infrastructure\cite{patel_comparative_nodate}.
+
+Their adoption is not only a matter of technical superiority but also of practical relevance. These technologies are extensively used in customer projects within Germany and across Europe, making them the de-facto standard for building modern, scalable, and secure cloud-native systems\cite{noauthor_european_nodate}. The widespread use of these platforms is driven by their ability to provide flexible, cost-effective, and scalable solutions that meet the demands of modern businesses. While security remains a significant consideration in cloud adoption, major providers offer robust measures to address these concerns, which is crucial for their status as a trusted standard\cite{noauthor_european_nodate}.
 \section{High-Level Architecture}
 
 This section presents the high-level architecture of the \gls{genai}-driven security automation framework. The design translates the conceptual model from Chapter~\ref{chap:conceptual_framework} into a concrete system that orchestrates static analysis tools, \gls{genai}, and validation workflows. The architecture, previously illustrated in the component diagram (Figure~\ref{fig:prototype-architecture}), is realized as a sequential data pipeline that operationalizes the four-layered conceptual model.
