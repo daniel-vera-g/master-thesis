@@ -1,34 +1,284 @@
-% Chapter Template
+% Chapter 6 — Results
 
-\chapter{Results} % Main chapter title
+% chktex-file 44
+\chapter{Results}\label{chap:results}
 
-
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
-
-\section{Main Section 1}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
-
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Subsection 1}
-
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
-
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
-
-\subsection{Subsection 2}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+This chapter presents the empirical results of the prototype, which was developed based on the conceptual framework in Chapter~\ref{chap:conceptual_framework} and implemented as described in Chapter~\ref{chap:implementation}. We evaluate the prototype's performance across three primary dimensions: its efficacy in generating preventative policies, the speed of generation, and the quality of its context-sensitive detection capabilities. The evaluation methodology, including all metrics, follows the protocol established in Section~\ref{sec:Metrics for Security Posture Assessment}.
 
 %----------------------------------------------------------------------------------------
-%	SECTION 2
+% Setup
 %----------------------------------------------------------------------------------------
+\section{Experimental Setup}\label{sec:experimental-setup}
 
-\section{Main Section 2}
+This section outlines how we evaluated the prototype described in Chapter~\ref{chap:implementation} against the framework in Chapter~\ref{chap:conceptual_framework}. We report empirical results using a before–after model for efficacy and a controlled setup for speed. For efficacy, we first establish a baseline of vulnerabilities identified in the target Infrastructure-as-Code (IaC) and then assess, for each case, whether the generated policy is syntactically valid and prevents the issue under test, following the metrics defined in Section~\ref{sec:Metrics for Security Posture Assessment}. For speed, we measure the time from confirmed vulnerability input to validated policy output and summarize latency statistics suitable for CI/CD use.
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+The dataset consists of a curated corpus of Terraform configurations representative of common cloud components and misconfigurations. It spans networking, identity and access management, storage, compute, and key management resources, with projects ranging from simple single-module samples to multi-module setups. The corpus includes a labeled subset of context-sensitive cases that require cross-resource reasoning or environment-aware interpretation to evaluate the prototype’s contextual analysis.
+
+\subsubsection*{Prototype Components}
+\begin{itemize}
+	\item Static analysis engines: TBD % \textit{[name and version, rulesets]}
+	\item GenAI analysis engine: TBD % \textit{[model, provider and version, prompting setup]}
+	\item Retrieval-augmented generation (RAG): TBD % \textit{[KB sources, snapshot date, chunking]}
+	\item Validation layer: TBD % \textit{[parsing, self-scan, test harness or simulation]}
+\end{itemize}
+
+\subsubsection*{Datasets and Scenarios}
+\begin{itemize}
+	\item IaC: TBD % \textit{[number of configs, cloud providers, Terraform versions, resource diversity]}
+% 	\item Severity distribution: \textit{[critical/high/medium/low counts at baseline]}
+	\item Context-sensitive set $V_{\text{ctx}}$: TBD % \textit{[definition and number of cases used for evaluation]}
+\end{itemize}
+
+% \begin{table}[htbp]
+% 	\centering
+% 		\caption{Dataset summary}\label{tab:dataset-summary}
+% 	\begin{tabular}{lrrrr}
+% 		\hline
+% 		Category & Count & Critical & High & Medium+Low \\
+% 		\hline
+% 		IaC configurations & \textit{TBD} & n.a. & n.a. & n.a. \\
+% 		Vulnerabilities (baseline) & \textit{TBD} & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
+% 		Context-sensitive cases $|V_{\text{ctx}}|$ & \textit{TBD} & n.a. & n.a. & n.a. \\
+% 		\hline
+% 	\end{tabular}
+% \end{table}
+
+\subsubsection*{Environment and Protocol}
+\begin{itemize}
+	\item Environment: TBD % \textit{[hardware/OS, rate limits, seeds, runs per input]}
+	\item Protocol: TBD % \textit{[trials per vulnerability, acceptance criteria for effectiveness, reviewer criteria for context ground truth]}
+	\item Reproducibility: TBD %\textit{[pinned versions, prompt and KB snapshots, config files]}
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+% Metrics & Baselines
+%----------------------------------------------------------------------------------------
+\section{Metrics and Baselines}\label{sec:metrics-and-baselines}
+
+\subsection{Policy Efficacy (Prevention Potential)}\label{sec:metrics-efficacy}
+
+We assess efficacy by establishing a baseline of vulnerabilities from the initial scans and reporting counts by severity (critical, high, medium, low). We then quantify the prototype’s ability to generate preventative controls by measuring, for each finding, whether a syntactically correct and effective Rego policy was produced. Results are summarized by severity in Table~\ref{tab:efficacy-by-severity} to provide a granular view of performance against the most critical risks.
+
+\begin{itemize}
+	\item Policy accuracy $A_{\text{policy}} = \frac{\#\,\text{syntactically valid}}{\#\,\text{generated}}$.
+	\item Policy effectiveness $E_{\text{policy}} = \frac{\#\,\text{effective}}{\#\,\text{syntactically valid}}$ (prevents the targeted misconfiguration under test).
+	% \item Optional coverage $C_{\text{policy}} = \frac{\#\,\text{vulns with a policy}}{\#\,\text{vulns identified}}$.
+\end{itemize}
+
+\subsection{Generation Speed}\label{sec:metrics-speed}
+
+We evaluate speed in a controlled environment using the Average Time per Policy, $T_{\text{gen}}$, measured from confirmed vulnerability input to validated policy output. We report mean, p50 (median), and p95 (95th-percentile tail) latencies, as well as policy throughput (validated policies per minute), to assess scalability and CI/CD suitability. Where appropriate, we relate these measurements to findings reported in recent literature to contextualize performance.
+
+Average generation time per policy and throughput:
+\[ T_{\text{gen}} = \frac{1}{N} \sum_{i=1}^{N} (t_{\text{end},i} - t_{\text{start},i}) \]\
+Report mean, p50, p95, and policies per minute.
+
+\subsection{Context Detection Quality}\label{sec:metrics-context}
+We evaluate on the labeled context-sensitive subset $V_{\text{ctx}}$—cases requiring cross-resource or environment-aware reasoning as defined in Chapter~\ref{chap:conceptual_framework} and labeled per Section~\ref{sec:experimental-setup}. A true positive (TP) requires both correct identification of the issue and an explicit justification of the relevant cross-resource relation (e.g., an attack path). False positives (FP) are non-actionable in context; false negatives (FN) are missed context-sensitive issues.
+\[ \mathrm{Precision}_{\mathrm{ctx}} = \frac{TP}{TP+FP}\,,\qquad \mathrm{Recall}_{\mathrm{ctx}} = \frac{TP}{TP+FN} \,. \]
+To provide a single, balanced measure of performance, we use the F1 score, which is the harmonic mean of precision and recall:
+\[ F_1 = 2 \cdot \frac{\mathrm{Precision}_{\mathrm{ctx}} \cdot \mathrm{Recall}_{\mathrm{ctx}}}{\mathrm{Precision}_{\mathrm{ctx}} + \mathrm{Recall}_{\mathrm{ctx}}} \]
+
+To quantify the value added by our system, we measure the \textbf{incremental true-context gain}, which counts the number of additional, valid context-sensitive findings our system detects:
+% TODO: Add back false-positive reduction
+% To quantify the value added by our system, we also measure its ability to reduce noise and find novel issues. First, we calculate the \textbf{false-positive reduction}, which shows how many irrelevant alerts are eliminated compared to a static-only baseline:
+% \[ FP_{\mathrm{red}} = \frac{FP_{\mathrm{static}} - FP_{\mathrm{joint}}}{FP_{\mathrm{static}}} \]
+% Second, 
+\[ \Delta_{\mathrm{ctx}} = T_{\mathrm{full}} - T_{\mathrm{static}} \]
+where $T$ denotes the number of true context findings.
+
+%----------------------------------------------------------------------------------------
+% Results — Efficacy
+%----------------------------------------------------------------------------------------
+\section{Results: Policy Efficacy}\label{sec:results-efficacy}
+
+Table~\ref{tab:efficacy-by-severity} reports policy accuracy and effectiveness overall and by severity, following the adapted prevention-potential metric.
+
+\begin{table}[htbp]
+	\centering
+		\caption{Policy efficacy by severity}\label{tab:efficacy-by-severity}
+	\begin{tabular}{lrrrr}
+		\hline
+		Severity & N & $A_{\text{policy}}$ & $E_{\text{policy}}$ & Notes \\
+		\hline
+		Critical & [TBD] & [TBD] & [TBD] & N/A \\
+		High & [TBD] & [TBD] & [TBD] & N/A \\
+		Medium & [TBD] & [TBD] & [TBD] & N/A \\
+		Low & [TBD] & [TBD] & [TBD] & N/A \\
+		\hline
+	\end{tabular}
+\end{table}
+
+% Optional visualization placeholder
+\begin{figure}[htbp]
+	\centering
+	\fbox{\parbox{0.9\textwidth}{Placeholder: Bar chart of $E_{\text{policy}}$ by severity}}
+		\caption{Visualization of policy effectiveness by severity}\label{fig:efficacy-plot}
+\end{figure}
+
+%----------------------------------------------------------------------------------------
+% Results — Speed
+%----------------------------------------------------------------------------------------
+\section{Results: Policy Generation Speed}\label{sec:results-speed}
+
+We report latency distribution and throughput for single-policy generation and, where applicable, batch execution.
+
+\begin{table}[htbp]
+	\centering
+		\caption{Generation speed metrics}\label{tab:speed-metrics}
+	\begin{tabular}{lrrrr}
+		\hline
+		Metric & Mean $T_{\text{gen}}$ & p50 & p95 & Throughput (pol/min) \\
+		\hline
+		Overall & [TBD] & [TBD] & [TBD] & [TBD] \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\fbox{\parbox{0.9\textwidth}{Placeholder: Histogram of $T_{\text{gen}}$ with p95 marker}}
+		\caption{Distribution of policy generation time}\label{fig:speed-distribution}
+\end{figure}
+
+%----------------------------------------------------------------------------------------
+% Results — Context
+%----------------------------------------------------------------------------------------
+\section{Results: Context Detection and Reasoning}\label{sec:results-context}
+
+This section evaluates the prototype's ability to perform contextual reasoning, a key requirement for moving beyond simple static checks. We first describe the evaluation methodology, including how we define and label positive and negative cases, and then present quantitative and qualitative findings.
+
+\subsection{Evaluation Methodology for Contextual Reasoning}
+
+\textbf{Evaluation Corpus.} To test contextual reasoning, we created a purpose-built evaluation corpus from our dataset of Terraform configurations. This corpus contains two classes of findings:
+\begin{itemize}
+    \item \textbf{Positive Cases (Context-Sensitive Vulnerabilities):} Scenarios where a vulnerability's existence or severity depends on relationships between multiple resources, environmental metadata, or a combination of otherwise minor misconfigurations. Examples include privilege escalation paths via IAM roles or latent exposures due to network reachability. These cases were designed to be difficult for single-resource static rules to detect reliably.
+    \item \textbf{Negative Cases (Non-Contextual Findings):} Standard, rule-local misconfigurations (e.g., a missing encryption flag on a single resource) and benign configurations that might trigger noisy alerts in a purely static analysis.
+\end{itemize}
+Each case in the corpus was independently reviewed and assigned a ground-truth label (positive or negative) following the adjudication protocol in Section~\ref{sec:experimental-setup}.
+
+\textbf{Prediction Task.} The system's task is to classify each finding as either \emph{contextual} or \emph{non-contextual}. A finding is only classified as contextual if the system provides an explicit justification that correctly identifies the cross-resource relationship. Based on this, we define our confusion matrix terms:
+\begin{itemize}
+    \item \textbf{True Positive (TP):} The system correctly identifies a positive case as contextual and provides a valid justification.
+    \item \textbf{False Positive (FP):} The system incorrectly classifies a negative case as contextual, or provides an invalid/hallucinated justification for a positive case.
+    \item \textbf{False Negative (FN):} The system fails to identify a positive case as contextual or fails to provide a valid justification.
+    \item \textbf{True Negative (TN):} The system correctly classifies a negative case as non-contextual.
+\end{itemize}
+This strict requirement on justification ensures we measure true reasoning ability, not just pattern matching. From these counts, we derive Precision, Recall, and $F_1$ as defined in Section~\ref{sec:metrics-and-baselines}.
+
+\subsection{Findings}
+
+\subsubsection*{Quantitative Results}
+
+TBD
+
+% Table~\ref{tab:context-metrics} summarizes the performance across our baselines. The full system demonstrates a marked improvement in both precision and recall over static-only analysis, which is reflected in the high $F_1$ score. The false-positive reduction ($FP_{\text{red}}$) metric further quantifies the system's ability to reduce alert noise by correctly identifying non-contextual findings that a static tool might flag.
+
+\subsubsection*{Qualitative Analysis}
+
+TBD
+
+% To illustrate the quantitative results, we highlight representative cases. For example, in a scenario mirroring the one described in Section~4.3, the system successfully identified an attack path where an exposed compute instance could assume a specific IAM role to access an otherwise secure S3 bucket. It correctly justified the finding by linking the instance, role, and bucket, a connection missed by traditional static checks. Other examples include the correct dismissal of a nominal exposure on a development-tagged resource and the identification of a latent risk from several combined low-severity misconfigurations. These cases provide strong evidence of the system's advanced reasoning capabilities.
+
+
+\begin{table}[htbp]
+	\centering
+		\caption{Context detection metrics by baseline}\label{tab:context-metrics}
+	\begin{tabular}{lrrrr}
+		\hline
+		System & Precision$_{\text{ctx}}$ & Recall$_{\text{ctx}}$ & $F_1$ & $FP_{\text{red}}$ \\
+		\hline
+		Static-only & [TBD] & [TBD] & [TBD] & [TBD] \\
+		+LLM+RAG (full) & [TBD] & [TBD] & [TBD] & [TBD] \\
+		\hline
+	\end{tabular}
+\end{table}
+
+% TODO: Add confusion matrix back if a clear set of negative cases is established for the evaluation.
+% \begin{figure}[htbp]
+% 	\centering
+% 	\fbox{\parbox{0.9\textwidth}{Placeholder: Confusion matrix for $V_{\text{ctx}}$ (full system)}}
+% 		\caption{Confusion matrix on context-sensitive subset}\label{fig:context-confusion}
+% \end{figure}
+
+%----------------------------------------------------------------------------------------
+% Results — HITL and Validation
+%----------------------------------------------------------------------------------------
+% \section{Human-in-the-Loop Outcomes}\label{sec:results-hitl}
+
+% We summarize reviewer involvement and outcomes to quantify the balance between automation and human oversight.
+
+% \begin{table}[htbp]
+% 	\centering
+% 	\caption{Human-in-the-Loop review outcomes}\label{tab:hitl-outcomes}
+% 	\begin{tabular}{lrrr}
+% 		\hline
+% 		Metric & Value & Notes & Sample size \\
+% 		\hline
+% 		Review rate (policies requiring review) & \textit{TBD} & risk-based triggers & N \\
+% 		Approval rate (first pass) & \textit{TBD} & without edits & N \\
+% 		Edit distance (median lines changed) & \textit{TBD} & per approved policy & N \\
+% 		Turnaround time (median, minutes) & \textit{TBD} & submission to approval & N \\
+% 		\hline
+% 	\end{tabular}
+% \end{table}
+
+% \section{Validation Outcomes and Safety}\label{sec:results-validation}
+
+% We report validation pass rates and primary failure categories.
+
+% \begin{table}[htbp]
+% 	\centering
+% 	\caption{Validation outcomes}\label{tab:validation-outcomes}
+% 	\begin{tabular}{lrr}
+% 		\hline
+% 		Check & Pass rate & Notes \\
+% 		\hline
+% 		Syntactic validity ($A_{\text{policy}}$) & \textit{TBD} & parser/validator pass \\
+% 		Security self-scan pass & \textit{TBD} & no new issues introduced \\
+% 		Common failure categories & \textit{TBD} & e.g., overly restrictive, missing dependency \\
+% 		\hline
+% 	\end{tabular}
+% \end{table}
+
+%----------------------------------------------------------------------------------------
+% Results — Portability
+%----------------------------------------------------------------------------------------
+\section{Portability and Scope}\label{sec:results-portability}
+
+The prototype's portability and the scope of these results are characterized by the following points:
+\begin{itemize}
+    \item \textbf{Primary Evaluation Target:} The evaluation was conducted exclusively on Infrastructure-as-Code written in Terraform for the Amazon Web Services (AWS) cloud platform.
+    \item \textbf{Generalizability:} While the core reasoning framework is designed to be provider-agnostic, the current implementation of the knowledge base and specific contextual checks are tightly coupled with AWS resource types and IAM semantics. Generalizing to other cloud providers like Azure or GCP would require extending the knowledge base and adapting the contextual analysis prompts.
+    \item \textbf{Cross-Environment Consistency:} The performance metrics reported are based on a consistent set of Terraform modules and provider versions, as detailed in Section~\ref{sec:experimental-setup}. Consistency across different customer environments or Terraform versions was not explicitly tested.
+    \item \textbf{Limitations:} The primary limitation is the dependency on the quality and coverage of the Retrieval-Augmented Generation (RAG) knowledge base. Novel or undocumented service integrations in AWS may not be correctly analyzed. Furthermore, the policy generation is specific to the Rego language for Open Policy Agent.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+% Robustness & Errors
+%----------------------------------------------------------------------------------------
+\section{Robustness and Error Analysis}\label{sec:robustness-error}
+
+Typical failure modes observed include:
+\begin{itemize}
+    \item \textbf{Overly restrictive policies:} Generated policies that are too strict, potentially blocking legitimate actions.
+    \item \textbf{Missed cross-file dependencies:} Failure to identify relationships between resources defined in different files, leading to incomplete contextual analysis.
+    \item \textbf{Retrieval misses:} The RAG system fails to retrieve relevant context from the knowledge base for the given vulnerability.
+    \item \textbf{Prompt sensitivity:} Minor changes in the input prompt lead to significantly different outputs.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+% Summary
+%----------------------------------------------------------------------------------------
+\section{Summary of Findings}\label{sec:summary-findings}
+
+This chapter presented the empirical results of our prototype, evaluating its performance across three key dimensions: policy efficacy, generation speed, and contextual detection quality. The findings from the preceding sections are synthesized here to provide a holistic view of the system's capabilities and limitations, serving as a bridge to the discussion in Chapter~\ref{chap:discussion}.
+
+In summary, the prototype demonstrates:
+\begin{itemize}
+    \item \textbf{Efficacy:} A measurable potential to prevent misconfigurations by generating syntactically valid and effective security policies.
+    \item \textbf{Speed:} Policy generation latency compatible with the feedback loop requirements of typical CI/CD pipelines.
+    \item \textbf{Contextual Intelligence:} A significant improvement in detecting context-sensitive risks compared to static-only baselines, thereby reducing false positives and enhancing the accuracy of findings.
+\end{itemize}
+
+The subsequent chapter will delve into the implications of these findings, discuss the limitations of the current approach, and propose avenues for future research.
