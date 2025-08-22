@@ -140,7 +140,7 @@ The core modules orchestrated by this pipeline include:
 \end{itemize}
 
 \subsubsection{Integration with External Security Tools}
-The prototype application seamlessly integrates with external, best-of-breed security tools to perform its functions, thereby leveraging the robust capabilities of specialized tools and avoiding the need to reinvent core functionalities.
+The prototype application seamlessly integrates with external, security tools to perform its functions, thereby leveraging the robust capabilities of specialized tools and avoiding the need to reinvent core functionalities.
 
 The \texttt{Analyzer} module serves as an adapter for the underlying \gls{sast} tool, Checkov. It is responsible for invoking the scanner on a given \gls{terraform} file and normalizing the output into a standardized data structure for consumption by the rest of the application. This is achieved by utilizing Python's \texttt{subprocess} module to execute \texttt{checkov} as an external command-line tool for static analysis.
 
@@ -286,11 +286,11 @@ This self-contained workflow from file input to policy output is designed for bo
 
 The prototype is designed for integration into a modern \gls{devsecops} workflow, leveraging established best practices for Version Control and Continuous Integration. The entire process is built upon a foundation of reliable Dependency and Environment Management to ensure consistency between development and automated execution.
 
-While the prototype is a self-contained command-line tool, its primary intended application is within a \gls{cicd} pipeline to enable a proactive \gls{devsecops} workflow. This integration automates the process of security analysis and policy enforcement, "shifting left" to catch and remediate vulnerabilities before they reach production \cite{delicheh_mitigating_2024}. The implementation uses \gls{github} Actions as the \gls{cicd} platform, indicated by the presence of a \texttt{.github/workflows/main.yml} file, which enables automated testing and tracks code history \cite{attached_file:1}.
+While the prototype is a self-contained command-line tool, its primary intended application is within a \gls{cicd} pipeline to enable a proactive \gls{devsecops} workflow. This integration automates the process of security analysis and policy enforcement, "shifting left" to catch and remediate vulnerabilities before they reach production \cite{delicheh_mitigating_2024}. The implementation uses \gls{github} Actions as the \gls{cicd} platform, indicated by the presence of a \texttt{.github/workflows/main.yml} file, which enables automated testing and tracks code history.
 
 The integration is achieved through a \gls{github} Actions workflow that is triggered whenever a developer opens a pull request containing changes to \gls{terraform} files. This workflow acts as an automated quality gate and performs the following steps:
 \begin{enumerate}
-    \item \textbf{Code Checkout \& Setup:} The pipeline begins by checking out the source code, which is managed using Git for version control, and setting up the Python environment. This setup includes installing the dependencies from \texttt{requirements.txt} and utilizing a virtual environment (\texttt{.venv}) for isolation, guaranteeing a consistent, reproducible development and execution environment \cite{attached_file:1}.
+    \item \textbf{Code Checkout \& Setup:} The pipeline begins by checking out the source code, which is managed using Git for version control, and setting up the Python environment. This setup includes installing the dependencies from \texttt{requirements.txt} and utilizing a virtual environment (\texttt{.venv}) for isolation, guaranteeing a consistent, reproducible development and execution environment.
     \item \textbf{Execute Security Scan:} The core command-line application is executed. It is pointed at the modified Terraform files within the pull request, running the end-to-end workflow of scanning, generation, and validation.
     \item \textbf{Commit New Policy:} If the tool successfully generates a new, validated Rego policy, the workflow commits this new policy file to a dedicated directory within the repository.
     \item \textbf{Enforce Policy as a Quality Gate:} The pipeline then uses the \gls{opa} toolchain to evaluate the proposed \gls{terraform} changes against the entire set of \gls{rego} policies in the repository, including the one that was just generated. If the proposed changes violate any policy, the \gls{opa} evaluation fails.
