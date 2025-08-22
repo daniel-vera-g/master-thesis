@@ -16,17 +16,17 @@ The dataset consists of a curated corpus of Terraform configurations representat
 
 \subsubsection*{Prototype Components}
 \begin{itemize}
-	\item Static analysis engines: \textit{[name and version, rulesets]}
-	\item GenAI analysis engine: \textit{[model, provider and version, prompting setup]}
-	\item Retrieval-augmented generation (RAG): \textit{[KB sources, snapshot date, chunking]}
-	\item Validation layer: \textit{[parsing, self-scan, test harness or simulation]}
+	\item Static analysis engines: TBD % \textit{[name and version, rulesets]}
+	\item GenAI analysis engine: TBD % \textit{[model, provider and version, prompting setup]}
+	\item Retrieval-augmented generation (RAG): TBD % \textit{[KB sources, snapshot date, chunking]}
+	\item Validation layer: TBD % \textit{[parsing, self-scan, test harness or simulation]}
 \end{itemize}
 
 \subsubsection*{Datasets and Scenarios}
 \begin{itemize}
-	\item IaC: \textit{[number of configs, cloud providers, Terraform versions, resource diversity]}
+	\item IaC: TBD % \textit{[number of configs, cloud providers, Terraform versions, resource diversity]}
 % 	\item Severity distribution: \textit{[critical/high/medium/low counts at baseline]}
-	\item Context-sensitive set $V_{\text{ctx}}$: \textit{[definition and number of cases used for evaluation]}
+	\item Context-sensitive set $V_{\text{ctx}}$: TBD % \textit{[definition and number of cases used for evaluation]}
 \end{itemize}
 
 % \begin{table}[htbp]
@@ -45,9 +45,9 @@ The dataset consists of a curated corpus of Terraform configurations representat
 
 \subsubsection*{Environment and Protocol}
 \begin{itemize}
-	\item Environment: \textit{[hardware/OS, rate limits, seeds, runs per input]}
-	\item Protocol: \textit{[trials per vulnerability, acceptance criteria for effectiveness, reviewer criteria for context ground truth]}
-	\item Reproducibility: \textit{[pinned versions, prompt and KB snapshots, config files]}
+	\item Environment: TBD % \textit{[hardware/OS, rate limits, seeds, runs per input]}
+	\item Protocol: TBD % \textit{[trials per vulnerability, acceptance criteria for effectiveness, reviewer criteria for context ground truth]}
+	\item Reproducibility: TBD %\textit{[pinned versions, prompt and KB snapshots, config files]}
 \end{itemize}
 
 %----------------------------------------------------------------------------------------
@@ -169,10 +169,16 @@ This strict requirement on justification ensures we measure true reasoning abili
 \subsection{Findings}
 
 \subsubsection*{Quantitative Results}
-Table~\ref{tab:context-metrics} summarizes the performance across our baselines. The full system demonstrates a marked improvement in both precision and recall over static-only analysis, which is reflected in the high $F_1$ score. The false-positive reduction ($FP_{\text{red}}$) metric further quantifies the system's ability to reduce alert noise by correctly identifying non-contextual findings that a static tool might flag.
+
+TBD
+
+% Table~\ref{tab:context-metrics} summarizes the performance across our baselines. The full system demonstrates a marked improvement in both precision and recall over static-only analysis, which is reflected in the high $F_1$ score. The false-positive reduction ($FP_{\text{red}}$) metric further quantifies the system's ability to reduce alert noise by correctly identifying non-contextual findings that a static tool might flag.
 
 \subsubsection*{Qualitative Analysis}
-To illustrate the quantitative results, we highlight representative cases. For example, in a scenario mirroring the one described in Section~4.3, the system successfully identified an attack path where an exposed compute instance could assume a specific IAM role to access an otherwise secure S3 bucket. It correctly justified the finding by linking the instance, role, and bucket, a connection missed by traditional static checks. Other examples include the correct dismissal of a nominal exposure on a development-tagged resource and the identification of a latent risk from several combined low-severity misconfigurations. These cases provide strong evidence of the system's advanced reasoning capabilities.
+
+TBD
+
+% To illustrate the quantitative results, we highlight representative cases. For example, in a scenario mirroring the one described in Section~4.3, the system successfully identified an attack path where an exposed compute instance could assume a specific IAM role to access an otherwise secure S3 bucket. It correctly justified the finding by linking the instance, role, and bucket, a connection missed by traditional static checks. Other examples include the correct dismissal of a nominal exposure on a development-tagged resource and the identification of a latent risk from several combined low-severity misconfigurations. These cases provide strong evidence of the system's advanced reasoning capabilities.
 
 
 \begin{table}[htbp]
@@ -183,7 +189,6 @@ To illustrate the quantitative results, we highlight representative cases. For e
 		System & Precision$_{\text{ctx}}$ & Recall$_{\text{ctx}}$ & $F_1$ & $FP_{\text{red}}$ \\
 		\hline
 		Static-only & [TBD] & [TBD] & [TBD] & [TBD] \\
-		+LLM (no RAG) & [TBD] & [TBD] & [TBD] & [TBD] \\
 		+LLM+RAG (full) & [TBD] & [TBD] & [TBD] & [TBD] \\
 		\hline
 	\end{tabular}
@@ -261,7 +266,6 @@ Typical failure modes observed include:
     \item \textbf{Retrieval misses:} The RAG system fails to retrieve relevant context from the knowledge base for the given vulnerability.
     \item \textbf{Prompt sensitivity:} Minor changes in the input prompt lead to significantly different outputs.
 \end{itemize}
-We summarize reviewer intervention rates and common edits in the \gls{hitl} workflow.
 
 %----------------------------------------------------------------------------------------
 % Summary
