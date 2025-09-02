@@ -14,41 +14,39 @@ This section outlines how we evaluated the prototype described in Chapter~\ref{c
 
 The dataset consists of a curated corpus of Terraform configurations representative of common cloud components and misconfigurations. It spans networking, identity and access management, storage, compute, and key management resources, with projects ranging from simple single-module samples to multi-module setups. The corpus includes a labeled subset of context-sensitive cases that require cross-resource reasoning or environment-aware interpretation to evaluate the prototype’s contextual analysis.
 
+% TODO References, Abreviations,...
+
 \subsubsection*{Prototype Components}
 \begin{itemize}
-	\item Static analysis engines: TBD % \textit{[name and version, rulesets]}
-	\item GenAI analysis engine: TBD % \textit{[model, provider and version, prompting setup]}
-	\item Retrieval-augmented generation (RAG): TBD % \textit{[KB sources, snapshot date, chunking]}
-	\item Validation layer: TBD % \textit{[parsing, self-scan, test harness or simulation]}
+    \item \textbf{Static Analysis Engine}: The prototype uses \texttt{tfsec} (v1.28.14) for static analysis of Terraform code, configured with its default ruleset to identify baseline misconfigurations.
+    \item \textbf{IaC Parser}: Terraform configurations are parsed using the \texttt{python-hcl2} library, which enables the system to understand the structure and content of the IaC files.
+    \item \textbf{GenAI Analysis Engine}: The core of the prototype is a Large Language Model (LLM) from Amazon Web Services (AWS) Bedrock, accessed via the \texttt{boto3} SDK. The specific model used is Anthropic's Claude v2 (\texttt{anthropic.claude-v2}).
+    \item \textbf{Validation Layer}: Generated Rego policies are validated for syntactic correctness using the Open Policy Agent (OPA) command-line tool (v1.7.1). This ensures that only valid policies are produced.
+    \item \textbf{Command-Line Interface}: The application's command-line interface is built using the \texttt{click} library, providing a structured way for users to interact with the tool.
+    \item \textbf{Output Formatting}: Terminal output is enhanced with the \texttt{rich} library for better readability and presentation of results.
+    \item \textbf{Retrieval-Augmented Generation (RAG)}: The RAG implementation leverages Amazon Bedrock for knowledge base retrieval. % \textit{[KB sources, snapshot date, chunking]}
 \end{itemize}
+
+% TODO References, Abreviations,...
 
 \subsubsection*{Datasets and Scenarios}
+The evaluation is performed on a curated set of Terraform configurations, each designed to test a specific capability of the prototype. The datasets are as follows:
 \begin{itemize}
-	\item IaC: TBD % \textit{[number of configs, cloud providers, Terraform versions, resource diversity]}
-% 	\item Severity distribution: \textit{[critical/high/medium/low counts at baseline]}
-	\item Context-sensitive set $V_{\text{ctx}}$: TBD % \textit{[definition and number of cases used for evaluation]}
+    \item \textbf{Complex Logic}: This sample tests the prototype's ability to interpret complex logic within Terraform, such as variables and conditional expressions, to accurately determine the security posture of a resource.
+    \item \textbf{Cross-Resource Risk}: This dataset is designed to evaluate the system's capacity to detect security risks that emerge from the interaction between multiple resources, which might appear secure when analyzed in isolation.
+    \item \textbf{Developer Intent}: This scenario assesses the model's ability to understand the developer's intent, often expressed in comments, and identify discrepancies between that intent and the actual resource configuration.
+    \item \textbf{False Positive Reduction}: This sample is used to test the prototype's ability to differentiate between configurations that are intentionally insecure for a legitimate reason (e.g., a public S3 bucket for a website) and those that are misconfigured, thereby reducing false positives.
+    \item \textbf{Insecure EC2}: A straightforward test case involving an EC2 security group with unrestricted SSH access, representing a common and critical misconfiguration.
+    \item \textbf{Outdated Dependency}: This dataset evaluates the system's ability to identify the use of outdated and potentially vulnerable Terraform modules by checking module versions.
+    \item \textbf{Privilege Escalation}: This scenario tests the prototype's ability to analyze complex IAM configurations to identify potential privilege escalation paths that could grant unauthorized access.
 \end{itemize}
 
-% \begin{table}[htbp]
-% 	\centering
-% 		\caption{Dataset summary}\label{tab:dataset-summary}
-% 	\begin{tabular}{lrrrr}
-% 		\hline
-% 		Category & Count & Critical & High & Medium+Low \\
-% 		\hline
-% 		IaC configurations & \textit{TBD} & n.a. & n.a. & n.a. \\
-% 		Vulnerabilities (baseline) & \textit{TBD} & \textit{TBD} & \textit{TBD} & \textit{TBD} \\
-% 		Context-sensitive cases $|V_{\text{ctx}}|$ & \textit{TBD} & n.a. & n.a. & n.a. \\
-% 		\hline
-% 	\end{tabular}
-% \end{table}
-
-\subsubsection*{Environment and Protocol}
-\begin{itemize}
-	\item Environment: TBD % \textit{[hardware/OS, rate limits, seeds, runs per input]}
-	\item Protocol: TBD % \textit{[trials per vulnerability, acceptance criteria for effectiveness, reviewer criteria for context ground truth]}
-	\item Reproducibility: TBD %\textit{[pinned versions, prompt and KB snapshots, config files]}
-\end{itemize}
+% \subsubsection*{Environment and Protocol}
+% \begin{itemize}
+% 	\item Environment: TBD % \textit{[hardware/OS, rate limits, seeds, runs per input]}
+% 	\item Protocol: TBD % \textit{[trials per vulnerability, acceptance criteria for effectiveness, reviewer criteria for context ground truth]}
+% 	\item Reproducibility: TBD %\textit{[pinned versions, prompt and KB snapshots, config files]}
+% \end{itemize}
 
 %----------------------------------------------------------------------------------------
 % Metrics & Baselines
@@ -101,10 +99,10 @@ Table~\ref{tab:efficacy-by-severity} reports policy accuracy and effectiveness o
 		\hline
 		Severity & N & $A_{\text{policy}}$ & $E_{\text{policy}}$ & Notes \\
 		\hline
-		Critical & [TBD] & [TBD] & [TBD] & N/A \\
-		High & [TBD] & [TBD] & [TBD] & N/A \\
-		Medium & [TBD] & [TBD] & [TBD] & N/A \\
-		Low & [TBD] & [TBD] & [TBD] & N/A \\
+		Critical & 3 & 100.00\% & 100.00\% & N/A \\
+		High & 21 & 100.00\% & 100.00\% & N/A \\
+		Medium & 13 & 76.92\% & 100.00\% & N/A \\
+		Low & 10 & 90.00\% & 100.00\% & N/A \\
 		\hline
 	\end{tabular}
 \end{table}
@@ -130,7 +128,7 @@ We report latency distribution and throughput for single-policy generation and, 
 		\hline
 		Metric & Mean $T_{\text{gen}}$ & p50 & p95 & Throughput (pol/min) \\
 		\hline
-		Overall & [TBD] & [TBD] & [TBD] & [TBD] \\
+		Overall & 8.67s & 7.98s & 12.25s & 7.23 \\
 		\hline
 	\end{tabular}
 \end{table}
