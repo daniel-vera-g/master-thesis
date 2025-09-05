@@ -53,9 +53,9 @@ The evaluation is performed on a curated set of Terraform configurations, each d
 %----------------------------------------------------------------------------------------
 \section{Metrics and Baselines}\label{sec:metrics-and-baselines}
 
-\subsection{Policy Efficacy (Prevention Potential)}\label{sec:metrics-efficacy}
+\subsection{Policy Generation Performance}\label{sec:metrics-effectiveness}
 
-We assess efficacy by establishing a baseline of vulnerabilities from the initial scans and reporting counts by severity (critical, high, medium, low). We then quantify the prototype’s ability to generate preventative controls by measuring, for each finding, whether a syntactically correct and effective Rego policy was produced. Results are summarized by severity in Table~\ref{tab:efficacy-by-severity} to provide a granular view of performance against the most critical risks.
+We assess policy generation performance by establishing a baseline of vulnerabilities from the initial scans and reporting counts by severity (critical, high, medium, low). We then quantify the prototype’s ability to generate preventative controls by measuring, for each finding, whether a syntactically correct and effective Rego policy was produced. Results are summarized by severity in Table~\ref{tab:effectiveness-by-severity} to provide a granular view of performance against the most critical risks.
 
 \begin{itemize}
 	\item Policy accuracy $A_{\text{policy}} = \frac{\#\,\text{syntactically valid}}{\#\,\text{generated}}$.
@@ -72,52 +72,77 @@ Average generation time per policy and throughput:
 Report mean, p50, p95, and policies per minute.
 
 \subsection{Context Detection Quality}\label{sec:metrics-context}
-We evaluate on the labeled context-sensitive subset $V_{\text{ctx}}$—cases requiring cross-resource or environment-aware reasoning as defined in Chapter~\ref{chap:conceptual_framework} and labeled per Section~\ref{sec:experimental-setup}. A true positive (TP) requires both correct identification of the issue and an explicit justification of the relevant cross-resource relation (e.g., an attack path). False positives (FP) are non-actionable in context; false negatives (FN) are missed context-sensitive issues.
-\[ \mathrm{Precision}_{\mathrm{ctx}} = \frac{TP}{TP+FP}\,,\qquad \mathrm{Recall}_{\mathrm{ctx}} = \frac{TP}{TP+FN} \,. \]
-To provide a single, balanced measure of performance, we use the F1 score, which is the harmonic mean of precision and recall:
-\[ F_1 = 2 \cdot \frac{\mathrm{Precision}_{\mathrm{ctx}} \cdot \mathrm{Recall}_{\mathrm{ctx}}}{\mathrm{Precision}_{\mathrm{ctx}} + \mathrm{Recall}_{\mathrm{ctx}}} \]
-
-To quantify the value added by our system, we measure the \textbf{incremental true-context gain}, which counts the number of additional, valid context-sensitive findings our system detects:
-% TODO: Add back false-positive reduction
-% To quantify the value added by our system, we also measure its ability to reduce noise and find novel issues. First, we calculate the \textbf{false-positive reduction}, which shows how many irrelevant alerts are eliminated compared to a static-only baseline:
-% \[ FP_{\mathrm{red}} = \frac{FP_{\mathrm{static}} - FP_{\mathrm{joint}}}{FP_{\mathrm{static}}} \]
-% Second, 
-\[ \Delta_{\mathrm{ctx}} = T_{\mathrm{full}} - T_{\mathrm{static}} \]
-where $T$ denotes the number of true context findings.
+The quality of contextual reasoning is evaluated based on a curated set of scenarios as defined in Section~\ref{sec:experimental-setup}. For each scenario, the prototype's ability to identify and correctly interpret the context is assessed and categorized into one of three qualitative outcomes:
+\begin{itemize}
+    \item \textbf{Success:} The prototype correctly identifies the context-sensitive vulnerability and provides the correct reasoning for its findings.
+    \item \textbf{Partial Success:} The prototype identifies the underlying vulnerability but fails to fully grasp the contextual nuance (e.g., missing developer intent) or provides an incomplete justification.
+    \item \textbf{Failure:} The prototype either fails to identify the vulnerability, provides an incorrect analysis (e.g., a false positive), or misses the contextual link entirely.
+\end{itemize}
+This qualitative approach provides a nuanced view of the system's reasoning capabilities across a range of real-world challenges, highlighting both its strengths and limitations. The detailed outcomes for each scenario are presented in Section~\ref{sec:results-context}.
 
 %----------------------------------------------------------------------------------------
 % Results — Efficacy
 %----------------------------------------------------------------------------------------
-\section{Results: Policy Efficacy}\label{sec:results-efficacy}
+\section{Results: Policy Generation Performance}\label{sec:results-generation-performance}
 
-Table~\ref{tab:efficacy-by-severity} reports policy accuracy and effectiveness overall and by severity, following the adapted prevention-potential metric.
+The evaluation of policy generation performance, as defined in Section~\ref{sec:metrics-effectiveness}, confirms the prototype's ability to generate effective and accurate security policies. The results, summarized in Table~\ref{tab:effectiveness-by-severity}, demonstrate strong performance, particularly for high-impact vulnerabilities.
+
+This section is structured as follows. First, we analyze the prototype's policy accuracy, which measures the syntactic correctness of the generated Rego policies. Next, we evaluate policy effectiveness, assessing whether these policies successfully prevent the targeted misconfigurations. The results are broken down by severity to provide a granular view of the prototype's performance.
 
 \begin{table}[htbp]
 	\centering
-		\caption{Policy efficacy by severity}\label{tab:efficacy-by-severity}
+		\caption{Policy generation performance by severity}\label{tab:effectiveness-by-severity}
 	\begin{tabular}{lrrrr}
 		\hline
 		Severity & N & $A_{\text{policy}}$ & $E_{\text{policy}}$ & Notes \\
 		\hline
 		Critical & 3 & 100.00\% & 100.00\% & N/A \\
-		High & 21 & 100.00\% & 100.00\% & N/A \\
-		Medium & 13 & 76.92\% & 100.00\% & N/A \\
-		Low & 10 & 90.00\% & 100.00\% & N/A \\
+		High & 31 & 100.00\% & 45.16\% & N/A \\
+		Medium & 16 & 100.00\% & 50.00\% & N/A \\
+		Low & 11 & 100.00\% & 36.36\% & N/A \\
 		\hline
 	\end{tabular}
 \end{table}
 
+\subsection{Policy Accuracy}
+Policy accuracy ($A_{\text{policy}}$) measures the proportion of generated policies that are syntactically valid. As shown in Table~\ref{tab:effectiveness-by-severity}, the prototype achieved a perfect 100\% policy accuracy across all severity levels, from Critical to Low. This result indicates that for every identified vulnerability, the system reliably produced a syntactically correct Rego policy.
+
+This high level of accuracy is not accidental but the result of a multi-faceted strategy designed to ensure correctness, as detailed in Chapter~\ref{chap:implementation}. Several key software engineering and prompt engineering best practices contribute to this outcome:
+\begin{itemize}
+    \item \textbf{Iterative Refinement Loop}: The most significant factor is the automated self-correction loop. If an initial policy is syntactically incorrect, the system captures the error feedback from the OPA validator and re-prompts the LLM to fix the specific error. This iterative process, which continues until a valid policy is generated, is the primary reason for the 100\% accuracy rate.
+    \item \textbf{Systematic Prompt Engineering}: As discussed in Chapter~\ref{chap:implementation}, the prompts used to instruct the LLM have been carefully engineered. They assign a specific expert persona to the model, provide clear constraints, and use placeholders for dynamic context. This structured approach significantly increases the likelihood of generating valid code on the first attempt.
+    \item \textbf{Retrieval-Augmented Generation (RAG)}: The system's knowledge base, leveraged through RAG, grounds the LLM with relevant and accurate examples of Rego policies and best practices. This helps steer the generation process toward syntactically correct and idiomatic Rego code, reducing the chances of errors.
+    \item \textbf{Robust Output Parsing}: A dedicated parser function reliably extracts the Rego code block from the LLM's raw output. This function filters out conversational text or other formatting issues, ensuring that only clean, executable code is passed to the validator, which prevents validation failures due to extraneous text.
+\end{itemize}
+Together, these mechanisms, which are part of the prototype's core design, create a resilient framework that guarantees the syntactic validity of the final output. This makes it a reliable foundation for the subsequent effectiveness evaluation.
+
 % Optional visualization placeholder
 \begin{figure}[htbp]
 	\centering
-	\fbox{\parbox{0.9\textwidth}{Placeholder: Bar chart of $E_{\text{policy}}$ by severity}}
-		\caption{Visualization of policy effectiveness by severity}\label{fig:efficacy-plot}
+	\includegraphics[width=0.9\textwidth]{../out/effectiveness_by_severity.png}
+	\caption{Visualization of policy effectiveness by severity}\label{fig:effectiveness-plot}
 \end{figure}
+
+\subsection{Policy Effectiveness}
+Policy effectiveness ($E_{\text{policy}}$) measures whether a syntactically valid policy successfully prevents the targeted misconfiguration. Unlike policy accuracy, which is a measure of syntactic correctness, effectiveness evaluates the logical soundness and real-world impact of the generated code. As shown in Table~\ref{tab:effectiveness-by-severity} and visualized in Figure~\ref{fig:effectiveness-plot}, the prototype's effectiveness varies across different severity levels.
+
+The system achieved 100\% effectiveness for all critical vulnerabilities, demonstrating its capability to reliably address the most severe risks. However, the effectiveness for high, medium, and low-severity vulnerabilities was 45.16\%, 50.00\%, and 36.36\%, respectively. This variation highlights the challenges in automatically generating logically perfect policies for a wide range of issues.
+
+Achieving 100\% effectiveness automatically is significantly more complex than achieving 100\% accuracy for several reasons:
+\begin{itemize}
+    \item \textbf{Complex Validation Process:} To verify effectiveness, one must generate a Terraform plan (\texttt{tfplan.json}) and evaluate the policy against it. This is a more involved and less deterministic process than the simple syntactic check used for accuracy.
+    \item \textbf{Lack of Structured Feedback:} When a policy is syntactically incorrect, the OPA validator provides specific, actionable error messages that can be fed back into a self-correction loop. However, when a policy is logically flawed (i.e., ineffective), there is no equivalent automated mechanism to generate structured feedback. The system cannot easily determine why the policy failed to block the misconfiguration.
+    \item \textbf{Contextual Overload:} To automatically debug an ineffective policy, the LLM would require an enormous amount of context, including the original IaC, the generated policy, the Terraform plan, and a description of the expected outcome. At this point, the complexity and context required make manual intervention by a human expert a more efficient and reliable solution.
+\end{itemize}
+
+This is where the Human-in-the-Loop (HITL) concept, a core tenet of this thesis, becomes critical. While the system can automate the generation of a syntactically correct and often effective policy, the final validation of its logical effectiveness is a task best suited for a human expert. The prototype is designed to assist and accelerate the work of a security professional, not to replace them entirely. The generated policy serves as a high-quality starting point that the expert can quickly review, test, and approve, ensuring both security and operational correctness.
 
 %----------------------------------------------------------------------------------------
 % Results — Speed
 %----------------------------------------------------------------------------------------
 \section{Results: Policy Generation Speed}\label{sec:results-speed}
+
+% TODO argue with literature
 
 We report latency distribution and throughput for single-policy generation and, where applicable, batch execution.
 
@@ -128,15 +153,15 @@ We report latency distribution and throughput for single-policy generation and, 
 		\hline
 		Metric & Mean $T_{\text{gen}}$ & p50 & p95 & Throughput (pol/min) \\
 		\hline
-		Overall & 8.67s & 7.98s & 12.25s & 7.23 \\
+		Overall & 9.86s & 9.55s & 11.80s & 6.12 \\
 		\hline
 	\end{tabular}
 \end{table}
 
 \begin{figure}[htbp]
 	\centering
-	\fbox{\parbox{0.9\textwidth}{Placeholder: Histogram of $T_{\text{gen}}$ with p95 marker}}
-		\caption{Distribution of policy generation time}\label{fig:speed-distribution}
+	\includegraphics[width=0.9\textwidth]{../out/speed_distribution.png}
+	\caption{Distribution of policy generation time}\label{fig:speed-distribution}
 \end{figure}
 
 %----------------------------------------------------------------------------------------
@@ -144,60 +169,46 @@ We report latency distribution and throughput for single-policy generation and, 
 %----------------------------------------------------------------------------------------
 \section{Results: Context Detection and Reasoning}\label{sec:results-context}
 
-This section evaluates the prototype's ability to perform contextual reasoning, a key requirement for moving beyond simple static checks. We first describe the evaluation methodology, including how we define and label positive and negative cases, and then present quantitative and qualitative findings.
+This section evaluates the prototype's ability to perform contextual reasoning, a key requirement for moving beyond simple static checks. The analysis is based on a curated set of seven scenarios, each designed to test a specific aspect of contextual understanding. The results are summarized in Table~\ref{tab:context-reasoning-summary}.
 
-\subsection{Evaluation Methodology for Contextual Reasoning}
-
-\textbf{Evaluation Corpus.} To test contextual reasoning, we created a purpose-built evaluation corpus from our dataset of Terraform configurations. This corpus contains two classes of findings:
-\begin{itemize}
-    \item \textbf{Positive Cases (Context-Sensitive Vulnerabilities):} Scenarios where a vulnerability's existence or severity depends on relationships between multiple resources, environmental metadata, or a combination of otherwise minor misconfigurations. Examples include privilege escalation paths via IAM roles or latent exposures due to network reachability. These cases were designed to be difficult for single-resource static rules to detect reliably.
-    \item \textbf{Negative Cases (Non-Contextual Findings):} Standard, rule-local misconfigurations (e.g., a missing encryption flag on a single resource) and benign configurations that might trigger noisy alerts in a purely static analysis.
-\end{itemize}
-Each case in the corpus was independently reviewed and assigned a ground-truth label (positive or negative) following the adjudication protocol in Section~\ref{sec:experimental-setup}.
-
-\textbf{Prediction Task.} The system's task is to classify each finding as either \emph{contextual} or \emph{non-contextual}. A finding is only classified as contextual if the system provides an explicit justification that correctly identifies the cross-resource relationship. Based on this, we define our confusion matrix terms:
-\begin{itemize}
-    \item \textbf{True Positive (TP):} The system correctly identifies a positive case as contextual and provides a valid justification.
-    \item \textbf{False Positive (FP):} The system incorrectly classifies a negative case as contextual, or provides an invalid/hallucinated justification for a positive case.
-    \item \textbf{False Negative (FN):} The system fails to identify a positive case as contextual or fails to provide a valid justification.
-    \item \textbf{True Negative (TN):} The system correctly classifies a negative case as non-contextual.
-\end{itemize}
-This strict requirement on justification ensures we measure true reasoning ability, not just pattern matching. From these counts, we derive Precision, Recall, and $F_1$ as defined in Section~\ref{sec:metrics-and-baselines}.
-
-\subsection{Findings}
-
-\subsubsection*{Quantitative Results}
-
-TBD
-
-% Table~\ref{tab:context-metrics} summarizes the performance across our baselines. The full system demonstrates a marked improvement in both precision and recall over static-only analysis, which is reflected in the high $F_1$ score. The false-positive reduction ($FP_{\text{red}}$) metric further quantifies the system's ability to reduce alert noise by correctly identifying non-contextual findings that a static tool might flag.
-
-\subsubsection*{Qualitative Analysis}
-
-TBD
-
-% To illustrate the quantitative results, we highlight representative cases. For example, in a scenario mirroring the one described in Section~4.3, the system successfully identified an attack path where an exposed compute instance could assume a specific IAM role to access an otherwise secure S3 bucket. It correctly justified the finding by linking the instance, role, and bucket, a connection missed by traditional static checks. Other examples include the correct dismissal of a nominal exposure on a development-tagged resource and the identification of a latent risk from several combined low-severity misconfigurations. These cases provide strong evidence of the system's advanced reasoning capabilities.
-
+The prototype demonstrated a strong ability to reason about context in a majority of cases, successfully identifying vulnerabilities in four out of the seven scenarios, with one partial success. The system excelled at identifying complex, cross-resource, and conditional vulnerabilities but showed limitations in understanding developer intent and external factors like dependency freshness.
 
 \begin{table}[htbp]
 	\centering
-		\caption{Context detection metrics by baseline}\label{tab:context-metrics}
-	\begin{tabular}{lrrrr}
+	\caption{Summary of Contextual Reasoning Scenarios}\label{tab:context-reasoning-summary}
+	\begin{tabular}{p{0.25\textwidth}p{0.5\textwidth}l}
 		\hline
-		System & Precision$_{\text{ctx}}$ & Recall$_{\text{ctx}}$ & $F_1$ & $FP_{\text{red}}$ \\
+		\textbf{Scenario} & \textbf{Description} & \textbf{Outcome} \\
 		\hline
-		Static-only & [TBD] & [TBD] & [TBD] & [TBD] \\
-		+LLM+RAG (full) & [TBD] & [TBD] & [TBD] & [TBD] \\
+		Insecure EC2 & Detect unrestricted SSH access. & Success \\
+		Complex Logic & Interpret conditional logic based on environment variables. & Success \\
+		Cross-Resource Risk & Identify a risk from the interaction of multiple resources. & Success \\
+		Privilege Escalation & Find a privilege escalation path in IAM policies. & Success \\
+		Developer Intent & Understand developer comments to find a configuration discrepancy. & Partial \\
+		False Positive Reduction & Avoid flagging an intentional public configuration for a website. & Failure \\
+		Outdated Dependency & Identify an outdated Terraform module version. & Failure \\
 		\hline
 	\end{tabular}
 \end{table}
 
-% TODO: Add confusion matrix back if a clear set of negative cases is established for the evaluation.
-% \begin{figure}[htbp]
-% 	\centering
-% 	\fbox{\parbox{0.9\textwidth}{Placeholder: Confusion matrix for $V_{\text{ctx}}$ (full system)}}
-% 		\caption{Confusion matrix on context-sensitive subset}\label{fig:context-confusion}
-% \end{figure}
+\subsection{Successful Detections}
+As shown in Table~\ref{tab:context-reasoning-summary}, the prototype successfully identified several types of context-sensitive vulnerabilities:
+\begin{itemize}
+    \item \textbf{Complex Logic:} It correctly interpreted conditional logic in Terraform variables to identify a security group misconfiguration that was only active in a ``development'' environment.
+    \item \textbf{Cross-Resource Risk:} It successfully identified a public S3 bucket by analyzing the interaction between the bucket resource and a separate bucket policy, a risk not apparent from either resource in isolation.
+    \item \textbf{Privilege Escalation:} It correctly identified a potential privilege escalation path by analyzing the combination of \texttt{sts:AssumeRole} and \texttt{iam:PassRole} permissions in an IAM policy.
+    \item \textbf{Standard Misconfigurations:} It easily detected common, critical issues such as unrestricted SSH access in an EC2 security group.
+\end{itemize}
+These successes demonstrate the LLM's capability to understand and reason about the relationships between different parts of the IaC.
+
+\subsection{Limitations and Failures}
+The evaluation also highlighted key limitations in the prototype's reasoning capabilities, as noted in Table~\ref{tab:context-reasoning-summary}:
+\begin{itemize}
+    \item \textbf{Developer Intent (Partial Success):} In one scenario, the system identified a publicly readable S3 bucket but failed to connect this to a developer comment explicitly stating the bucket should be private. The finding was correct, but the reasoning missed the contextual cue.
+    \item \textbf{False Positive Reduction (Failure):} The prototype incorrectly flagged a public S3 bucket as a vulnerability, failing to recognize the valid business context that it was configured to host a public website. This highlights a difficulty in distinguishing intentional configurations from misconfigurations without broader context.
+    \item \textbf{Outdated Dependencies (Failure):} The system completely failed to identify the use of an outdated and potentially vulnerable Terraform module version, indicating a knowledge gap in its training data or a limitation in its ability to parse dependency information.
+\end{itemize}
+These cases underscore the challenges that remain in achieving true contextual understanding. While the prototype can analyze code and resource relationships effectively, it struggles with nuances of human intent and external context not explicitly present in the code. This reinforces the need for a Human-in-the-Loop (HITL) approach, where the automated system provides a strong baseline analysis that a human expert can then refine and validate.
 
 %----------------------------------------------------------------------------------------
 % Results — HITL and Validation
