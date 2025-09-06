@@ -105,37 +105,22 @@ This section is structured as follows. First, we analyze the prototype's policy 
 \end{table}
 
 \subsection{Policy Accuracy}
-Policy accuracy ($A_{\text{policy}}$) measures the proportion of generated policies that are syntactically valid. As shown in Table~\ref{tab:effectiveness-by-severity}, the prototype achieved a perfect 100\% policy accuracy across all severity levels, from Critical to Low. This result indicates that for every identified vulnerability, the system reliably produced a syntactically correct Rego policy.
-
-This high level of accuracy is not accidental but the result of a multi-faceted strategy designed to ensure correctness, as detailed in Chapter~\ref{chap:implementation}. Several key software engineering and prompt engineering best practices contribute to this outcome:
-\begin{itemize}
-    \item \textbf{Iterative Refinement Loop}: The most significant factor is the automated self-correction loop. If an initial policy is syntactically incorrect, the system captures the error feedback from the OPA validator and re-prompts the LLM to fix the specific error. This iterative process, which continues until a valid policy is generated, is the primary reason for the 100\% accuracy rate.
-    \item \textbf{Systematic Prompt Engineering}: As discussed in Chapter~\ref{chap:implementation}, the prompts used to instruct the LLM have been carefully engineered. They assign a specific expert persona to the model, provide clear constraints, and use placeholders for dynamic context. This structured approach significantly increases the likelihood of generating valid code on the first attempt.
-    \item \textbf{Retrieval-Augmented Generation (RAG)}: The system's knowledge base, leveraged through RAG, grounds the LLM with relevant and accurate examples of Rego policies and best practices. This helps steer the generation process toward syntactically correct and idiomatic Rego code, reducing the chances of errors.
-    \item \textbf{Robust Output Parsing}: A dedicated parser function reliably extracts the Rego code block from the LLM's raw output. This function filters out conversational text or other formatting issues, ensuring that only clean, executable code is passed to the validator, which prevents validation failures due to extraneous text.
-\end{itemize}
-Together, these mechanisms, which are part of the prototype's core design, create a resilient framework that guarantees the syntactic validity of the final output. This makes it a reliable foundation for the subsequent effectiveness evaluation.
+\subsection{Policy Accuracy}
+Policy accuracy ($A_{	ext{policy}}$) measures the proportion of generated policies that are syntactically valid. As shown in Table~
+ef{tab:effectiveness-by-severity}, the prototype achieved a perfect 100\% policy accuracy across all severity levels, from Critical to Low. This result indicates that for every identified vulnerability, the system reliably produced a syntactically correct Rego policy. The reasons for this outcome are discussed in detail in Chapter~
+ef{chap:discussion}.
 
 % Optional visualization placeholder
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\textwidth]{../out/effectiveness_by_severity.png}
+	\includegraphics[width=0.9\textwidth]{Figures/effectiveness_by_severity.png}
 	\caption{Visualization of policy effectiveness by severity}\label{fig:effectiveness-plot}
 \end{figure}
 
 \subsection{Policy Effectiveness}
 Policy effectiveness ($E_{\text{policy}}$) measures whether a syntactically valid policy successfully prevents the targeted misconfiguration. Unlike policy accuracy, which is a measure of syntactic correctness, effectiveness evaluates the logical soundness and real-world impact of the generated code. As shown in Table~\ref{tab:effectiveness-by-severity} and visualized in Figure~\ref{fig:effectiveness-plot}, the prototype's effectiveness varies across different severity levels.
 
-The system achieved 100\% effectiveness for all critical vulnerabilities, demonstrating its capability to reliably address the most severe risks. However, the effectiveness for high, medium, and low-severity vulnerabilities was 45.16\%, 50.00\%, and 36.36\%, respectively. This variation highlights the challenges in automatically generating logically perfect policies for a wide range of issues.
-
-Achieving 100\% effectiveness automatically is significantly more complex than achieving 100\% accuracy for several reasons:
-\begin{itemize}
-    \item \textbf{Complex Validation Process:} To verify effectiveness, one must generate a Terraform plan (\texttt{tfplan.json}) and evaluate the policy against it. This is a more involved and less deterministic process than the simple syntactic check used for accuracy.
-    \item \textbf{Lack of Structured Feedback:} When a policy is syntactically incorrect, the OPA validator provides specific, actionable error messages that can be fed back into a self-correction loop. However, when a policy is logically flawed (i.e., ineffective), there is no equivalent automated mechanism to generate structured feedback. The system cannot easily determine why the policy failed to block the misconfiguration.
-    \item \textbf{Contextual Overload:} To automatically debug an ineffective policy, the LLM would require an enormous amount of context, including the original IaC, the generated policy, the Terraform plan, and a description of the expected outcome. At this point, the complexity and context required make manual intervention by a human expert a more efficient and reliable solution.
-\end{itemize}
-
-This is where the Human-in-the-Loop (HITL) concept, a core tenet of this thesis, becomes critical. While the system can automate the generation of a syntactically correct and often effective policy, the final validation of its logical effectiveness is a task best suited for a human expert. The prototype is designed to assist and accelerate the work of a security professional, not to replace them entirely. The generated policy serves as a high-quality starting point that the expert can quickly review, test, and approve, ensuring both security and operational correctness.
+The system achieved 100\% effectiveness for all critical vulnerabilities, demonstrating its capability to reliably address the most severe risks. However, the effectiveness for high, medium, and low-severity vulnerabilities was 45.16\%, 50.00\%, and 36.36\%, respectively. This variation highlights the challenges in automatically generating logically perfect policies for a wide range of issues. A detailed interpretation of these results is provided in Chapter~\ref{chap:discussion}.
 
 %----------------------------------------------------------------------------------------
 % Results — Speed
@@ -160,7 +145,7 @@ We report latency distribution and throughput for single-policy generation and, 
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=0.9\textwidth]{../out/speed_distribution.png}
+	\includegraphics[width=0.9\textwidth]{Figures/speed_distribution.png}
 	\caption{Distribution of policy generation time}\label{fig:speed-distribution}
 \end{figure}
 
@@ -199,7 +184,7 @@ As shown in Table~\ref{tab:context-reasoning-summary}, the prototype successfull
     \item \textbf{Privilege Escalation:} It correctly identified a potential privilege escalation path by analyzing the combination of \texttt{sts:AssumeRole} and \texttt{iam:PassRole} permissions in an IAM policy.
     \item \textbf{Standard Misconfigurations:} It easily detected common, critical issues such as unrestricted SSH access in an EC2 security group.
 \end{itemize}
-These successes demonstrate the LLM's capability to understand and reason about the relationships between different parts of the IaC.
+These successes are further interpreted in Chapter~\ref{chap:discussion}.
 
 \subsection{Limitations and Failures}
 The evaluation also highlighted key limitations in the prototype's reasoning capabilities, as noted in Table~\ref{tab:context-reasoning-summary}:
@@ -208,7 +193,7 @@ The evaluation also highlighted key limitations in the prototype's reasoning cap
     \item \textbf{False Positive Reduction (Failure):} The prototype incorrectly flagged a public S3 bucket as a vulnerability, failing to recognize the valid business context that it was configured to host a public website. This highlights a difficulty in distinguishing intentional configurations from misconfigurations without broader context.
     \item \textbf{Outdated Dependencies (Failure):} The system completely failed to identify the use of an outdated and potentially vulnerable Terraform module version, indicating a knowledge gap in its training data or a limitation in its ability to parse dependency information.
 \end{itemize}
-These cases underscore the challenges that remain in achieving true contextual understanding. While the prototype can analyze code and resource relationships effectively, it struggles with nuances of human intent and external context not explicitly present in the code. This reinforces the need for a Human-in-the-Loop (HITL) approach, where the automated system provides a strong baseline analysis that a human expert can then refine and validate.
+These cases are discussed in more detail in Chapter~\ref{chap:discussion}.
 
 %----------------------------------------------------------------------------------------
 % Results — HITL and Validation
