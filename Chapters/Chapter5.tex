@@ -254,7 +254,38 @@ Further resilience is built-in through Robust Error Handling. This includes comp
 
 To ensure the quality and reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the \texttt{pytest} framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. Fixtures are used to create consistent and reusable test setups. This is complemented by a policy of Version Control and Continuous Integration (CI). Git is used for source control, and GitHub Actions are used for automated testing, ensuring code quality, monitoring test coverage, and catching regressions early.
 
+\subsubsection{Codebase Metrics}
+To provide a clear understanding of the implementation's scope, this section presents key metrics about the Python prototype's codebase. The application code is organized into 12 modules, containing a total of 14 classes and 42 functions. A detailed breakdown of the lines of code (LOC) is provided in Table~\ref{tab:code_metrics}. The analysis was performed using the \texttt{scc} utility, which counts physical lines of code, excluding blank lines and comments.
+
+\begin{table}[htbp]
+\centering
+\caption{Code Metrics for the Python Prototype's Application Code}
+\label{tab:code_metrics}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Component} & \textbf{Files} & \textbf{Lines of Code} & \textbf{Classes} & \textbf{Functions} \\
+\midrule
+Application Code & 23 & 707 & 14 & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The majority of the code is concentrated in the modules responsible for the core logic of the security automation workflow. The most significant modules in terms of code volume and complexity are:
+
+The majority of the source code in this prototype is dedicated to implementing the end-to-end workflow for the automated generation of security policies. The implementation is centered around a modular architecture, with the core logic residing in the \texttt{src} directory. A significant portion of the code is dedicated to the interaction with the Large Language Model (LLM), which is central to the prototype's intelligence. This is reflected in the \texttt{config/prompts.py} file, which contains the detailed instructions and context provided to the LLM, and the \texttt{src/llm/bedrock.py} and \texttt{src/analyzer/llm\_analyzer.py} modules, which handle the communication with the LLM and the analysis of its responses.
+
+The orchestration of the workflow is managed by the \texttt{src/main.py} module, which serves as the main entry point of the application. This module sequentially invokes the various components of the prototype, starting with the \texttt{src/scanner/tfsec\_scanner.py} module, which is responsible for the initial static analysis of the Terraform files. The results of this scan are then passed to the \texttt{src/analyzer/llm\_analyzer.py} for deeper analysis by the LLM.
+
+Another significant part of the codebase is dedicated to the generation and validation of the security policies. The \texttt{src/policy\_generator/rego\_generator.py} module is responsible for translating the insights from the LLM into valid Rego policies. The correctness of these policies is then verified by the \texttt{src/validator/policy\_validator.py} module.
+
+Furthermore, a considerable amount of code is dedicated to the evaluation of the prototype's performance. The modules within the \texttt{src/metrics} directory are used to calculate key metrics such as generation speed, policy accuracy, and effectiveness. These metrics are crucial for the quantitative evaluation of the research presented in this thesis.
+
+Finally, the \texttt{src/utils} package contains a collection of helper modules that provide essential services such as file handling, report generation, and the creation of plots for data visualization. The \texttt{tests} directory also constitutes a vital part of the codebase, containing the unit tests that ensure the reliability and correctness of the prototype's implementation.
+
+These modules collectively represent the core of the prototype's functionality and account for the bulk of the implementation effort. The remaining modules provide supporting utilities, configuration management, and data consolidation, which are less code-intensive but still crucial for the overall operation of the system.
+
 \section{End-to-End Workflow}
+
 
 The practical application of the framework is best understood by examining the end-to-end workflow of the command-line tool. This process describes the sequence of operations from the moment a user invokes the application to the final output of a validated security policy. The entire sequence is designed to be a self-contained, automated process, as illustrated in the sequence diagram \ref{fig:e2e_workflow}.
 
