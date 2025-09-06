@@ -28,12 +28,22 @@ The evaluation of the prototype's contextual reasoning, summarized in Table~\ref
 However, the failures are equally instructive. The prototype struggled with nuances of human intent (e.g., ignoring developer comments) and external context not explicitly present in the code (e.g., recognizing the valid business purpose of a public S3 bucket for a website). These cases underscore the challenges that remain in achieving true contextual understanding and highlight the system's dependency on the data it was trained on. This limitation reinforces the need for a HITL approach, where the automated system provides a strong baseline analysis that a human expert can then refine and validate with their broader, real-world knowledge.
 
 %----------------------------------------------------------------------------------------
-%	SECTION 2: The Role of the Human-in-the-Loop
+%	SECTION 2: The Indispensable Role of the Human-in-the-Loop
 %----------------------------------------------------------------------------------------
-\section{The Human-in-the-Loop in Action}
+\section{The Indispensable Role of the Human-in-the-Loop}
 \label{sec:hitl_in_action}
 
-A core component of the proposed framework is the Human-in-the-Loop (HITL) process for review and approval. This section details how human oversight is integrated into the automated workflow. The process begins when the system generates a security policy recommendation. This recommendation, along with its justification and the source IaC context, is presented to a security engineer or a designated reviewer through a user interface. The human expert then validates the correctness, relevance, and safety of the proposed policy. They have the authority to approve, reject, or modify the suggestion. This critical step ensures that automation accelerates the process without ceding final control, preventing the automatic application of flawed or insecure policies and providing a feedback mechanism for the system.
+While GenAI can automate policy creation, it does not eliminate the need for human expertise. The Human-in-the-Loop (HITL) process is therefore not merely a supplementary feature but a cornerstone of a responsible and effective security automation framework. Its importance is most evident when considering the gap between policy accuracy and effectiveness discussed in Section~\ref{sec:interpretation}.
+
+As shown in Chapter~\ref{chap:results}, the prototype generated syntactically perfect policies (100\% accuracy) but struggled with logical effectiveness, which was as low as 36\% for some categories (Table~\ref{tab:effectiveness-by-severity}). A syntactically valid but logically flawed policy can create a false sense of security or, worse, introduce new risks. For example, an overly restrictive policy could cause an outage, while an overly permissive one fails to mitigate the intended threat. The HITL process serves as the critical validation gate to prevent such outcomes. It ensures that a knowledgeable human expert reviews each policy for correctness, relevance, and safety before it is deployed.
+
+Furthermore, the HITL process provides two additional benefits that a fully automated system cannot:
+\begin{itemize}
+    \item \textbf{Contextual Enrichment:} A human expert can bring in external context that is unavailable to the model, such as business justifications for an unusual configuration (as seen in the "False Positive Reduction" failure in Section~\ref{sec:results-context}) or knowledge of an impending architectural change. This prevents the system from flagging legitimate configurations as vulnerabilities.
+    \item \textbf{System Improvement:} The corrections and approvals from the human reviewer serve as a valuable feedback loop. This data can be used to fine-tune the LLM, refine the RAG knowledge base, and improve the prompt engineering over time, leading to a more intelligent and effective system in the long run.
+\end{itemize}
+
+The workflow is designed to be straightforward: the system presents its recommendation, justification, and source context to a reviewer. The expert can then approve, reject, or modify the policy. This ensures that automation accelerates the process without ceding final control, embodying a partnership between the AI and the human expert.
 
 %----------------------------------------------------------------------------------------
 %	SECTION 3: Limitations
