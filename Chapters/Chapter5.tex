@@ -9,29 +9,16 @@ We will first present the high-level architecture and the technology stack chose
 
 \section{Design Objectives \& Functional Requirements}
 
-% Refined Research Questions:
-
-%    * RQ1 (Effectiveness and Automation): How can Generative AI technologies be effectively leveraged to automate security policy generation and management across
-%      hyperscale cloud platforms?
-%    * RQ2 (Architecture and Orchestration): What specific architectural patterns and validation mechanisms are required to ensure trust, accuracy, and effective
-%      multi-cloud orchestration in GenAI-driven security automation?
-%    * RQ3 (Measurement and Validation): How can the effectiveness of GenAI-driven security automation be quantitatively measured and validated, particularly in terms
-%      of accuracy, reliability, and efficiency gains?
-%    * RQ4 (Human-in-the-Loop): What is the optimal balance between automation and human oversight (Human-in-the-Loop) to maximize security outcomes and mitigate the
-%      risks of GenAI-driven policy generation?
-
-%   These questions are more closely aligned with the language and focus of your exposé.
-
-The practical implementation of the prototype is guided by a set of specific design objectives and functional requirements. These objectives are derived directly from the core research questions and serve to translate the high-level scientific inquiry into concrete, measurable goals for the system. The following objectives define the core functionality of the prototype:
+The practical implementation of the prototype is guided by a set of specific design objectives and functional requirements. These objectives are derived directly from the core research questions defined in Chapter~\ref{chap:introduction} and serve to translate the high-level scientific inquiry into concrete, measurable goals for the system. The following objectives define the core functionality of the prototype:
 
 \begin{itemize}
-\item \textbf{Automated, High-Fidelity Policy Generation:} The system's primary function is to automatically generate syntactically correct and logically sound security policies in the Rego language from vulnerabilities found in \gls{terraform} files. This objective directly addresses the central research question on the effectiveness of \gls{genai} for security automation \textbf{(RQ1)}. A key requirement is to achieve high fidelity, with a target of $\geq$ 95\% of generated policies being effective in mitigating the identified vulnerability, providing a core metric for validation \textbf{(RQ3)}.
+\item \textbf{Automated, High-Fidelity Policy Generation:} The system's primary function is to automatically generate syntactically correct and logically sound security policies in the Rego language from vulnerabilities found in \gls{terraform} files. This objective directly addresses the research question on effectiveness and automation. A key requirement is to achieve high fidelity, with a target of $\geq$ 95\% of generated policies being effective in mitigating the identified vulnerability, providing a core metric for validation, as per the research question on measurement and validation.
 text
-\item \textbf{Hybrid and Reproducible Analysis Architecture:} The system is built on a hybrid analysis model that is both reproducible and architecturally sound. Reproducibility is achieved by defining the entire \gls{cloud-native} backend as code using \gls{terraform}. The analysis engine is hybrid, combining traditional \gls{sast} for baseline coverage with \gls{genai}-driven contextual analysis for deeper insights. These architectural choices are fundamental to investigating how to build a trustworthy and effective \gls{genai}-driven system \textbf{(RQ2)}.
+\item \textbf{Hybrid and Reproducible Analysis Architecture:} The system is built on a hybrid analysis model that is both reproducible and architecturally sound. Reproducibility is achieved by defining the entire \gls{cloud-native} backend as code using \gls{terraform}. The analysis engine is hybrid, combining traditional \gls{sast} for baseline coverage with \gls{genai}-driven contextual analysis for deeper insights. These architectural choices are fundamental to investigating how to build a trustworthy and effective \gls{genai}-driven system, as asked by the research question on architecture and orchestration.
 
-\item \textbf{Automated Validation:} To ensure the reliability of the AI-generated artifacts, the system implements a multi-stage, automated validation pipeline. This process checks generated policies for syntactic correctness and performs a security self-scan to ensure they do not introduce new vulnerabilities. This automated validation is a critical mechanism for measuring and ensuring the trustworthiness of the output \textbf{(RQ3)}.
+\item \textbf{Automated Validation:} To ensure the reliability of the AI-generated artifacts, the system implements a multi-stage, automated validation pipeline. This process checks generated policies for syntactic correctness and performs a security self-scan to ensure they do not introduce new vulnerabilities. This automated validation is a critical mechanism for measuring and ensuring the trustworthiness of the output, directly addressing the research question on measurement and validation.
 
-\item \textbf{\gls{hitl} and \gls{cicd} Integration:} The prototype is designed for seamless integration into a standard \gls{cicd} pipeline, where it can act as an automated quality gate. This integration must also support a \gls{hitl} workflow, enabling human review and approval of generated policies. This dual requirement is designed to explore the optimal balance between full automation and necessary human oversight in a practical \gls{devsecops} environment \textbf{(RQ4, RQ1)}.
+\item \textbf{\gls{hitl} and \gls{cicd} Integration:} The prototype is designed for seamless integration into a standard \gls{cicd} pipeline, where it can act as an automated quality gate. This integration must also support a \gls{hitl} workflow, enabling human review and approval of generated policies. This dual requirement is designed to explore the optimal balance between full automation and necessary human oversight in a practical \gls{devsecops} environment, which relates to the research questions on the Human-in-the-Loop and effectiveness.
 \end{itemize}
 
 This structured set of objectives ensures that the implementation of the prototype directly and comprehensively contributes to answering the core research questions of this thesis.
