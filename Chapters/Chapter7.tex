@@ -1,38 +1,98 @@
 % Chapter Template
 
-\chapter{Discussion} % Main chapter title
+\chapter{Discussion}
 \label{chap:discussion}
 
+This chapter interprets the findings from the prototype evaluation, discusses their implications, and connects them back to the research questions. It also addresses the role of human oversight, acknowledges the study's limitations, and outlines concrete avenues for future research.
 
 %----------------------------------------------------------------------------------------
-%	SECTION 1
+%	SECTION 1: Interpretation of Findings
 %----------------------------------------------------------------------------------------
+\section{Interpretation of Key Findings}
+\label{sec:interpretation}
 
-\section{Main Section 1}
+The empirical results from Chapter~\ref{chap:results} demonstrate both the promise and the current limitations of using a GenAI-driven framework for security policy generation. This section interprets these key findings, focusing on policy accuracy, effectiveness, and the system's contextual reasoning capabilities.
 
-TBD
+\subsection{The Contrast Between Policy Accuracy and Effectiveness}
+A central finding of this research is the significant gap between policy accuracy and policy effectiveness. While the prototype consistently achieved 100\% syntactic accuracy, its logical effectiveness was variable. This highlights a critical distinction in automated security policy generation.
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Subsection 1}
+\subsubsection{Achieving Perfect Syntactic Accuracy}
+The prototype's 100\% policy accuracy, as reported in Table~\ref{tab:effectiveness-by-severity}, is not an incidental outcome but a direct result of deliberate design choices. The primary mechanism is an automated self-correction loop: if the OPA validator rejects a generated policy, the system captures the specific error feedback and re-prompts the LLM to fix it. This iterative refinement, combined with systematic prompt engineering and the grounding provided by a RAG knowledge base, creates a resilient framework that guarantees the syntactic validity of the final output. This finding suggests that with proper engineering, GenAI models can reliably produce syntactically correct code for domain-specific languages like Rego.
 
-TBD
+\subsubsection{The Challenge of Logical Effectiveness}
+In contrast, achieving 100\% logical effectiveness automatically is a far more complex challenge. The prototype's varied success rates (Table~\ref{tab:effectiveness-by-severity}) underscore this complexity. Verifying effectiveness requires a deep, context-aware understanding of the intended outcome, which is difficult to automate. Unlike syntactic validation, where error messages are precise and actionable, logical failures lack a clear, structured feedback loop. Debugging an ineffective policy would require providing the LLM with an extensive context—including the IaC, the generated policy, the Terraform plan, and a description of the desired behavior—making manual intervention by a human expert a more pragmatic approach. This reinforces the indispensable role of the Human-in-the-Loop (HITL), a core tenet of this thesis, for validating the logical soundness of automated outputs.
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
+\subsection{Contextual Reasoning: Successes and Shortcomings}
+The evaluation of the prototype's contextual reasoning, summarized in Table~\ref{tab:context-reasoning-summary}, reveals a nuanced picture. The system demonstrated a strong ability to understand and reason about relationships between different parts of the IaC, successfully identifying complex, cross-resource, and conditional vulnerabilities. This confirms the hypothesis that LLMs can move beyond the limitations of traditional static analysis by interpreting the broader context in which resources operate.
 
-\subsection{Subsection 2}
-
-TBD
-
-%----------------------------------------------------------------------------------------
+However, the failures are equally instructive. The prototype struggled with nuances of human intent (e.g., ignoring developer comments) and external context not explicitly present in the code (e.g., recognizing the valid business purpose of a public S3 bucket for a website). These cases underscore the challenges that remain in achieving true contextual understanding and highlight the system's dependency on the data it was trained on. This limitation reinforces the need for a HITL approach, where the automated system provides a strong baseline analysis that a human expert can then refine and validate with their broader, real-world knowledge.
 
 %----------------------------------------------------------------------------------------
-%	SECTION 2
+%	SECTION 2: The Role of the Human-in-the-Loop
 %----------------------------------------------------------------------------------------
+\section{The Human-in-the-Loop in Action}
+\label{sec:hitl_in_action}
 
-\section{Main Section 2}
+A core component of the proposed framework is the Human-in-the-Loop (HITL) process for review and approval. This section details how human oversight is integrated into the automated workflow. The process begins when the system generates a security policy recommendation. This recommendation, along with its justification and the source IaC context, is presented to a security engineer or a designated reviewer through a user interface. The human expert then validates the correctness, relevance, and safety of the proposed policy. They have the authority to approve, reject, or modify the suggestion. This critical step ensures that automation accelerates the process without ceding final control, preventing the automatic application of flawed or insecure policies and providing a feedback mechanism for the system.
 
-TBD
+%----------------------------------------------------------------------------------------
+%	SECTION 3: Limitations
+%----------------------------------------------------------------------------------------
+\section{Limitations of the Current Study}
+\label{sec:limitations}
+
+% TODO review subsection contents and add higher quality perplexity references
+
+While the prototype demonstrates the viability of the approach, it is important to acknowledge its limitations. These limitations provide the context for the scope of the findings and form the basis for future work.
+
+\subsection{Prototype Scope and Generalizability}
+The prototype was intentionally developed with a narrow focus to serve as a proof-of-concept. Specifically, the evaluation was conducted exclusively on Infrastructure-as-Code written in Terraform for the Amazon Web Services (AWS) cloud platform, using \texttt{tfsec} as the primary static analysis linter. This specificity has several implications for the generalizability of the findings.
+
+First, the contextual analysis and policy generation logic are tightly coupled with AWS resource types and IAM semantics. Expanding support to other cloud providers, such as Google Cloud Platform (GCP) or Microsoft Azure, would require further development. This would involve not only extending the knowledge base with provider-specific information but also adapting the contextual analysis prompts and logic to handle different resource models and security paradigms.
+
+Second, the system is dependent on the output of a single linter, \texttt{tfsec}. While effective, other popular linters like Checkov or Terrascan identify different sets of issues or provide different contextual details. Integrating these tools would require building specific adapters to normalize their outputs into a format the GenAI core can process, as outlined in Section~\ref{subsec:future_expansion}.
+
+Finally, the policy generation is specific to the Rego language for the Open Policy Agent (OPA). Supporting other policy-as-code engines, such as Sentinel, would necessitate a complete rewrite of the generation prompts and validation logic. Therefore, while the conceptual framework is designed to be provider- and tool-agnostic, the current implementation's results are directly applicable only to the AWS, Terraform, and \texttt{tfsec} ecosystem.
+
+\subsection{GenAI Component Tuning and Optimization}
+The Generative AI component, built on Amazon Web Services (AWS) Bedrock, is functional but has not been exhaustively optimized. The current implementation uses Anthropic's Claude v2 model and leverages the built-in Knowledge Bases for Bedrock for its Retrieval-Augmented Generation (RAG) capabilities. This setup provides a solid baseline but leaves considerable room for performance and reliability enhancements.
+
+A primary area for improvement is the knowledge base itself. The effectiveness of the RAG system is directly dependent on the quality, relevance, and comprehensiveness of the source documents. The current knowledge base could be expanded with a more diverse corpus of information, including official AWS security bulletins, Terraform best practice guides, and internal security standards. Furthermore, the configuration of the Bedrock Knowledge Base—specifically its chunking strategy and the underlying embedding model—was left at the default settings for this study. Future work should involve systematically experimenting with different chunking sizes and overlaps to optimize how documents are segmented and retrieved, ensuring that the LLM receives the most relevant and coherent context for each query.
+
+Additionally, while Anthropic's Claude v2 proved capable, AWS Bedrock offers a diverse and evolving landscape of models from various providers. A thorough evaluation of alternative models, including newer versions of Claude or specialized models from other providers, could yield significant improvements in policy generation accuracy, latency, or cost-effectiveness. Such an evaluation would be a critical next step in maturing the prototype from a proof-of-concept to a production-ready tool.
+
+%----------------------------------------------------------------------------------------
+%	SECTION 4: Avenues for Future Research
+%----------------------------------------------------------------------------------------
+\section{Future Work and Prototype Expansion}
+\label{sec:future_work}
+
+The limitations of this study highlight several promising directions for future research and development.
+
+\subsection{Enhancing the GenAI Core}
+\label{subsec:future_llm}
+
+% TODO review
+The LLM interaction can be significantly improved. Future work should focus on the following areas:
+
+\subsubsection{Knowledge Base Retrieval}
+The current retrieval-augmented generation (RAG) mechanism provides a foundational level of context, but its precision can be enhanced. Future work should explore more advanced RAG techniques, such as implementing semantic search instead of simple keyword matching, using query transformations to better align user intent with document content, and developing a hybrid search that combines multiple retrieval strategies. Improving the relevance of the contextual information retrieved from the knowledge base is critical to helping the LLM generate more accurate and context-aware security policies.
+
+\subsubsection{Model Selection and Tuning}
+The choice of the Large Language Model is a pivotal factor in the system's performance. The current prototype uses a general-purpose model, but future iterations should involve a systematic evaluation of various LLMs. This includes benchmarking newer, more powerful models (e.g., GPT-4, Claude 3), as well as domain-specific models that are fine-tuned on cybersecurity and IaC data. The evaluation criteria should include not only the accuracy of the generated policies but also performance metrics like latency and throughput, and the overall cost-effectiveness of the solution.
+
+\subsubsection{Interaction and Orchestration Logic}
+The robustness of the interaction between the prototype and the LLM can be substantially improved. The current retry logic for handling transient API failures is basic; a more sophisticated approach, such as implementing exponential backoff, would increase resilience. Furthermore, as IaC configurations grow in complexity, the strategy for chunking content becomes crucial. Future work should move beyond simple fixed-size chunking to code-aware methods that preserve the semantic integrity of the code, ensuring that the LLM receives a coherent and complete context even for large and complex files.
+
+\subsubsection{Context Consolidation}
+The function responsible for consolidating information from multiple sources—such as linter outputs, knowledge base articles, and IaC snippets—is currently rudimentary. A more advanced consolidation function could itself leverage a language model to summarize and synthesize these disparate pieces of information into a single, coherent prompt. This would improve the signal-to-noise ratio in the context provided to the primary LLM, reducing ambiguity and leading to more precise and relevant security policy generation.
+
+\subsection{Expanding Prototype Capabilities}
+\label{subsec:future_expansion}
+To enhance the prototype's practical utility, two key expansions are proposed:
+
+\subsubsection{Multi-Cloud Support}
+Expanding the prototype to be multi-cloud capable would be a primary objective. This would involve abstracting the cloud-specific logic into separate modules. For instance, one could create a \texttt{CloudProvider} interface with concrete implementations for AWS, Azure, and GCP. The analysis layer would then dynamically load the appropriate module based on the IaC being scanned. This would require changes to the code that interprets linter outputs and maps them to cloud-specific resource configurations and security concepts.
+
+\subsubsection{Integration of Additional Linters}
+Similarly, the prototype can be extended to support more IaC linters (e.g., Checkov, Terrascan). This would require creating a generic \texttt{Linter} interface and then implementing specific adapters for each tool. Each adapter would be responsible for executing the linter, parsing its JSON output, and normalizing the findings into a standardized format that the core application can process. This modular design would make the system more versatile and adaptable to different
