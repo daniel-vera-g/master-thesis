@@ -62,8 +62,13 @@ This section presents the high-level architecture of the \gls{genai}-driven secu
 
 A Modular Architecture ensures a clear separation of concerns. The project is meticulously organized into distinct modules within the \texttt{src/} directory, as illustrated in Listing~\ref{lst:prototype_structure}. Each module (e.g., \texttt{analyzer}, \texttt{llm}, \texttt{policy\_generator}, \texttt{validator}) has a single, well-defined responsibility. This design improves maintainability, testability, and scalability. The interactions between these modules are coordinated by a high-level orchestrator in \texttt{src/main.py} \cite{martin_clean_2009}.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily, breaklines=true]
+\begin{lstlisting}[
+    float=htbp,
+    basicstyle=\footnotesize\ttfamily, 
+    breaklines=true,
+    caption={Prototype Directory Structure},
+    label={lst:prototype_structure}
+]
 src/
 |-- analyzer/
 |-- consolidator/
@@ -75,9 +80,6 @@ src/
 |-- validator/
 `-- main.py
 \end{lstlisting}
-\captionof{listing}{Prototype Directory Structure}
-\label{lst:prototype_structure}
-\end{figure}
 
 The overall workflow follows a sequential Pipeline Architecture, which creates a predictable and understandable data flow. This pipeline orchestrates a clear series of processing steps:
 \begin{enumerate}
@@ -135,14 +137,20 @@ In the final stage, the \texttt{Validator} module leverages the \gls{opa} toolch
 
 \subsubsection{LLM-Powered Policy Generation and Refinement}
 
-The \texttt{Policy Generation} module represents the core intelligence of the system. This component orchestrates the interaction with the \gls{genai} and implements several key patterns to ensure the quality and accuracy of its output. It communicates with the \gls{llm} through a dedicated client that abstracts the complex implementation details of the underlying cloud provider's \gls{sdk} (e.g., \texttt{boto3} for \gls{aws}). This abstraction makes the core logic cleaner and, crucially, provides the flexibility to switch between different \gls{llm} providers, such as those from \gls{aws}, Azure, or \gls{gcp}, without significant code changes. This multi-cloud readiness is a key architectural advantage, preventing vendor lock-in and allowing the system to leverage the best-in-class model for a given task.
+The \texttt{Policy Generation} module represents the core intelligence of the system. This component orchestrates the interaction with the \gls{genai} and implements several key patterns to ensure the quality and accuracy of the output. It communicates with the \gls{llm} through a dedicated client that abstracts the complex implementation details of the underlying cloud provider's \gls{sdk} (e.g., \texttt{boto3} for \gls{aws}). This abstraction makes the core logic cleaner and, crucially, provides the flexibility to switch between different \gls{llm} providers, such as those from \gls{aws}, Azure, or \gls{gcp}, without significant code changes. This multi-cloud readiness is a key architectural advantage, preventing vendor lock-in and allowing the system to leverage the best-in-class model for a given task.
 
 To enhance the accuracy and relevance of the generated policies, the client utilizes Retrieval-Augmented Generation (RAG). It specifically calls Bedrock's \texttt{retrieve\_and\_generate} functionality, passing a \texttt{knowledgeBaseId}. This grounds the \gls{llm}'s responses in a specific, curated knowledge base containing \gls{opa}/\gls{rego} best practices and Regal linting rules, which significantly reduces the risk of hallucinations. It constructs a detailed, context-rich prompt by combining the security findings from the analyzer with relevant contextual information retrieved from this \gls{rag} \gls{kb}. It then communicates with the \gls{aws} Bedrock \gls{api} to obtain the generated \gls{rego} policy.
 
 The \gls{llm}'s behavior is guided by Systematic Prompt Engineering. Prompts are centralized in a \texttt{config/prompts.py} file, separating them from application logic. They are carefully engineered with best practices such as assigning a role ("you are a senior cloud security and Terraform expert"), providing clear constraints (e.g., "Output JSON object only"), and using placeholders for dynamic context. This is crucial for obtaining correctly formatted and relevant outputs. A sample prompt for the policy generation is shown in ~\ref{lst:rego_generator_prompt}.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[language=Python, breaklines=true, basicstyle=\footnotesize\ttfamily]
+\begin{lstlisting}[
+    float=htbp,
+    language=Python, 
+    breaklines=true, 
+    basicstyle=\footnotesize\ttfamily,
+    caption={Sample Prompt for Rego Policy Generation},
+    label={lst:rego_generator_prompt}
+]
 # Prompt for the Rego Policy Generator LLM
 REGO_GENERATOR_PROMPT = """
 Generate a Rego policy for the attached 
@@ -154,16 +162,20 @@ only rego code no other text or description.
 {vulnerability_info}
 """
 \end{lstlisting}
-\captionof{listing}{Sample Prompt for Rego Policy Generation}
-\label{lst:rego_generator_prompt}
-\end{figure}
 
 To handle inconsistencies in the \gls{llm}'s response, the application uses Robust Output Parsing. A dedicated function, \texttt{extract\_rego\_code}, reliably extracts the desired code block from the \gls{llm}'s output, filtering out potential conversational text or other formatting issues to ensure that only clean, executable code is passed to the validator.
 
 Most significantly, the prototype implements an Iterative Refinement (Self-Correction Loop), a key mechanism for enhancing the reliability of \gls{ai}-generated code. As illustrated in the Python code snippet in Listing~\ref{lst:self_correction_loop}, this process is not a simple one-shot generation. After a \gls{rego} policy is first generated, it is automatically sent to the \texttt{Validator} module. If validation fails, the system does not simply discard the policy. Instead, it constructs a new prompt that includes the flawed code and the specific validation errors, then re-prompts the \gls{llm} to correct its own mistake. This automated feedback loop, which runs for a configurable number of retries, significantly improves the quality and correctness of the generated code, enhancing system reliability. The subsequent validation step thus acts as a crucial quality gate, ensuring the reliability and correctness of this \gls{ai}-generated artifact.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[language=Python, breaklines=true, basicstyle=\footnotesize\ttfamily, numbers=left]
+\begin{lstlisting}[
+    float=htbp,
+    language=Python, 
+    breaklines=true, 
+    basicstyle=\footnotesize\ttfamily, 
+    numbers=left,
+    caption={Self-Correction Loop for Policy Generation},
+    label={lst:self_correction_loop}
+]
 for attempt in range(max_retries):
             try:
                 response = self.bedrock_client.retrieve_and_generate(
@@ -201,9 +213,6 @@ for attempt in range(max_retries):
             except Exception as e:
                 return None, f"Error during Rego policy generation for {check_identifier}: {e}"
 \end{lstlisting}
-\captionof{listing}{Self-Correction Loop for Policy Generation}
-\label{lst:self_correction_loop}
-\end{figure}
 
 \subsubsection{Engineering for Quality, Resilience, and Maintainability}
 
@@ -215,8 +224,15 @@ To enhance security and portability, the prototype practices strict Configuratio
 
 The application is also engineered to be both efficient and stable, incorporating practices for performance and resilience. For performance, especially in a workflow that may involve multiple \gls{api} calls, the application uses concurrency. As shown in Listing~\ref{lst:parallel_policy_generation}, the \texttt{concurrent.futures.ThreadPoolExecutor} is used in \texttt{main.py} to parallelize the policy generation process for multiple findings. This design choice improves performance for I/O-bound tasks, such as making multiple network requests to the \gls{llm} service. The code snippet also demonstrates a practical resilience pattern: to prevent overwhelming the service and triggering \gls{api} rate limits, a 30-second pause is introduced after every five requests.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[language=Python, breaklines=true, basicstyle=\footnotesize\ttfamily, numbers=left]
+\begin{lstlisting}[
+    float=htbp,
+    language=Python, 
+    breaklines=true, 
+    basicstyle=\footnotesize\ttfamily, 
+    numbers=left,
+    caption={Parallel Policy Generation with ThreadPoolExecutor},
+    label={lst:parallel_policy_generation}
+]
 task = progress.add_task("[cyan]Generating policies...", total=len(consolidated_findings))
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             futures = []
@@ -233,9 +249,6 @@ task = progress.add_task("[cyan]Generating policies...", total=len(consolidated_
                 else:
                     failed_policies.append(policy)
 \end{lstlisting}
-\captionof{listing}{Parallel Policy Generation with ThreadPoolExecutor}
-\label{lst:parallel_policy_generation}
-\end{figure}
 
 Further resilience is built-in through Robust Error Handling. This includes comprehensive \texttt{try-except} blocks for all external calls (to the \gls{llm}, \gls{opa}, and tfsec), checks for \texttt{FileNotFoundError} when handling user input, and handling of \texttt{subprocess.CalledProcessError}. A Retry Pattern, as shown previously in Listing~\ref{lst:self_correction_loop}, is also implemented for transient failures, such as network issues when communicating with the \gls{aws} \gls{api}.
 
