@@ -9,29 +9,16 @@ We will first present the high-level architecture and the technology stack chose
 
 \section{Design Objectives \& Functional Requirements}
 
-% Refined Research Questions:
-
-%    * RQ1 (Effectiveness and Automation): How can Generative AI technologies be effectively leveraged to automate security policy generation and management across
-%      hyperscale cloud platforms?
-%    * RQ2 (Architecture and Orchestration): What specific architectural patterns and validation mechanisms are required to ensure trust, accuracy, and effective
-%      multi-cloud orchestration in GenAI-driven security automation?
-%    * RQ3 (Measurement and Validation): How can the effectiveness of GenAI-driven security automation be quantitatively measured and validated, particularly in terms
-%      of accuracy, reliability, and efficiency gains?
-%    * RQ4 (Human-in-the-Loop): What is the optimal balance between automation and human oversight (Human-in-the-Loop) to maximize security outcomes and mitigate the
-%      risks of GenAI-driven policy generation?
-
-%   These questions are more closely aligned with the language and focus of your exposé.
-
-The practical implementation of the prototype is guided by a set of specific design objectives and functional requirements. These objectives are derived directly from the core research questions and serve to translate the high-level scientific inquiry into concrete, measurable goals for the system. The following objectives define the core functionality of the prototype:
+The practical implementation of the prototype is guided by a set of specific design objectives and functional requirements. These objectives are derived directly from the core research questions defined in Chapter~\ref{chap:introduction} and serve to translate the high-level scientific inquiry into concrete, measurable goals for the system. The following objectives define the core functionality of the prototype:
 
 \begin{itemize}
-\item \textbf{Automated, High-Fidelity Policy Generation:} The system's primary function is to automatically generate syntactically correct and logically sound security policies in the Rego language from vulnerabilities found in \gls{terraform} files. This objective directly addresses the central research question on the effectiveness of \gls{genai} for security automation \textbf{(RQ1)}. A key requirement is to achieve high fidelity, with a target of $\geq$ 95\% of generated policies being effective in mitigating the identified vulnerability, providing a core metric for validation \textbf{(RQ3)}.
-text
-\item \textbf{Hybrid and Reproducible Analysis Architecture:} The system is built on a hybrid analysis model that is both reproducible and architecturally sound. Reproducibility is achieved by defining the entire \gls{cloud-native} backend as code using \gls{terraform}. The analysis engine is hybrid, combining traditional \gls{sast} for baseline coverage with \gls{genai}-driven contextual analysis for deeper insights. These architectural choices are fundamental to investigating how to build a trustworthy and effective \gls{genai}-driven system \textbf{(RQ2)}.
+\item \textbf{Automated Policy Generation:} The system's primary function is to automatically generate syntactically correct and logically sound security policies in the Rego language from vulnerabilities found in \gls{terraform} files. This objective directly addresses the research question on effectiveness and automation. Furthermore, the evaluation of the generated policies provides a core metric for validation, which relates to the research question on measurement and validation.
 
-\item \textbf{Automated Validation:} To ensure the reliability of the AI-generated artifacts, the system implements a multi-stage, automated validation pipeline. This process checks generated policies for syntactic correctness and performs a security self-scan to ensure they do not introduce new vulnerabilities. This automated validation is a critical mechanism for measuring and ensuring the trustworthiness of the output \textbf{(RQ3)}.
+\item \textbf{Hybrid and Reproducible Analysis Architecture:} The system is built on a hybrid analysis model that is both reproducible and architecturally sound. Reproducibility is achieved by defining the entire \gls{cloud-native} backend as code using \gls{terraform}. The analysis engine is hybrid, combining traditional \gls{sast} for baseline coverage with \gls{genai}-driven contextual analysis for deeper insights. These architectural choices are fundamental to investigating how to build a trustworthy and effective \gls{genai}-driven system, as asked by the research question on architecture and orchestration.
 
-\item \textbf{\gls{hitl} and \gls{cicd} Integration:} The prototype is designed for seamless integration into a standard \gls{cicd} pipeline, where it can act as an automated quality gate. This integration must also support a \gls{hitl} workflow, enabling human review and approval of generated policies. This dual requirement is designed to explore the optimal balance between full automation and necessary human oversight in a practical \gls{devsecops} environment \textbf{(RQ4, RQ1)}.
+\item \textbf{Automated Validation:} To ensure the reliability of the AI-generated artifacts, the system implements a multi-stage, automated validation pipeline. This process checks generated policies for syntactic correctness and performs a security self-scan to ensure they do not introduce new vulnerabilities. This automated validation is a critical mechanism for measuring and ensuring the trustworthiness of the output, directly addressing the research question on measurement and validation.
+
+\item \textbf{\gls{hitl} and \gls{cicd} Integration:} The prototype is designed for seamless integration into a standard \gls{cicd} pipeline, where it can act as an automated quality gate. This integration must also support a \gls{hitl} workflow, enabling human review and approval of generated policies. This dual requirement is designed to explore the optimal balance between full automation and necessary human oversight in a practical \gls{devsecops} environment, which relates to the research questions on the Human-in-the-Loop and effectiveness.
 \end{itemize}
 
 This structured set of objectives ensures that the implementation of the prototype directly and comprehensively contributes to answering the core research questions of this thesis.
@@ -75,8 +62,13 @@ This section presents the high-level architecture of the \gls{genai}-driven secu
 
 A Modular Architecture ensures a clear separation of concerns. The project is meticulously organized into distinct modules within the \texttt{src/} directory, as illustrated in Listing~\ref{lst:prototype_structure}. Each module (e.g., \texttt{analyzer}, \texttt{llm}, \texttt{policy\_generator}, \texttt{validator}) has a single, well-defined responsibility. This design improves maintainability, testability, and scalability. The interactions between these modules are coordinated by a high-level orchestrator in \texttt{src/main.py} \cite{martin_clean_2009}.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[basicstyle=\footnotesize\ttfamily, breaklines=true]
+\begin{lstlisting}[
+    float=htbp,
+    basicstyle=\footnotesize\ttfamily, 
+    breaklines=true,
+    caption={Prototype Directory Structure},
+    label={lst:prototype_structure}
+]
 src/
 |-- analyzer/
 |-- consolidator/
@@ -88,14 +80,11 @@ src/
 |-- validator/
 `-- main.py
 \end{lstlisting}
-\captionof{listing}{Prototype Directory Structure}
-\label{lst:prototype_structure}
-\end{figure}
 
 The overall workflow follows a sequential Pipeline Architecture, which creates a predictable and understandable data flow. This pipeline orchestrates a clear series of processing steps:
 \begin{enumerate}
 \item File Parsing
-\item Static Analysis (checkov)
+\item Static Analysis (tfsec)
 \item LLM-based Analysis
 \item Findings Consolidation
 \item Policy Generation
@@ -105,7 +94,7 @@ The overall workflow follows a sequential Pipeline Architecture, which creates a
 
 Interaction with the external \gls{genai} service is managed through a Facade Pattern \cite{gamma_design_2011}. The \texttt{BedrockClient} class (\texttt{src/llm/bedrock.py}) serves as a facade, providing a simplified, high-level interface for all communications with the \gls{aws} Bedrock service. This abstracts the complex implementation details of the underlying \texttt{boto3} library, making the core application logic cleaner and allowing for easier swapping of \gls{llm} providers or models in the future.
 
-The system's responsibilities are segregated into four logical tiers, directly corresponding to the layers of the conceptual framework and illustrated in the component diagram (Figure~\ref{fig:prototype-architecture}). The process begins at the Data Ingestion Layer, which serves as the entry point, receiving \gls{terraform} configurations from a \gls{cicd} trigger, parsing the \gls{iac} files, and preparing them for analysis. From there, the artifacts are passed to the Data Processing Layer, the core analysis engine. This layer first subjects the \gls{iac} to a baseline scan using a traditional \gls{sast} tool (Checkov) to identify known vulnerability patterns. The resulting report, along with the original \gls{iac}, is then fed into the \gls{genai} Analysis Engine (\gls{aws} Bedrock) for a deep, contextual analysis to identify complex misconfigurations and reduce \glspl{false-positive}. Subsequently, the Code Generation Layer takes the enriched vulnerability report as input, queries the \gls{rag}-enabled knowledge base for relevant security best practices, and prompts the \gls{llm} via the \gls{aws} Bedrock \gls{api} to generate a corresponding \gls{rego} policy. Finally, the Validation Layer acts as a quality gate. Here, the newly generated \gls{rego} policy is subjected to automated checks, including syntax validation with the \gls{opa} parser and a security self-scan, before being presented to the \gls{hitl} for final approval.
+The system's responsibilities are segregated into four logical tiers, directly corresponding to the layers of the conceptual framework and illustrated in the component diagram (Figure~\ref{fig:prototype-architecture}). The process begins at the Data Ingestion Layer, which serves as the entry point, receiving \gls{terraform} configurations from a \gls{cicd} trigger, parsing the \gls{iac} files, and preparing them for analysis. From there, the artifacts are passed to the Data Processing Layer, the core analysis engine. This layer first subjects the \gls{iac} to a baseline scan using a traditional \gls{sast} tool (tfsec) to identify known vulnerability patterns. The resulting report, along with the original \gls{iac}, is then fed into the \gls{genai} Analysis Engine (\gls{aws} Bedrock) for a deep, contextual analysis to identify complex misconfigurations and reduce \glspl{false-positive}. Subsequently, the Code Generation Layer takes the enriched vulnerability report as input, queries the \gls{rag}-enabled knowledge base for relevant security best practices, and prompts the \gls{llm} via the \gls{aws} Bedrock \gls{api} to generate a corresponding \gls{rego} policy. Finally, the Validation Layer acts as a quality gate. Here, the newly generated \gls{rego} policy is subjected to automated checks, including syntax validation with the \gls{opa} parser and a security self-scan, before being presented to the \gls{hitl} for final approval.
 
 This layered and modular architecture ensures a clear separation of concerns and provides a robust, end-to-end workflow for translating identified risks in \gls{iac} into validated, enforceable security policies.
 
@@ -142,20 +131,26 @@ The core modules orchestrated by this pipeline include:
 \subsubsection{Integration with External Security Tools}
 The prototype application seamlessly integrates with external, security tools to perform its functions, thereby leveraging the robust capabilities of specialized tools and avoiding the need to reinvent core functionalities.
 
-The \texttt{Analyzer} module serves as an adapter for the underlying \gls{sast} tool, Checkov. It is responsible for invoking the scanner on a given \gls{terraform} file and normalizing the output into a standardized data structure for consumption by the rest of the application. This is achieved by utilizing Python's \texttt{subprocess} module to execute \texttt{checkov} as an external command-line tool for static analysis.
+The \texttt{Analyzer} module serves as an adapter for the underlying \gls{sast} tool, tfsec. It is responsible for invoking the scanner on a given \gls{terraform} file and normalizing the output into a standardized data structure for consumption by the rest of the application. This is achieved by utilizing Python's \texttt{subprocess} module to execute \texttt{tfsec} as an external command-line tool for static analysis.
 
 In the final stage, the \texttt{Validator} module leverages the \gls{opa} toolchain to validate the syntactic correctness of the generated \gls{rego} code, ensuring that only valid policies are produced. Similar to the \texttt{Analyzer}, the \texttt{Validator} module employs Python's \texttt{subprocess} module to run the \texttt{opa} toolchain for this syntactic validation of the generated Rego policies.
 
 \subsubsection{LLM-Powered Policy Generation and Refinement}
 
-The \texttt{Policy Generation} module represents the core intelligence of the system. This component orchestrates the interaction with the \gls{genai} and implements several key patterns to ensure the quality and accuracy of its output. It communicates with the \gls{llm} through a dedicated client that abstracts the complex implementation details of the underlying cloud provider's \gls{sdk} (e.g., \texttt{boto3} for \gls{aws}). This abstraction makes the core logic cleaner and, crucially, provides the flexibility to switch between different \gls{llm} providers, such as those from \gls{aws}, Azure, or \gls{gcp}, without significant code changes. This multi-cloud readiness is a key architectural advantage, preventing vendor lock-in and allowing the system to leverage the best-in-class model for a given task.
+The \texttt{Policy Generation} module represents the core intelligence of the system. This component orchestrates the interaction with the \gls{genai} and implements several key patterns to ensure the quality and accuracy of the output. It communicates with the \gls{llm} through a dedicated client that abstracts the complex implementation details of the underlying cloud provider's \gls{sdk} (e.g., \texttt{boto3} for \gls{aws}). This abstraction makes the core logic cleaner and, crucially, provides the flexibility to switch between different \gls{llm} providers, such as those from \gls{aws}, Azure, or \gls{gcp}, without significant code changes. This multi-cloud readiness is a key architectural advantage, preventing vendor lock-in and allowing the system to leverage the best-in-class model for a given task.
 
 To enhance the accuracy and relevance of the generated policies, the client utilizes Retrieval-Augmented Generation (RAG). It specifically calls Bedrock's \texttt{retrieve\_and\_generate} functionality, passing a \texttt{knowledgeBaseId}. This grounds the \gls{llm}'s responses in a specific, curated knowledge base containing \gls{opa}/\gls{rego} best practices and Regal linting rules, which significantly reduces the risk of hallucinations. It constructs a detailed, context-rich prompt by combining the security findings from the analyzer with relevant contextual information retrieved from this \gls{rag} \gls{kb}. It then communicates with the \gls{aws} Bedrock \gls{api} to obtain the generated \gls{rego} policy.
 
 The \gls{llm}'s behavior is guided by Systematic Prompt Engineering. Prompts are centralized in a \texttt{config/prompts.py} file, separating them from application logic. They are carefully engineered with best practices such as assigning a role ("you are a senior cloud security and Terraform expert"), providing clear constraints (e.g., "Output JSON object only"), and using placeholders for dynamic context. This is crucial for obtaining correctly formatted and relevant outputs. A sample prompt for the policy generation is shown in ~\ref{lst:rego_generator_prompt}.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[language=Python, breaklines=true, basicstyle=\footnotesize\ttfamily]
+\begin{lstlisting}[
+    float=htbp,
+    language=Python, 
+    breaklines=true, 
+    basicstyle=\footnotesize\ttfamily,
+    caption={Sample Prompt for Rego Policy Generation},
+    label={lst:rego_generator_prompt}
+]
 # Prompt for the Rego Policy Generator LLM
 REGO_GENERATOR_PROMPT = """
 Generate a Rego policy for the attached 
@@ -167,16 +162,20 @@ only rego code no other text or description.
 {vulnerability_info}
 """
 \end{lstlisting}
-\captionof{listing}{Sample Prompt for Rego Policy Generation}
-\label{lst:rego_generator_prompt}
-\end{figure}
 
 To handle inconsistencies in the \gls{llm}'s response, the application uses Robust Output Parsing. A dedicated function, \texttt{extract\_rego\_code}, reliably extracts the desired code block from the \gls{llm}'s output, filtering out potential conversational text or other formatting issues to ensure that only clean, executable code is passed to the validator.
 
 Most significantly, the prototype implements an Iterative Refinement (Self-Correction Loop), a key mechanism for enhancing the reliability of \gls{ai}-generated code. As illustrated in the Python code snippet in Listing~\ref{lst:self_correction_loop}, this process is not a simple one-shot generation. After a \gls{rego} policy is first generated, it is automatically sent to the \texttt{Validator} module. If validation fails, the system does not simply discard the policy. Instead, it constructs a new prompt that includes the flawed code and the specific validation errors, then re-prompts the \gls{llm} to correct its own mistake. This automated feedback loop, which runs for a configurable number of retries, significantly improves the quality and correctness of the generated code, enhancing system reliability. The subsequent validation step thus acts as a crucial quality gate, ensuring the reliability and correctness of this \gls{ai}-generated artifact.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[language=Python, breaklines=true, basicstyle=\footnotesize\ttfamily, numbers=left]
+\begin{lstlisting}[
+    float=htbp,
+    language=Python, 
+    breaklines=true, 
+    basicstyle=\footnotesize\ttfamily, 
+    numbers=left,
+    caption={Self-Correction Loop for Policy Generation},
+    label={lst:self_correction_loop}
+]
 for attempt in range(max_retries):
             try:
                 response = self.bedrock_client.retrieve_and_generate(
@@ -214,9 +213,6 @@ for attempt in range(max_retries):
             except Exception as e:
                 return None, f"Error during Rego policy generation for {check_identifier}: {e}"
 \end{lstlisting}
-\captionof{listing}{Self-Correction Loop for Policy Generation}
-\label{lst:self_correction_loop}
-\end{figure}
 
 \subsubsection{Engineering for Quality, Resilience, and Maintainability}
 
@@ -228,8 +224,15 @@ To enhance security and portability, the prototype practices strict Configuratio
 
 The application is also engineered to be both efficient and stable, incorporating practices for performance and resilience. For performance, especially in a workflow that may involve multiple \gls{api} calls, the application uses concurrency. As shown in Listing~\ref{lst:parallel_policy_generation}, the \texttt{concurrent.futures.ThreadPoolExecutor} is used in \texttt{main.py} to parallelize the policy generation process for multiple findings. This design choice improves performance for I/O-bound tasks, such as making multiple network requests to the \gls{llm} service. The code snippet also demonstrates a practical resilience pattern: to prevent overwhelming the service and triggering \gls{api} rate limits, a 30-second pause is introduced after every five requests.
 
-\begin{figure}[htbp]
-\begin{lstlisting}[language=Python, breaklines=true, basicstyle=\footnotesize\ttfamily, numbers=left]
+\begin{lstlisting}[
+    float=htbp,
+    language=Python, 
+    breaklines=true, 
+    basicstyle=\footnotesize\ttfamily, 
+    numbers=left,
+    caption={Parallel Policy Generation with ThreadPoolExecutor},
+    label={lst:parallel_policy_generation}
+]
 task = progress.add_task("[cyan]Generating policies...", total=len(consolidated_findings))
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             futures = []
@@ -246,19 +249,50 @@ task = progress.add_task("[cyan]Generating policies...", total=len(consolidated_
                 else:
                     failed_policies.append(policy)
 \end{lstlisting}
-\captionof{listing}{Parallel Policy Generation with ThreadPoolExecutor}
-\label{lst:parallel_policy_generation}
-\end{figure}
 
-Further resilience is built-in through Robust Error Handling. This includes comprehensive \texttt{try-except} blocks for all external calls (to the \gls{llm}, \gls{opa}, and Checkov), checks for \texttt{FileNotFoundError} when handling user input, and handling of \texttt{subprocess.CalledProcessError}. A Retry Pattern, as shown previously in Listing~\ref{lst:self_correction_loop}, is also implemented for transient failures, such as network issues when communicating with the \gls{aws} \gls{api}.
+Further resilience is built-in through Robust Error Handling. This includes comprehensive \texttt{try-except} blocks for all external calls (to the \gls{llm}, \gls{opa}, and tfsec), checks for \texttt{FileNotFoundError} when handling user input, and handling of \texttt{subprocess.CalledProcessError}. A Retry Pattern, as shown previously in Listing~\ref{lst:self_correction_loop}, is also implemented for transient failures, such as network issues when communicating with the \gls{aws} \gls{api}.
 
 To ensure the quality and reliability of the prototype, a comprehensive testing strategy is employed. The project utilizes the \texttt{pytest} framework to implement a suite of unit tests that verify the functionality of each module in isolation \cite{noauthor_pytest_nodate}. Fixtures are used to create consistent and reusable test setups. This is complemented by a policy of Version Control and Continuous Integration (CI). Git is used for source control, and GitHub Actions are used for automated testing, ensuring code quality, monitoring test coverage, and catching regressions early.
 
+\subsubsection{Codebase Metrics}
+
+% TODO add scc reference
+
+To provide a clear understanding of the implementation's scope, this section presents key metrics about the Python prototype's codebase. The application code is organized into 12 modules, containing a total of 14 classes and 42 functions. A detailed breakdown of the lines of code (LOC) is provided in Table~\ref{tab:code_metrics}. The analysis was performed using the \texttt{scc} utility, which counts physical lines of code, excluding blank lines and comments.
+
+\begin{table}[htbp]
+\centering
+\caption{Code Metrics for the Python Prototype's Application Code}
+\label{tab:code_metrics}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Component} & \textbf{Files} & \textbf{Lines of Code} & \textbf{Classes} & \textbf{Functions} \\
+\midrule
+Application Code & 23 & 707 & 14 & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The majority of the code is concentrated in the modules responsible for the core logic of the security automation workflow. The most significant modules in terms of code volume and complexity are:
+
+The majority of the source code in this prototype is dedicated to implementing the end-to-end workflow for the automated generation of security policies. The implementation is centered around a modular architecture, with the core logic residing in the \texttt{src} directory. A significant portion of the code is dedicated to the interaction with the Large Language Model (LLM), which is central to the prototype's intelligence. This is reflected in the \texttt{config/prompts.py} file, which contains the detailed instructions and context provided to the LLM, and the \texttt{src/llm/bedrock.py} and \texttt{src/analyzer/llm\_analyzer.py} modules, which handle the communication with the LLM and the analysis of its responses.
+
+The orchestration of the workflow is managed by the \texttt{src/main.py} module, which serves as the main entry point of the application. This module sequentially invokes the various components of the prototype, starting with the \texttt{src/scanner/tfsec\_scanner.py} module, which is responsible for the initial static analysis of the Terraform files. The results of this scan are then passed to the \texttt{src/analyzer/llm\_analyzer.py} for deeper analysis by the LLM.
+
+Another significant part of the codebase is dedicated to the generation and validation of the security policies. The \texttt{src/policy\_generator/rego\_generator.py} module is responsible for translating the insights from the LLM into valid Rego policies. The correctness of these policies is then verified by the \texttt{src/validator/policy\_validator.py} module.
+
+Furthermore, a considerable amount of code is dedicated to the evaluation of the prototype's performance. The modules within the \texttt{src/metrics} directory are used to calculate key metrics such as generation speed, policy accuracy, and effectiveness. These metrics are crucial for the quantitative evaluation of the research presented in this thesis.
+
+Finally, the \texttt{src/utils} package contains a collection of helper modules that provide essential services such as file handling, report generation, and the creation of plots for data visualization. The \texttt{tests} directory also constitutes a vital part of the codebase, containing the unit tests that ensure the reliability and correctness of the prototype's implementation.
+
+These modules collectively represent the core of the prototype's functionality and account for the bulk of the implementation effort. The remaining modules provide supporting utilities, configuration management, and data consolidation, which are less code-intensive but still crucial for the overall operation of the system.
+
 \section{End-to-End Workflow}
+
 
 The practical application of the framework is best understood by examining the end-to-end workflow of the command-line tool. This process describes the sequence of operations from the moment a user invokes the application to the final output of a validated security policy. The entire sequence is designed to be a self-contained, automated process, as illustrated in the sequence diagram \ref{fig:e2e_workflow}.
 
-The sequence diagram depicts the temporal flow of interactions between the key actors in the system: the User, the Python Command-Line Application, and the external services (Checkov, \gls{aws} Bedrock, and \gls{opa}). The diagram illustrates how control and data flow through the system in a step-by-step manner, beginning with the user's command-line invocation and proceeding through each processing stage. The vertical lifelines represent the different system components, while the horizontal arrows show the sequence of method calls, \gls{api} requests, and data exchanges. This visualization clearly demonstrates the \gls{orchestration} role of the Python application as it coordinates between traditional security tools, cloud-based \gls{ai} services, and validation frameworks to deliver a comprehensive security policy generation workflow.
+The sequence diagram depicts the temporal flow of interactions between the key actors in the system: the User, the Python Command-Line Application, and the external services (tfsec, \gls{aws} Bedrock, and \gls{opa}). The diagram illustrates how control and data flow through the system in a step-by-step manner, beginning with the user's command-line invocation and proceeding through each processing stage. The vertical lifelines represent the different system components, while the horizontal arrows show the sequence of method calls, \gls{api} requests, and data exchanges. This visualization clearly demonstrates the \gls{orchestration} role of the Python application as it coordinates between traditional security tools, cloud-based \gls{ai} services, and validation frameworks to deliver a comprehensive security policy generation workflow.
 
 \begin{landscape}
 \thispagestyle{empty}
@@ -273,7 +307,7 @@ The sequence diagram depicts the temporal flow of interactions between the key a
 The workflow is initiated when a user executes the main Python script from the command line, providing the path to a target Terraform (\texttt{.tf}) file as an argument. The application then proceeds through the following automated steps:
 
 \begin{enumerate}
-    \item \textbf{Static Scan:} The \textbf{\texttt{Analyzer}} module is invoked. It runs the Checkov \gls{sast} tool on the specified \gls{terraform} file to identify any known misconfigurations or vulnerabilities.
+    \item \textbf{Static Scan:} The \textbf{\texttt{Analyzer}} module is invoked. It runs the tfsec \gls{sast} tool on the specified \gls{terraform} file to identify any known misconfigurations or vulnerabilities.
     \item \textbf{GenAI Contextual Analysis:} The structured findings from the static scan are fed into the \gls{genai} Analysis Engine (\gls{aws} Bedrock) for deep, contextual analysis to reduce \glspl{false-positive} and identify complex misconfigurations that traditional tools might miss.
     \item \textbf{Policy Generation:} The enriched vulnerability report from the \gls{genai} analysis is passed to the \gls{pg} module. This component constructs a detailed, context-rich prompt by combining the analysis findings with relevant information retrieved from the \gls{rag} \gls{kb}, then communicates with the \gls{aws} Bedrock \gls{api} to generate a targeted \gls{rego} policy specifically designed to mitigate the identified risks.
     \item \textbf{Validation:} The raw, generated \gls{rego} policy is immediately passed to the \texttt{Validator} module. This component uses the \gls{opa} toolchain to verify that the policy is syntactically correct and well-formed.
@@ -317,4 +351,5 @@ While the prototype successfully demonstrates the core concepts of \gls{genai}-d
 % Model latency vs. cost, Terraform state confidentiality, policy false-negatives, Bedrock service quotas.
 
 \section{Summary}
-% Recap key design choices and link forward to the Results chapter.
+
+This chapter detailed the design and implementation of the prototype system, from the cloud-native infrastructure to the Python-based application. The next chapter will present the results of the evaluation of this prototype.

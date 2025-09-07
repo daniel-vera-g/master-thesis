@@ -3,24 +3,26 @@
 \chapter{Background and Related Work} % (fold)
 \label{chap:Background and Related Work}
 
+This chapter provides the foundational knowledge required to understand the core concepts of this thesis. It begins by exploring the fundamental principles of cloud security and generative AI. Subsequently, it reviews the current landscape of major cloud providers and their security ecosystems. The chapter culminates in a comprehensive review of the state-of-the-art literature, identifying key research trends and existing gaps in the field of GenAI-driven security automation.
+
 \section{Foundational Concepts in Cloud Security} % (fold)
 \label{sec:Foundational Concepts in Cloud Computing}
 
-TBD
+This section provides an overview of the fundamental concepts in cloud security, which form the basis for the subsequent discussion on security automation.
 
 % section Foundational Concepts in Cloud Computing (end)
 
 \section{Foundational Concepts in Generative AI} % (fold)
 \label{sec:Foundational Concepts in Generative AI}
 
-TBD
+This section introduces the core concepts of Generative AI, setting the stage for its application in the context of cloud security.
 
 % section Foundational Concepts in Generative AI (end)
 
 \section{State of Cloud Provider Ecosystems} % (fold)
 \label{sec:State of Cloud Provider Ecosystems}
 
-TBD
+This section reviews the current landscape of major cloud providers, highlighting their security services and the evolving ecosystem.
 
 % section State of Cloud Provider Ecosystems (end)
 
@@ -183,7 +185,6 @@ In the paper, the \gls{nist} describes some key points relevant to \gls{genai} S
 \item Dependency on vast datasets which may harbor biases or quality issues, and are susceptible to poisoning attacks \cite{tabassi_artificial_2023}.
 \item Risks associated with using pre-trained models, which can "increase levels of statistical uncertainty and cause issues with bias management, scientific validity, and reproducibility" \cite[p.38]{tabassi_artificial_2023}. This is crucial in cloud settings where models might be sourced from third parties.
 \item Increased opacity and difficulty in predicting failure modes or emergent behaviors, complicating security validation \cite{tabassi_artificial_2023}. This aligns with the widely recognized 'black box' problems of \glspl{llm}, encompassing their complexity, lack of transparency, and limited explainability \cite{dash_zero-trust_2024}. Specific security concerns not fully addressed by traditional frameworks, such as "evasion, model extraction, membership inference, availability, or other machine learning attacks" \cite[p.39]{tabassi_artificial_2023}, including adversarial vulnerabilities common in \glspl{llm} \cite{dash_zero-trust_2024}.
-\item Specific security concerns not fully addressed by traditional frameworks, such as "evasion, model extraction, membership inference, availability, or other machine learning attacks" \cite[p.39]{tabassi_artificial_2023}.
 \item Risks associated with "third-party \gls{ai} technologies, transfer learning, and off-label use," which are highly relevant when using \gls{genai} models hosted or integrated via cloud services \cite[p.39]{tabassi_artificial_2023}.
 \end{itemize}
 
