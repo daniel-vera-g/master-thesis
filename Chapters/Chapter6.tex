@@ -53,6 +53,8 @@ The evaluation is performed on a curated set of Terraform configurations, each d
 %----------------------------------------------------------------------------------------
 \section{Metrics and Baselines}\label{sec:metrics-and-baselines}
 
+This section defines the key metrics used to evaluate the prototype's performance. We assess three primary dimensions: the performance of policy generation, the speed at which policies are generated, and the quality of the contextual detection. Each of these is detailed in the following subsections.
+
 \subsection{Policy Generation Performance}\label{sec:metrics-effectiveness}
 
 We assess policy generation performance by establishing a baseline of vulnerabilities from the initial scans and reporting counts by severity (critical, high, medium, low). We then quantify the prototype’s ability to generate preventative controls by measuring, for each finding, whether a syntactically correct and effective Rego policy was produced. Results are summarized by severity in Table~\ref{tab:effectiveness-by-severity} to provide a granular view of performance against the most critical risks.
@@ -265,7 +267,7 @@ Typical failure modes observed include:
 %----------------------------------------------------------------------------------------
 \section{Summary of Findings}\label{sec:summary-findings}
 
-This chapter presented the empirical results of our prototype, evaluating its performance across three key dimensions: policy efficacy, generation speed, and contextual detection quality. The findings from the preceding sections are synthesized here to provide a holistic view of the system's capabilities and limitations, serving as a bridge to the discussion in Chapter~\ref{chap:discussion}.
+This chapter presented the empirical results of our prototype, evaluating its performance across three key dimensions: policy efficacy, generation speed, and contextual detection quality. The findings from the preceding sections are synthesized here to provide a holistic view of the system's capabilities and limitations, serving as a bridge to the discussion in Chapter~ref{chap:discussion}.
 
 In summary, the prototype demonstrates:
 \begin{itemize}
