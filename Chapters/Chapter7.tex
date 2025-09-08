@@ -20,7 +20,7 @@ A central finding of this research is the significant gap between policy accurac
 The prototype's 100\% policy accuracy, as reported in Table~\ref{tab:effectiveness-by-severity}, is not an incidental outcome but a direct result of deliberate design choices. The primary mechanism is an automated self-correction loop: if the OPA validator rejects a generated policy, the system captures the specific error feedback and re-prompts the LLM to fix it. This iterative refinement, combined with systematic prompt engineering and the grounding provided by a RAG knowledge base, creates a resilient framework that guarantees the syntactic validity of the final output. This finding suggests that with proper engineering, GenAI models can reliably produce syntactically correct code for domain-specific languages like Rego.
 
 \subsubsection{The Challenge of Logical Effectiveness}
-In contrast, achieving 100\% logical effectiveness automatically is a far more complex challenge. The prototype's varied success rates (Table~\ref{tab:effectiveness-by-severity}) underscore this complexity. Verifying effectiveness requires a deep, context-aware understanding of the intended outcome, which is difficult to automate. Unlike syntactic validation, where error messages are precise and actionable, logical failures lack a clear, structured feedback loop. Debugging an ineffective policy would require providing the LLM with an extensive context—including the IaC, the generated policy, the Terraform plan, and a description of the desired behavior—making manual intervention by a human expert a more pragmatic approach. This reinforces the indispensable role of the Human-in-the-Loop (HITL), a core tenet of this thesis, for validating the logical soundness of automated outputs.
+In contrast, achieving 100\% logical effectiveness automatically is a far more complex challenge. The prototype's varied success rates (Table~\ref{tab:effectiveness-by-severity}) underscore this complexity. Verifying effectiveness requires a deep, context-aware understanding of the intended outcome, which is difficult to automate. Unlike syntactic validation, where error messages are precise and actionable, logical failures lack a clear, structured feedback loop. Debugging an ineffective policy would require providing the LLM with an extensive context including the IaC, the generated policy, the Terraform plan, and a description of the desired behavior making manual intervention by a human expert a more pragmatic approach. This reinforces the indispensable role of the Human-in-the-Loop (HITL), a core tenet of this thesis, for validating the logical soundness of automated outputs.
 
 \subsection{Contextual Reasoning: Successes and Shortcomings}
 The evaluation of the prototype's contextual reasoning, summarized in Table~\ref{tab:context-reasoning-summary}, reveals a nuanced picture. The system demonstrated a strong ability to understand and reason about relationships between different parts of the IaC, successfully identifying complex, cross-resource, and conditional vulnerabilities. This confirms the hypothesis that LLMs can move beyond the limitations of traditional static analysis by interpreting the broader context in which resources operate.
@@ -79,30 +79,20 @@ Additionally, while Anthropic's Claude v2 proved capable, AWS Bedrock offers a d
 
 The limitations of this study highlight several promising directions for future research and development.
 
-\subsection{Enhancing the GenAI Core}
-\label{subsec:future_llm}
-
-% TODO review
-The LLM interaction can be significantly improved. Future work should focus on the following areas:
-
-\subsubsection{Knowledge Base Retrieval}
+\subsection{Knowledge Base Retrieval}
 The current retrieval-augmented generation (RAG) mechanism provides a foundational level of context, but its precision can be enhanced. Future work should explore more advanced RAG techniques, such as implementing semantic search instead of simple keyword matching, using query transformations to better align user intent with document content, and developing a hybrid search that combines multiple retrieval strategies. Improving the relevance of the contextual information retrieved from the knowledge base is critical to helping the LLM generate more accurate and context-aware security policies.
 
-\subsubsection{Model Selection and Tuning}
+\subsection{Model Selection and Tuning}
 The choice of the Large Language Model is a pivotal factor in the system's performance. The current prototype uses a general-purpose model, but future iterations should involve a systematic evaluation of various LLMs. This includes benchmarking newer, more powerful models (e.g., GPT-4, Claude 3), as well as domain-specific models that are fine-tuned on cybersecurity and IaC data. The evaluation criteria should include not only the accuracy of the generated policies but also performance metrics like latency and throughput, and the overall cost-effectiveness of the solution.
 
-\subsubsection{Interaction and Orchestration Logic}
+\subsection{Interaction and Orchestration Logic}
 The robustness of the interaction between the prototype and the LLM can be substantially improved. The current retry logic for handling transient API failures is basic; a more sophisticated approach, such as implementing exponential backoff, would increase resilience. Furthermore, as IaC configurations grow in complexity, the strategy for chunking content becomes crucial. Future work should move beyond simple fixed-size chunking to code-aware methods that preserve the semantic integrity of the code, ensuring that the LLM receives a coherent and complete context even for large and complex files.
 
-\subsubsection{Context Consolidation}
+\subsection{Context Consolidation}
 The function responsible for consolidating information from multiple sources—such as linter outputs, knowledge base articles, and IaC snippets—is currently rudimentary. A more advanced consolidation function could itself leverage a language model to summarize and synthesize these disparate pieces of information into a single, coherent prompt. This would improve the signal-to-noise ratio in the context provided to the primary LLM, reducing ambiguity and leading to more precise and relevant security policy generation.
 
-\subsection{Expanding Prototype Capabilities}
-\label{subsec:future_expansion}
-To enhance the prototype's practical utility, two key expansions are proposed:
-
-\subsubsection{Multi-Cloud Support}
+\subsection{Multi-Cloud Support}
 Expanding the prototype to be multi-cloud capable would be a primary objective. This would involve abstracting the cloud-specific logic into separate modules. For instance, one could create a \texttt{CloudProvider} interface with concrete implementations for AWS, Azure, and GCP. The analysis layer would then dynamically load the appropriate module based on the IaC being scanned. This would require changes to the code that interprets linter outputs and maps them to cloud-specific resource configurations and security concepts.
 
-\subsubsection{Integration of Additional Linters}
+\subsection{Integration of Additional Linters}
 Similarly, the prototype can be extended to support more IaC linters (e.g., tfsec, Terrascan). This would require creating a generic \texttt{Linter} interface and then implementing specific adapters for each tool. Each adapter would be responsible for executing the linter, parsing its JSON output, and normalizing the findings into a standardized format that the core application can process. This modular design would make the system more versatile and adaptable to different
