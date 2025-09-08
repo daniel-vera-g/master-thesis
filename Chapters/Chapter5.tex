@@ -352,4 +352,11 @@ While the prototype successfully demonstrates the core concepts of \gls{genai}-d
 
 \section{Summary}
 
-This chapter detailed the design and implementation of the prototype system, from the cloud-native infrastructure to the Python-based application. The next chapter will present the results of the evaluation of this prototype.
+This chapter provided a comprehensive overview of the design and implementation of the prototype system for \gls{genai}-driven security automation. It detailed the translation of the conceptual framework from Chapter~\ref{chap:conceptual_framework} into a practical application, outlining the specific design objectives, technology stack, and high-level architecture. The implementation was presented as two interconnected codebases: a reproducible, secure cloud infrastructure defined in \gls{terraform}, and a modular Python application that orchestrates the end-to-end workflow.
+
+The chapter elaborated on the key architectural patterns and software engineering practices employed to ensure the system's robustness, maintainability, and quality. These include a modular architecture, a sequential pipeline for data processing, a facade pattern for interacting with the \gls{genai} service, and a self-correction loop for iterative refinement of the generated policies. The end-to-end workflow, from static analysis of \gls{terraform} files to the generation and validation of \gls{rego} policies, was described in detail, highlighting the seamless integration of traditional security tools with advanced \gls{ai} capabilities.
+
+Furthermore, the chapter discussed the prototype's integration into a modern \gls{devsecops} workflow, acting as an automated quality gate within a \gls{cicd} pipeline. Finally, the inherent limitations and trade-offs of the implementation were acknowledged, providing a balanced perspective on the system's practical applicability. This detailed account of the implementation serves as the foundation for the empirical evaluation presented in the following chapter.
+
+% TODO add references
+
