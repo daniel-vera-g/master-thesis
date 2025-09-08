@@ -256,9 +256,7 @@ To ensure the quality and reliability of the prototype, a comprehensive testing 
 
 \subsubsection{Codebase Metrics}
 
-% TODO add scc reference
-
-To provide a clear understanding of the implementation's scope, this section presents key metrics about the Python prototype's codebase. The application code is organized into 12 modules, containing a total of 14 classes and 42 functions. A detailed breakdown of the lines of code (LOC) is provided in Table~\ref{tab:code_metrics}. The analysis was performed using the \texttt{scc} utility, which counts physical lines of code, excluding blank lines and comments.
+To provide a clear understanding of the implementation's scope, this section presents key metrics about the Python prototype's codebase. The application code is organized into 12 modules, containing a total of 14 classes and 42 functions. A detailed breakdown of the lines of code (LOC) is provided in Table~\ref{tab:code_metrics}. The analysis was performed using the \texttt{scc}\cite{boyter_scc_2024} utility, which counts physical lines of code, excluding blank lines and comments.
 
 \begin{table}[htbp]
 \centering
@@ -357,6 +355,3 @@ This chapter provided a comprehensive overview of the design and implementation 
 The chapter elaborated on the key architectural patterns and software engineering practices employed to ensure the system's robustness, maintainability, and quality. These include a modular architecture, a sequential pipeline for data processing, a facade pattern for interacting with the \gls{genai} service, and a self-correction loop for iterative refinement of the generated policies. The end-to-end workflow, from static analysis of \gls{terraform} files to the generation and validation of \gls{rego} policies, was described in detail, highlighting the seamless integration of traditional security tools with advanced \gls{ai} capabilities.
 
 Furthermore, the chapter discussed the prototype's integration into a modern \gls{devsecops} workflow, acting as an automated quality gate within a \gls{cicd} pipeline. Finally, the inherent limitations and trade-offs of the implementation were acknowledged, providing a balanced perspective on the system's practical applicability. This detailed account of the implementation serves as the foundation for the empirical evaluation presented in the following chapter.
-
-% TODO add references
-
