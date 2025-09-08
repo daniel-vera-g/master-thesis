@@ -316,7 +316,7 @@ This self-contained workflow from file input to policy output is designed for bo
 
 \section{CI/CD \& DevSecOps Integration}
 
-The prototype is designed for integration into a modern \gls{devsecops} workflow, leveraging established best practices for Version Control and Continuous Integration. The entire process is built upon a foundation of reliable Dependency and Environment Management to ensure consistency between development and automated execution.
+The prototype is designed to analyze Infrastructure-as-Code (IaC) configurations written in HashiCorp's Terraform. Terraform was chosen as it is a leading tool for IaC that allows for the automation of infrastructure provisioning through a strict development and review lifecycle \cite{howard_terraform_2022-1}. It supports a wide range of cloud providers, including AWS, making it a representative choice for this research.
 
 While the prototype is a self-contained command-line tool, its primary intended application is within a \gls{cicd} pipeline to enable a proactive \gls{devsecops} workflow. This integration automates the process of security analysis and policy enforcement, "shifting left" to catch and remediate vulnerabilities before they reach production \cite{delicheh_mitigating_2024}. The implementation uses \gls{github} Actions as the \gls{cicd} platform, indicated by the presence of a \texttt{.github/workflows/main.yml} file, which enables automated testing and tracks code history.
 

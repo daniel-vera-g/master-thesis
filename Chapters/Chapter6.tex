@@ -22,7 +22,7 @@ The dataset consists of a curated corpus of Terraform configurations representat
     \item \textbf{IaC Parser}: Terraform configurations are parsed using the \texttt{python-hcl2} library, which enables the system to understand the structure and content of the IaC files.
     \item \textbf{GenAI Analysis Engine}: The core of the prototype is a Large Language Model (LLM) from Amazon Web Services (AWS) Bedrock, accessed via the \texttt{boto3} SDK. The specific model used is Anthropic's Claude v2 (\texttt{anthropic.claude-v2}).
     \item \textbf{Validation Layer}: Generated Rego policies are validated for syntactic correctness using the Open Policy Agent (OPA) command-line tool (v1.7.1). This ensures that only valid policies are produced.
-    \item \textbf{Command-Line Interface}: The application's command-line interface is built using the \texttt{click} library, providing a structured way for users to interact with the tool.
+    \item \textbf{Command-Line Interface}: The application's command-line interface is built using the \texttt{click} library \cite{ronacher_click_2024}, providing a structured and user-friendly way to interact with the tool..
     \item \textbf{Output Formatting}: Terminal output is enhanced with the \texttt{rich} library for better readability and presentation of results.
     \item \textbf{Retrieval-Augmented Generation (RAG)}: The RAG implementation leverages Amazon Bedrock for knowledge base retrieval. % \textit{[KB sources, snapshot date, chunking]}
 \end{itemize}
