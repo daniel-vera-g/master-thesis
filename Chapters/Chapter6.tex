@@ -94,22 +94,20 @@ This section is structured as follows. First, we analyze the prototype's policy 
 \begin{table}[htbp]
 	\centering
 		\caption{Policy generation performance by severity}\label{tab:effectiveness-by-severity}
-	\begin{tabular}{lrrrr}
+	\begin{tabular}{lrrr}
 		\hline
-		Severity & N & $A_{\text{policy}}$ & $E_{\text{policy}}$ & Notes \\
+		Severity & N & $A_{\text{policy}}$ & $E_{\text{policy}}$ \\
 		\hline
-		Critical & 3 & 100.00\% & 100.00\% & N/A \\
-		High & 31 & 100.00\% & 45.16\% & N/A \\
-		Medium & 16 & 100.00\% & 50.00\% & N/A \\
-		Low & 11 & 100.00\% & 36.36\% & N/A \\
+		Critical & 3 & 100.00\% & 100.00\% \\
+		High & 31 & 100.00\% & 45.16\% \\
+		Medium & 16 & 100.00\% & 50.00\% \\
+		Low & 11 & 100.00\% & 36.36\% \\
 		\hline
 	\end{tabular}
 \end{table}
 
 \subsection{Policy Accuracy}
-Policy accuracy ($A_{	ext{policy}}$) measures the proportion of generated policies that are syntactically valid. As shown in Table~
-ef{tab:effectiveness-by-severity}, the prototype achieved a perfect 100\% policy accuracy across all severity levels, from Critical to Low. This result indicates that for every identified vulnerability, the system reliably produced a syntactically correct Rego policy. The reasons for this outcome are discussed in detail in Chapter~
-ef{chap:discussion}.
+Policy accuracy ($A_{\text{policy}}$) measures the proportion of generated policies that are syntactically valid. As shown in Table~\ref{tab:effectiveness-by-severity}, the prototype achieved a perfect 100\% policy accuracy across all severity levels, from Critical to Low. This result indicates that for every identified vulnerability, the system reliably produced a syntactically correct Rego policy. The reasons for this outcome are discussed in detail in Chapter~\ref{chap:discussion}.
 
 % Optional visualization placeholder
 \begin{figure}[htbp]
@@ -128,9 +126,9 @@ The system achieved 100\% effectiveness for all critical vulnerabilities, demons
 %----------------------------------------------------------------------------------------
 \section{Results: Policy Generation Speed}\label{sec:results-speed}
 
-% TODO argue with literature
+The operational efficiency of the prototype was evaluated based on its policy generation speed, a critical factor for seamless integration into modern, agile security workflows. The latency and throughput were measured in a controlled environment, with the results summarized in Table~\ref{tab:speed-metrics} and the distribution of generation times visualized in Figure~\ref{fig:speed-distribution}.
 
-We report latency distribution and throughput for single-policy generation and, where applicable, batch execution.
+The prototype demonstrated a mean generation time ($T_{\text{gen}}$) of 9.86 seconds per policy, with a median (p50) of 9.55 seconds and a 95th-percentile tail latency of 11.80 seconds. This performance translates to a throughput of approximately 6.12 policies per minute.
 
 \begin{table}[htbp]
 	\centering
@@ -144,11 +142,21 @@ We report latency distribution and throughput for single-policy generation and, 
 	\end{tabular}
 \end{table}
 
+% TODO update Diagramm
+
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{Figures/speed_distribution.png}
 	\caption{Distribution of policy generation time}\label{fig:speed-distribution}
 \end{figure}
+
+These results are highly significant when contextualized within the fast-paced nature of DevOps and CI/CD pipelines. As argued in Chapter~\ref{chap:conceptual_framework}, the primary value of this automation is not merely being faster than a human, but operating at a speed that makes "shift left" security practical at scale \cite{fu_ai_2025}. A generation time of under 10 seconds is well within the acceptable limits for automated checks in a typical CI/CD pipeline, ensuring that security analysis does not become a bottleneck for development teams.
+
+The speed demonstrated by the prototype directly addresses the inherent limitations of manual processes. Manual policy creation is a resource-intensive task that introduces significant cognitive load on security experts and creates delays in development lifecycles \cite{gunathilaka_context-aware_2025-1, mahboob_future_2024}. Research has consistently shown that manual security integration impedes delivery speed. In contrast, AI-driven approaches, like the one implemented in this prototype, are proven to automate these workflows, reduce manual effort, and accelerate development cycles \cite{fu_ai_2025}.
+
+Controlled studies provide compelling quantitative evidence for this acceleration. For instance, a notable experiment with GitHub Copilot found that professional developers with access to an AI assistant completed a complex task 55.8\% faster than a control group \cite{peng_impact_2023}. Similar improvements have been measured in specialized cloud engineering tasks, including the generation of IAM policies, which is directly analogous to the prototype's function \cite{kesireddy_copilot_2025}. The ability to automate complex, time-consuming software engineering tasks with high rates of success is a key driver for adopting AI in DevOps \cite{tufano_autodev_2024}.
+
+Therefore, the measured performance of a sub-10-second average policy generation time confirms that the prototype is not only efficient but also highly compatible with the demands of modern, high-velocity software development environments. This high-speed capability is fundamental to enabling the rapid feedback loops required in a CI/CD pipeline, drastically reducing the time required to create and enforce security controls for newly identified misconfigurations, a process that would otherwise be resource-intensive and prone to human delay at scale.
 
 %----------------------------------------------------------------------------------------
 % Results — Context
@@ -252,22 +260,22 @@ The prototype's portability and the scope of these results are characterized by 
 %----------------------------------------------------------------------------------------
 % Robustness & Errors
 %----------------------------------------------------------------------------------------
-\section{Robustness and Error Analysis}\label{sec:robustness-error}
+% \section{Robustness and Error Analysis}\label{sec:robustness-error}
 
-Typical failure modes observed include:
-\begin{itemize}
-    \item \textbf{Overly restrictive policies:} Generated policies that are too strict, potentially blocking legitimate actions.
-    \item \textbf{Missed cross-file dependencies:} Failure to identify relationships between resources defined in different files, leading to incomplete contextual analysis.
-    \item \textbf{Retrieval misses:} The RAG system fails to retrieve relevant context from the knowledge base for the given vulnerability.
-    \item \textbf{Prompt sensitivity:} Minor changes in the input prompt lead to significantly different outputs.
-\end{itemize}
+% Typical failure modes observed include:
+% \begin{itemize}
+%     \item \textbf{Overly restrictive policies:} Generated policies that are too strict, potentially blocking legitimate actions.
+%     \item \textbf{Missed cross-file dependencies:} Failure to identify relationships between resources defined in different files, leading to incomplete contextual analysis.
+%     \item \textbf{Retrieval misses:} The RAG system fails to retrieve relevant context from the knowledge base for the given vulnerability.
+%     \item \textbf{Prompt sensitivity:} Minor changes in the input prompt lead to significantly different outputs.
+% \end{itemize}
 
 %----------------------------------------------------------------------------------------
 % Summary
 %----------------------------------------------------------------------------------------
 \section{Summary of Findings}\label{sec:summary-findings}
 
-This chapter presented the empirical results of our prototype, evaluating its performance across three key dimensions: policy efficacy, generation speed, and contextual detection quality. The findings from the preceding sections are synthesized here to provide a holistic view of the system's capabilities and limitations, serving as a bridge to the discussion in Chapter~ref{chap:discussion}.
+This chapter presented the empirical results of our prototype, evaluating its performance across three key dimensions: policy efficacy, generation speed, and contextual detection quality. The findings from the preceding sections are synthesized here to provide a holistic view of the system's capabilities and limitations, serving as a bridge to the discussion in Chapter~\ref{chap:discussion}.
 
 In summary, the prototype demonstrates:
 \begin{itemize}
