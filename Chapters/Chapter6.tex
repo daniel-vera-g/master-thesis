@@ -142,21 +142,19 @@ The prototype demonstrated a mean generation time ($T_{\text{gen}}$) of 9.86 sec
 	\end{tabular}
 \end{table}
 
-% TODO update Diagramm
-
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.9\textwidth]{Figures/speed_distribution.png}
 	\caption{Distribution of policy generation time}\label{fig:speed-distribution}
 \end{figure}
 
-These results are highly significant when contextualized within the fast-paced nature of DevOps and CI/CD pipelines. As argued in Chapter~\ref{chap:conceptual_framework}, the primary value of this automation is not merely being faster than a human, but operating at a speed that makes "shift left" security practical at scale \cite{fu_ai_2025}. A generation time of under 10 seconds is well within the acceptable limits for automated checks in a typical CI/CD pipeline, ensuring that security analysis does not become a bottleneck for development teams.
+These results are highly significant when contextualized within the fast-paced nature of DevOps and CI/CD pipelines. As argued in Chapter~\ref{chap:conceptual_framework}, the primary value of this automation is not merely being faster than a human, but operating at a speed that makes "shift left" security practical at scale \cite{vaidya_devsecops_2024}. A generation time of under 10 seconds is well within the acceptable limits for automated checks in a typical CI/CD pipeline, ensuring that security analysis does not become a bottleneck for development teams \cite{li_automated_2024}.
 
 The speed demonstrated by the prototype directly addresses the inherent limitations of manual processes. Manual policy creation is a resource-intensive task that introduces significant cognitive load on security experts and creates delays in development lifecycles \cite{gunathilaka_context-aware_2025-1, mahboob_future_2024}. Research has consistently shown that manual security integration impedes delivery speed. In contrast, AI-driven approaches, like the one implemented in this prototype, are proven to automate these workflows, reduce manual effort, and accelerate development cycles \cite{fu_ai_2025}.
 
 Controlled studies provide compelling quantitative evidence for this acceleration. For instance, a notable experiment with GitHub Copilot found that professional developers with access to an AI assistant completed a complex task 55.8\% faster than a control group \cite{peng_impact_2023}. Similar improvements have been measured in specialized cloud engineering tasks, including the generation of IAM policies, which is directly analogous to the prototype's function \cite{kesireddy_copilot_2025}. The ability to automate complex, time-consuming software engineering tasks with high rates of success is a key driver for adopting AI in DevOps \cite{tufano_autodev_2024}.
 
-Therefore, the measured performance of a sub-10-second average policy generation time confirms that the prototype is not only efficient but also highly compatible with the demands of modern, high-velocity software development environments. This high-speed capability is fundamental to enabling the rapid feedback loops required in a CI/CD pipeline, drastically reducing the time required to create and enforce security controls for newly identified misconfigurations, a process that would otherwise be resource-intensive and prone to human delay at scale.
+Therefore, the measured performance of a sub-10-second average policy generation time confirms that the prototype is not only efficient but also highly compatible with the demands of modern, high-velocity software development environments. This high-speed capability is fundamental to enabling the rapid feedback loops required in a CI/CD pipeline, drastically reducing the time required to create and enforce security controls for newly identified misconfigurations a process that would otherwise be resource-intensive and prone to human delay at scale \cite{vaidya_devsecops_2024}.
 
 %----------------------------------------------------------------------------------------
 % Results — Context
