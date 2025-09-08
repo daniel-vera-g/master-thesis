@@ -1,6 +1,7 @@
 .DS_Store
 docs
 tmp.tex
+*.ist
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
