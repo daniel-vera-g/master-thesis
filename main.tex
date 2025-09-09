@@ -44,6 +44,11 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage{mathpazo} % Use the Palatino font by default
 
+\usepackage{xurl} % Allow line breaks in urls and texttt
+\urlstyle{tt} % Set url style to typewriter font
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{\nolinkurl{#1}}
+
 % use listings package for programming languages
 \usepackage{listings}
 \usepackage{caption}
@@ -188,4 +193,4 @@ headsepline, % Uncomment to get a line under the header
 
 %----------------------------------------------------------------------------------------
 
-\end{document}  
+\end{document}
