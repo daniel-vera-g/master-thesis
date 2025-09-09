@@ -66,6 +66,7 @@ A Modular Architecture ensures a clear separation of concerns. The project is me
     float=htbp,
     basicstyle=\footnotesize\ttfamily, 
     breaklines=true,
+    breakatwhitespace=true,
     caption={Prototype Directory Structure},
     label={lst:prototype_structure}
 ]
@@ -147,6 +148,7 @@ The behavior of a large language model (LLM) is systematically guided by Prompt 
     float=htbp,
     language=Python, 
     breaklines=true, 
+    breakatwhitespace=true,
     basicstyle=\footnotesize\ttfamily,
     caption={Sample Prompt for Rego Policy Generation},
     label={lst:rego_generator_prompt}
@@ -171,6 +173,7 @@ Most significantly, the prototype implements an Iterative Refinement (Self-Corre
     float=htbp,
     language=Python, 
     breaklines=true, 
+    breakatwhitespace=true,
     basicstyle=\footnotesize\ttfamily, 
     numbers=left,
     caption={Self-Correction Loop for Policy Generation},
@@ -228,6 +231,7 @@ The application is also engineered to be both efficient and stable, incorporatin
     float=htbp,
     language=Python, 
     breaklines=true, 
+    breakatwhitespace=true,
     basicstyle=\footnotesize\ttfamily, 
     numbers=left,
     caption={Parallel Policy Generation with ThreadPoolExecutor},
@@ -331,7 +335,7 @@ The integration is achieved through a \gls{github} Actions workflow that is trig
 By integrating the command-line tool in this manner, the framework moves from being a simple analysis utility to a powerful, automated control that is seamlessly embedded in the software development lifecycle.
 
 \section{Limitations \& Trade-offs}
-\label{sec:limitations}
+\label{sec:limitations_tradeoffs}
 
 While the prototype successfully demonstrates the core concepts of \gls{genai}-driven security automation, its design and implementation involve several inherent limitations and trade-offs. These were consciously accepted to focus on the primary research questions but are important to acknowledge for a complete understanding of the system's practical applicability.
 
