@@ -18,7 +18,7 @@ The dataset consists of a curated corpus of Terraform configurations representat
 \begin{itemize}
 	\item \textbf{Static Analysis Engine}: The prototype uses \texttt{tfsec} (v1.28.14) \cite{aqua_security_tfsec_nodate} for static analysis of Terraform code, configured with its default ruleset to identify baseline misconfigurations.
 	\item \textbf{IaC Parser}: Terraform configurations are parsed using the \texttt{python-hcl2} library \cite{amplify_python-hcl2_2025}, which enables the system to understand the structure and content of the IaC files.
-	\item \textbf{GenAI Analysis Engine}: The core of the prototype is a Large Language Model (LLM) from Amazon Web Services (AWS) Bedrock, accessed via the \texttt{boto3} SDK. The specific model used is Anthropic's Claude v2 (\texttt{anthropic.claude-v2}) \cite{anthropic_claude_2023}.
+	\item \textbf{GenAI Analysis Engine}: The core of the prototype is a Large Language Model (LLM) from Amazon Web Services (AWS) Bedrock, accessed via the \texttt{boto3} SDK. The specific model used is Anthropic's Claude 3.5 Sonnet (\texttt{anthropic.claude-3-5-sonnet-20240620}) \cite{anthropic_claude_2023}.
 	\item \textbf{Validation Layer}: Generated Rego policies are validated for syntactic correctness using the Open Policy Agent (OPA) command-line tool (v1.7.1) \cite{the_opa_authors_open_nodate}. This ensures that only valid policies are produced.
 	\item \textbf{Output Formatting}: Terminal output is enhanced with the \texttt{rich} library \cite{textualize_rich_nodate} for better readability and presentation of results.
 	\item \textbf{Retrieval-Augmented Generation (RAG)}: The RAG implementation leverages Amazon Bedrock for knowledge base retrieval.
