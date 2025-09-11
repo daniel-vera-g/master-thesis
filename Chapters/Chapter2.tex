@@ -10,6 +10,8 @@ This chapter provides the foundational knowledge required to understand the core
 
 This section provides an overview of the fundamental concepts in cloud security, which form the basis for the subsequent discussion on security automation.
 
+TBD
+
 % section Foundational Concepts in Cloud Computing (end)
 
 \section{Foundational Concepts in Generative AI} % (fold)
@@ -17,12 +19,16 @@ This section provides an overview of the fundamental concepts in cloud security,
 
 This section introduces the core concepts of Generative AI, setting the stage for its application in the context of cloud security.
 
+TBD
+
 % section Foundational Concepts in Generative AI (end)
 
 \section{State of Cloud Provider Ecosystems} % (fold)
 \label{sec:State of Cloud Provider Ecosystems}
 
 This section reviews the current landscape of major cloud providers, highlighting their security services and the evolving ecosystem.
+
+TBD
 
 % section State of Cloud Provider Ecosystems (end)
 
@@ -239,7 +245,7 @@ This literature review demonstrates that \gls{genai} represents a transformative
 
 While the literature review demonstrates significant progress in applying Generative AI to cloud security, a deeper analysis reveals several critical research gaps. The convergence of GenAI and hyperscale security automation is still in its nascent stages, and many existing studies focus on high-level frameworks or narrow applications. This thesis addresses some of the underexamined areas by exploring the following gaps.
 
-A primary gap is the practical scalability of these solutions to a true hyperscale level. Much of the current academic literature fails to fully address the operational challenges of implementing GenAI security in enterprise environments characterized by thousands of developers and high-velocity CI/CD pipelines \cite{fu_ai_2025}. The significant computational resources required for large-scale models and the potential for latency to create bottlenecks in rapid deployment cycles present substantial operational overhead. These questions of performance and resource management at scale remain largely unexamined in academic research. This work begins to address this gap by measuring the performance of the developed prototype (as detailed in Section \ref{sec:policy-generation-speed}) and discussing the architectural trade-offs essential for a scalable implementation (Section \ref{sec:limitations}), providing a basis for future research into optimizing these systems for performance in hyperscale environments.
+A primary gap is the practical scalability of these solutions to a true hyperscale level. Much of the current academic literature fails to fully address the operational challenges of implementing GenAI security in enterprise environments characterized by thousands of developers and high-velocity CI/CD pipelines \cite{fu_ai_2025}. The significant computational resources required for large-scale models and the potential for latency to create bottlenecks in rapid deployment cycles present substantial operational overhead. These questions of performance and resource management at scale remain largely unexamined in academic research. The research presented in this thesis begins to address this gap by measuring the performance of the developed prototype (as detailed in Section \ref{sec:policy-generation-speed}) and discussing the architectural trade-offs essential for a scalable implementation (Section \ref{sec:limitations}), providing a basis for future research into optimizing these systems for performance in hyperscale environments.
 Furthermore, while the security risks of using \gls{genai} are well-documented (Section \ref{sec:Security Risks}), a more advanced and less-explored research area is the adversarial resilience of the automation pipeline itself \cite{nyoto_cyber_2024,dash_zero-trust_2024}. A critical gap exists in understanding and defending against attacks that manipulate a defensive \gls{genai} into generating insecure policies. For instance, a malicious actor could craft \gls{iac} designed to trigger a prompt injection, causing the \gls{llm} to produce a security policy with a hidden backdoor. There is a pressing need for research into building resilient \gls{genai} security systems capable of withstanding such targeted adversarial inputs. This thesis contributes by establishing a multi-stage Validation Layer (Section \ref{subsec:policy-layer}), which includes a "self-scan" of generated policies, as a necessary architectural component. This opens the door for future work on more advanced defenses, such as using multiple \gls{ai} models as cross-checks or developing \gls{ai}-specific threat modeling for the automation pipeline.
 
 Another significant challenge lies in the heterogeneity and complexity of multi-cloud orchestration \cite{seth_ai_2025-1,bringhenti_security_2023-1}. Despite strong industry demand, there is limited research on practical, fully-realized GenAI solutions that can effectively orchestrate security policy across the distinct technical ecosystems of the major cloud providers. The primary difficulty is managing the heterogeneity of services, APIs, and security best practices. A truly effective GenAI system must be able to translate a single high-level security requirement into multiple, provider-specific, and contextually-aware policy implementations. While the prototype developed in this thesis focuses on a single cloud provider for the implementation (Section \ref{sec:tech_stack}), its conceptual framework is designed to be cloud-agnostic by leveraging tools like Terraform and Open Policy Agent (OPA). In doing so, this work lays the theoretical groundwork for a multi-cloud solution and highlights the specific challenges that must be solved such as building a multi-cloud RAG knowledge base thereby defining a clear roadmap for future research.

@@ -35,7 +35,7 @@ The selection of the technology and tooling stack for this project was a deliber
 \hline
 Cloud Platform & \gls{aws} & As the leading hyperscale cloud provider, \gls{aws} offers a mature and extensive ecosystem of services, robust \gls{api}s, and comprehensive documentation. Its managed AI service, AWS Bedrock, is central to the project's architecture. \\
 \hline
-\gls{genai} Service & \gls{aws} Bedrock \cite{noauthor_claude_nodate} & Provides \gls{api} access to a variety of high-performance foundation models without the operational overhead of self-hosting. This aligns with the objective of a fully-managed \gls{genai} pipeline and allows the research to focus on application logic rather than \gls{mlops}. The Anthropic Claude model was selected for its advanced reasoning capabilities and large context window. \\
+\gls{genai} Service & \gls{aws} Bedrock \cite{noauthor_claude_nodate} & Provides \gls{api} access to a variety of high-performance foundation models without the operational overhead of self-hosting. This aligns with the objective of a fully-managed \gls{genai} pipeline and allows the research to focus on application logic rather than \gls{mlops}. The Anthropic Claude 3.5 Sonnet model was selected for its advanced reasoning capabilities and large context window. \\
 \hline
 \gls{iac} & HashiCorp \gls{terraform} \cite{noauthor_terraform_nodate} & As the de-facto industry standard for \gls{iac}, \gls{terraform}'s declarative syntax and cloud-agnostic nature ensure the approach is both reproducible and broadly applicable. It is the input format for the security analysis pipeline. \\
 \hline
@@ -66,6 +66,7 @@ A Modular Architecture ensures a clear separation of concerns. The project is me
     float=htbp,
     basicstyle=\footnotesize\ttfamily, 
     breaklines=true,
+    breakatwhitespace=true,
     caption={Prototype Directory Structure},
     label={lst:prototype_structure}
 ]
@@ -141,12 +142,13 @@ The \texttt{Policy Generation} module represents the core intelligence of the sy
 
 To enhance the accuracy and relevance of the generated policies, the client utilizes Retrieval-Augmented Generation (RAG). It specifically calls Bedrock's \texttt{retrieve\_and\_generate} functionality, passing a \texttt{knowledgeBaseId}. This grounds the \gls{llm}'s responses in a specific, curated knowledge base containing \gls{opa}/\gls{rego} best practices and Regal linting rules, which significantly reduces the risk of hallucinations. It constructs a detailed, context-rich prompt by combining the security findings from the analyzer with relevant contextual information retrieved from this \gls{rag} \gls{kb}. It then communicates with the \gls{aws} Bedrock \gls{api} to obtain the generated \gls{rego} policy.
 
-The \gls{llm}'s behavior is guided by Systematic Prompt Engineering. Prompts are centralized in a \texttt{config/prompts.py} file, separating them from application logic. They are carefully engineered with best practices such as assigning a role ("you are a senior cloud security and Terraform expert"), providing clear constraints (e.g., "Output JSON object only"), and using placeholders for dynamic context. This is crucial for obtaining correctly formatted and relevant outputs. A sample prompt for the policy generation is shown in ~\ref{lst:rego_generator_prompt}.
+The behavior of a large language model (LLM) is systematically guided by Prompt Engineering. This methodology, which separates prompts from the application's core logic, relies on carefully engineered prompts that incorporate established best practices. These include assigning a specific role to the model to define its persona and expertise (e.g., "you are a senior cloud security and Terraform expert"), providing clear constraints to dictate the output format (e.g., "Output JSON object only"), and using placeholders for dynamic contextual information. As a key technique for eliciting consistent and reliable model behavior, these practices are widely recognized in academic literature\cite{sahoo_systematic_2024}. This is crucial for obtaining correctly formatted and relevant outputs. A sample prompt for the policy generation is shown in ~\ref{lst:rego_generator_prompt}.
 
 \begin{lstlisting}[
     float=htbp,
     language=Python, 
     breaklines=true, 
+    breakatwhitespace=true,
     basicstyle=\footnotesize\ttfamily,
     caption={Sample Prompt for Rego Policy Generation},
     label={lst:rego_generator_prompt}
@@ -171,6 +173,7 @@ Most significantly, the prototype implements an Iterative Refinement (Self-Corre
     float=htbp,
     language=Python, 
     breaklines=true, 
+    breakatwhitespace=true,
     basicstyle=\footnotesize\ttfamily, 
     numbers=left,
     caption={Self-Correction Loop for Policy Generation},
@@ -228,6 +231,7 @@ The application is also engineered to be both efficient and stable, incorporatin
     float=htbp,
     language=Python, 
     breaklines=true, 
+    breakatwhitespace=true,
     basicstyle=\footnotesize\ttfamily, 
     numbers=left,
     caption={Parallel Policy Generation with ThreadPoolExecutor},
@@ -256,9 +260,7 @@ To ensure the quality and reliability of the prototype, a comprehensive testing 
 
 \subsubsection{Codebase Metrics}
 
-% TODO add scc reference
-
-To provide a clear understanding of the implementation's scope, this section presents key metrics about the Python prototype's codebase. The application code is organized into 12 modules, containing a total of 14 classes and 42 functions. A detailed breakdown of the lines of code (LOC) is provided in Table~\ref{tab:code_metrics}. The analysis was performed using the \texttt{scc} utility, which counts physical lines of code, excluding blank lines and comments.
+To provide a clear understanding of the implementation's scope, this section presents key metrics about the Python prototype's codebase. The application code is organized into 12 modules, containing a total of 14 classes and 42 functions. A detailed breakdown of the lines of code (LOC) is provided in Table~\ref{tab:code_metrics}. The analysis was performed using the \texttt{scc}\cite{boyter_scc_2024} utility, which counts physical lines of code, excluding blank lines and comments.
 
 \begin{table}[htbp]
 \centering
@@ -318,7 +320,7 @@ This self-contained workflow from file input to policy output is designed for bo
 
 \section{CI/CD \& DevSecOps Integration}
 
-The prototype is designed for integration into a modern \gls{devsecops} workflow, leveraging established best practices for Version Control and Continuous Integration. The entire process is built upon a foundation of reliable Dependency and Environment Management to ensure consistency between development and automated execution.
+The prototype is designed to analyze Infrastructure-as-Code (IaC) configurations written in HashiCorp's Terraform. Terraform was chosen as it is a leading tool for IaC that allows for the automation of infrastructure provisioning through a strict development and review lifecycle \cite{howard_terraform_2022-1}. It supports a wide range of cloud providers, including AWS, making it a representative choice for this research.
 
 While the prototype is a self-contained command-line tool, its primary intended application is within a \gls{cicd} pipeline to enable a proactive \gls{devsecops} workflow. This integration automates the process of security analysis and policy enforcement, "shifting left" to catch and remediate vulnerabilities before they reach production \cite{delicheh_mitigating_2024}. The implementation uses \gls{github} Actions as the \gls{cicd} platform, indicated by the presence of a \texttt{.github/workflows/main.yml} file, which enables automated testing and tracks code history.
 
@@ -333,7 +335,7 @@ The integration is achieved through a \gls{github} Actions workflow that is trig
 By integrating the command-line tool in this manner, the framework moves from being a simple analysis utility to a powerful, automated control that is seamlessly embedded in the software development lifecycle.
 
 \section{Limitations \& Trade-offs}
-\label{sec:limitations}
+\label{sec:limitations_tradeoffs}
 
 While the prototype successfully demonstrates the core concepts of \gls{genai}-driven security automation, its design and implementation involve several inherent limitations and trade-offs. These were consciously accepted to focus on the primary research questions but are important to acknowledge for a complete understanding of the system's practical applicability.
 
@@ -352,4 +354,8 @@ While the prototype successfully demonstrates the core concepts of \gls{genai}-d
 
 \section{Summary}
 
-This chapter detailed the design and implementation of the prototype system, from the cloud-native infrastructure to the Python-based application. The next chapter will present the results of the evaluation of this prototype.
+This chapter provided a comprehensive overview of the design and implementation of the prototype system for \gls{genai}-driven security automation. It detailed the translation of the conceptual framework from Chapter~\ref{chap:conceptual_framework} into a practical application, outlining the specific design objectives, technology stack, and high-level architecture. The implementation was presented as two interconnected codebases: a reproducible, secure cloud infrastructure defined in \gls{terraform}, and a modular Python application that orchestrates the end-to-end workflow.
+
+The chapter elaborated on the key architectural patterns and software engineering practices employed to ensure the system's robustness, maintainability, and quality. These include a modular architecture, a sequential pipeline for data processing, a facade pattern for interacting with the \gls{genai} service, and a self-correction loop for iterative refinement of the generated policies. The end-to-end workflow, from static analysis of \gls{terraform} files to the generation and validation of \gls{rego} policies, was described in detail, highlighting the seamless integration of traditional security tools with advanced \gls{ai} capabilities.
+
+Furthermore, the chapter discussed the prototype's integration into a modern \gls{devsecops} workflow, acting as an automated quality gate within a \gls{cicd} pipeline. Finally, the inherent limitations and trade-offs of the implementation were acknowledged, providing a balanced perspective on the system's practical applicability. This detailed account of the implementation serves as the foundation for the empirical evaluation presented in the following chapter.
