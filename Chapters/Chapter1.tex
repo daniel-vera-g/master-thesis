@@ -42,65 +42,18 @@ These questions guide the structure of the thesis. The current state of the art 
 
 By methodically addressing these questions, this thesis aims to provide a comprehensive, empirically grounded contribution to the field of automated cloud security.
 
-% Section 1.3: Explain the unique contribution of your work.
-% Your main contributions are the conceptual framework (Ch 4) and the prototype implementation (Ch 5).
 \section{Contribution and Significance}
 \label{sec:contribution}
-% Detail the key contributions:
-% 1. A novel conceptual framework for GenAI-driven security automation that integrates static analysis, a RAG-based LLM approach, and a multi-stage validation process.
-% 2. The design and implementation of a prototype system that validates this framework using industry-standard technologies (AWS, Terraform, OPA).
-% Explain the significance: This work advances "shift-left" security, provides a practical blueprint for integrating GenAI into DevSecOps pipelines, and reduces the manual burden on security teams.
 
-This thesis makes two primary contributions to the field of automated cloud security. First, it introduces a novel conceptual framework for GenAI-driven security automation. This framework integrates static analysis, a Retrieval-Augmented Generation (RAG) based Large Language Model (LLM) approach, and a multi-stage validation process to ensure the generation of accurate and reliable security policies.
+This thesis delivers two primary contributions to the field of automated cloud security: a novel conceptual framework and a functional prototype that provides an empirical validation of that framework.
 
-Second, it presents the design and implementation of a functional prototype that validates this framework. The prototype is built using industry-standard technologies, including Amazon Web Services (AWS), Terraform for Infrastructure-as-Code (IaC), and Open Policy Agent (OPA) for Policy-as-Code (PaC), demonstrating the practical applicability of the conceptual model.
+First, it introduces a novel conceptual framework for GenAI-driven security automation. The framework's innovation lies in its hybrid architectural model, which systematically integrates the speed of traditional static analysis with the deep contextual reasoning of a Large Language Model (LLM). It leverages a Retrieval-Augmented Generation (RAG) architecture to ground the LLM's output in curated data—mitigating inaccuracies and incorporates a multi-stage validation process with a mandatory Human-in-the-Loop (HITL) review to ensure a critical balance between automation and expert oversight.
 
-The significance of this work is threefold. It advances the practice of ``shift-left'' security by providing a mechanism to automate the creation of preventative controls early in the development lifecycle. It offers a practical blueprint for organizations seeking to integrate GenAI into their DevSecOps pipelines to enhance their security posture. Finally, by automating a traditionally manual and time-consuming task, this research contributes to reducing the cognitive load and operational burden on security teams, allowing them to focus on higher-value strategic initiatives.
+Second, this work presents the design and implementation of a functional prototype that realizes the conceptual model. More than just a theoretical construct, the prototype is a working system built with industry-standard technologies, including Amazon Web Services (AWS), Terraform for Infrastructure-as-Code (IaC), and Open Policy Agent (OPA) for policy enforcement. This demonstrates the practical feasibility and applicability of the proposed approach in a real-world technological stack.
 
-This thesis makes two primary contributions to the field of automated cloud security. First, it introduces a novel conceptual framework for GenAI-driven security automation. This framework integrates static analysis, a Retrieval-Augmented Generation (RAG) based Large Language Model (LLM) approach, and a multi-stage validation process to ensure the generation of accurate and reliable security policies.
+The significance of this work is threefold. It advances the shift-left security paradigm by providing an automated mechanism for creating preventative controls early in the development lifecycle \cite{akto_shift_2025}. It also serves as a practical blueprint for organizations seeking to engineer and integrate GenAI into their DevSecOps pipelines. Finally, by automating a traditionally manual and time-consuming task, this research helps reduce the cognitive load and operational burden on security teams, allowing them to focus on higher-value strategic initiatives and ultimately bridging the critical gap between high-velocity development and robust security assurance.
 
-Second, it presents the design and implementation of a functional prototype that validates this framework. The prototype is built using industry-standard technologies, including Amazon Web Services (AWS), Terraform for Infrastructure-as-Code (IaC), and Open Policy Agent (OPA) for Policy-as-Code (PaC), demonstrating the practical applicability of the conceptual model.
-
-The significance of this work is threefold. It advances the practice of ``shift-left'' security by providing a mechanism to automate the creation of preventative controls early in the development lifecycle. It offers a practical blueprint for organizations seeking to integrate GenAI into their DevSecOps pipelines to enhance their security posture. Finally, by automating a traditionally manual and time-consuming task, this research contributes to reducing the cognitive load and operational burden on security teams, allowing them to focus on higher-value strategic initiatives.
-
-% Section 1.5: Give the reader a roadmap of the entire thesis.
-% This is a summary of each chapter's purpose.
 \section{Outline of the Thesis}
 \label{sec:outline}
-% Briefly describe the content and purpose of each subsequent chapter.
-% For example:
-% 	extbf{Chapter 2} provides a comprehensive background on foundational concepts in cloud security and GenAI, reviews the state of the art in related work, and identifies the research gaps that this thesis addresses.
-% 	extbf{Chapter 3} outlines the research methodology employed in this work.
-% 	extbf{Chapter 4} introduces the conceptual framework for GenAI-driven security automation, detailing its multi-layered architecture, the integration of LLMs, and the Human-in-the-Loop workflow.
-% 	extbf{Chapter 5} describes the practical implementation of the framework as a prototype, covering the system architecture, technology stack, and end-to-end workflow.
-% 	extbf{Chapter 6} presents the results from the evaluation of the prototype based on the metrics defined in the framework.
-% 	extbf{Chapter 7} discusses the implications of the results, connecting them back to the research questions and the existing literature.
-% 	extbf{Chapter 8} concludes the thesis by summarizing the key findings, acknowledging limitations, and suggesting directions for future research.
 
-	extbf{Chapter 2} provides a comprehensive background on the foundational concepts in cloud security and Generative AI. It reviews the state of the art in related work and identifies the key research gaps that this thesis aims to address.
 
-	extbf{Chapter 3} outlines the research methodology, justifying the choice of Design Science Research (DSR) and detailing the structured process followed in this study, from literature review to empirical evaluation.
-
-	extbf{Chapter 4} introduces the conceptual framework for GenAI-driven security automation. It details the multi-layered architecture, the integration of LLMs using a RAG-based approach, and the critical role of the Human-in-the-Loop (HITL) workflow.
-
-	extbf{Chapter 5} describes the practical implementation of the framework as a software prototype. It covers the system architecture, the selected technology stack, and the end-to-end workflow from IaC analysis to policy generation.
-
-	extbf{Chapter 6} presents the empirical results from the evaluation of the prototype. It assesses the system's performance based on the metrics defined in the framework, including policy generation efficacy, speed, and contextual detection quality.
-
-	extbf{Chapter 7} discusses the implications of the results, interpreting the key findings and connecting them back to the research questions and the existing literature. It also addresses the study's limitations and proposes directions for future research.
-
-	extbf{Chapter 8} concludes the thesis by summarizing the key findings, reiterating the contributions of the work, and offering final thoughts on the future of GenAI in cloud security.
-
-\textbf{Chapter 2} provides a comprehensive background on the foundational concepts in cloud security and Generative AI. It reviews the state of the art in related work and identifies the key research gaps that this thesis aims to address.
-
-\textbf{Chapter 3} outlines the research methodology, justifying the choice of Design Science Research (DSR) and detailing the structured process followed in this study, from literature review to empirical evaluation.
-
-\textbf{Chapter 4} introduces the conceptual framework for GenAI-driven security automation. It details the multi-layered architecture, the integration of LLMs using a RAG-based approach, and the critical role of the Human-in-the-Loop (HITL) workflow.
-
-\textbf{Chapter 5} describes the practical implementation of the framework as a software prototype. It covers the system architecture, the selected technology stack, and the end-to-end workflow from IaC analysis to policy generation.
-
-\textbf{Chapter 6} presents the empirical results from the evaluation of the prototype. It assesses the system's performance based on the metrics defined in the framework, including policy generation efficacy, speed, and contextual detection quality.
-
-\textbf{Chapter 7} discusses the implications of the results, interpreting the key findings and connecting them back to the research questions and the existing literature. It also addresses the study's limitations and proposes directions for future research.
-
-\textbf{Chapter 8} concludes the thesis by summarizing the key findings, reiterating the contributions of the work, and offering final thoughts on the future of GenAI in cloud security.
