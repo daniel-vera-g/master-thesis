@@ -5,30 +5,113 @@
 
 This chapter provides the foundational knowledge required to understand the core concepts of this thesis. It begins by exploring the fundamental principles of cloud security and generative AI. Subsequently, it reviews the current landscape of major cloud providers and their security ecosystems. The chapter culminates in a comprehensive review of the state-of-the-art literature, identifying key research trends and existing gaps in the field of GenAI-driven security automation.
 
-\section{Foundational Concepts in Cloud Security} % (fold)
-\label{sec:Foundational Concepts in Cloud Computing}
+\section{Foundational Concepts in Cloud Security}
+\label{sec:foundational_cloud_security}
 
-This section provides an overview of the fundamental concepts in cloud security, which form the basis for the subsequent discussion on security automation.
+This section provides an overview of the fundamental concepts in cloud security, which form the basis for the subsequent discussion on security automation. The paradigm of cloud computing introduces unique challenges and models that differ significantly from traditional on-premises security. Understanding these concepts is essential to appreciate the context and necessity of the Generative AI-driven automation framework proposed in this thesis. We will cover the Shared Responsibility Model, the security implications of Infrastructure as Code (IaC), Policy as Code (PaC) as a mechanism for preventative guardrails, the DevSecOps philosophy realized through CI/CD automation, and the role of Cloud Security Posture Management (CSPM).
 
-TBD
+\subsection{The Shared Responsibility Model}
+A cornerstone of cloud security is the Shared Responsibility Model (SRM). This model delineates the security obligations between the Cloud Service Provider (CSP) and the customer \cite{amazon_web_services_shared_2025}. The CSP (e.g., AWS, Google Cloud, Azure) is responsible for the security of the cloud, which includes protecting the physical infrastructure, network, and the foundational compute, storage, and database services. The customer, in turn, is responsible for security in the cloud. This includes securing their own data, applications, identity and access management (IAM), and network configurations.
+
+The precise division of responsibility varies depending on the service model (IaaS, PaaS, SaaS), but the principle remains: the customer always retains responsibility for their data, user access, and compliance. Misconfigurations of customer-managed resources are a leading cause of cloud security breaches, making the customer's side of the model a critical area of focus for security automation \cite{cloud_security_alliance_mitigating_2023}. The framework in this thesis operates squarely within the customer's domain of responsibility, aiming to automate the securing of cloud resources they provision and manage.
+
+\subsection{Infrastructure as Code (IaC) and its Security Implications}
+Infrastructure as Code (IaC) is the practice of managing and provisioning cloud infrastructure through machine-readable definition files, rather than through manual configuration or interactive tools \cite{dasari_infrastructure_2025}. Tools like Terraform, the primary target for this thesis's prototype, allow developers to define complex cloud environments in version-controlled, reusable, and shareable code \cite{howard_terraform_2022-1}. While IaC provides tremendous benefits in speed, consistency, and scalability, it also introduces new security challenges:
+\begin{itemize}
+    \item \textbf{Misconfigurations at Scale:} A single error in an IaC template can be replicated across hundreds or thousands of resources, creating widespread vulnerabilities instantly.
+    \item \textbf{Increased Complexity:} Modern IaC configurations can be highly complex, involving multiple modules, variables, and dependencies, making manual security reviews slow, tedious, and prone to error \cite{tunc_cloud_2017}.
+    \item \textbf{Security as a Code Problem:} IaC transforms infrastructure security into a code security problem. Vulnerabilities are no longer just in the running state of the system but are embedded in its very blueprint.
+\end{itemize}
+The problem statement of this thesis is rooted in these challenges. The sheer volume and dynamic nature of IaC in modern development workflows have outpaced the capabilities of manual security practices, creating a critical need for intelligent and automated analysis \cite{fu_ai_2025}.
+
+\subsection{Policy-as-Code (PaC) and Preventative Guardrails}
+Policy as Code (PaC) is the logical extension of IaC principles to the realm of security and compliance governance \cite{sarathe_krisshnan_jutoo_vijayaraghavan_policy_2025}. PaC involves codifying security rules, compliance standards, and operational best practices into a declarative, machine-enforceable format. Tools like Open Policy Agent (OPA), which uses the Rego language, allow organizations to define fine-grained policies that can be automatically evaluated against IaC configurations.
+
+By treating policies as code, they can be version-controlled, tested, and integrated directly into the development pipeline. This enables automated, preventative guardrails that can block insecure infrastructure from ever being deployed, rather than relying on reactive detection after the fact \cite{amazon_web_services_aws_2024}. These guardrails act as automated checks that enforce an organization's security standards programmatically. The core function of the prototype developed in this thesis is to leverage GenAI to automatically generate these preventative policies in Rego, bridging the gap between vulnerability detection and automated enforcement.
+
+\subsection{Automated Cloud Security Posture Management in DevSecOps}
+Cloud Security Posture Management (CSPM) refers to a class of security tools and practices designed to identify and remediate misconfiguration risks in cloud environments. CSPM solutions work by continuously monitoring cloud infrastructure against a defined set of security standards and best practices, such as those from the Center for Internet Security (CIS) or NIST \cite{tunc_cloud_2017}.
+
+Traditional CSPM tools are excellent at detecting known misconfigurations in deployed environments. However, the modern software development philosophy of DevSecOps evolves this concept by integrating security practices into the DevOps lifecycle. A core tenet of DevSecOps is the concept of "shifting left", which refers to moving security checks and balances to the earliest possible stages of the development process \cite{akto_shift_2025}.
+
+Instead of treating security as a final gate before deployment, a practice that creates bottlenecks and friction, shift-left security is operationalized through security posture automation within the Continuous Integration/Continuous Deployment (CI/CD) pipeline \cite{fu_ai_2025}. This involves embedding automated security tools and reviews directly into the developer's workflow. The authoritative IaC becomes the substrate for a closed-loop process that effectively "shifts CSPM left":
+\begin{enumerate}
+    \item \textbf{Automated Scanning:} Static analysis tools scan IaC for a deterministic baseline of issues.
+    \item \textbf{Contextual Analysis:} GenAI enhances this baseline to reduce false positives and uncover complex, cross-resource risks.
+    \item \textbf{Automated Policy Generation:} The system generates PaC to address identified vulnerabilities.
+    \item \textbf{Gate Enforcement:} The CI/CD pipeline uses the PaC to evaluate proposed infrastructure changes, automatically blocking any non-compliant configurations from being merged or deployed \cite{gunathilaka_context-aware_2025-1}.
+\end{enumerate}
+This approach provides developers with immediate feedback on the security implications of their code, reduces the cost and effort of remediation, and fosters a culture of shared security responsibility. The solution presented in this thesis aims to advance this model by using GenAI to not only detect issues but to automatically generate the preventative policies (PaC) needed to fix them. This closes the loop between detection and remediation, moving from passive monitoring to active, automated defense. The automation framework proposed herein is explicitly designed to operate within this model, providing the tools to create and enforce security policy long before infrastructure reaches a production environment.
 
 % section Foundational Concepts in Cloud Computing (end)
 
-\section{Foundational Concepts in Generative AI} % (fold)
-\label{sec:Foundational Concepts in Generative AI}
+\section{Foundational Concepts in Generative AI}
+\label{sec:foundational_genai}
 
-This section introduces the core concepts of Generative AI, setting the stage for its application in the context of cloud security.
+This section introduces the core concepts of Generative AI (GenAI), setting the stage for its application in the context of cloud security automation. To understand how a system can autonomously analyze infrastructure code and generate security policies, it is essential to first grasp the underlying technologies that enable such capabilities. We will cover the fundamental models, the transformative architecture of modern Large Language Models (LLMs), and the specific techniques like Retrieval-Augmented Generation (RAG), prompt engineering, and iterative refinement, that make these models practical and reliable for specialized tasks.
 
-TBD
+\subsection{Generative vs. Discriminative Models}
+Artificial Intelligence models can be broadly categorized into two types: discriminative and generative. Discriminative models, which have been the focus of traditional machine learning, learn to classify or predict an output based on given input data. For example, a security-related discriminative model might classify a network log entry as either "malicious" or "benign."
+
+In contrast, Generative AI models learn the underlying distribution of a dataset to generate new, synthetic data samples that resemble the original data \cite{kaswan_generative_2023}. Instead of simply labeling data, they create it. This capability to produce novel content, such as text, images, or critically for this thesis, computer code is what distinguishes GenAI and makes it a powerful tool for automation \cite{gatla_advancements_2024}.
+
+\subsection{Key Architectures: From GANs to Transformers}
+The evolution of GenAI has been marked by several key architectural breakthroughs. Early pioneering models include Generative Adversarial Networks (GANs), which use a two-part system: a generator that creates data and a discriminator that evaluates it to produce highly realistic synthetic data, particularly images \cite{goodfellow_generative_2014}.
+
+However, for tasks involving sequential data like natural language and source code, the most significant breakthrough has been the Transformer architecture, introduced in the seminal paper "Attention Is All You Need" \cite{vaswani_attention_2023}. The core innovation of the Transformer is the attention mechanism, which allows the model to weigh the importance of different words (or tokens) in an input sequence when processing and generating an output. This enables the model to capture long-range dependencies and understand the context of a sequence, a capability that is crucial for analyzing complex Infrastructure-as-Code files and understanding the relationships between different resources.
+
+\subsection{Large Language Models (LLMs)}
+Large Language Models (LLMs) are a direct application of the Transformer architecture, trained on vast and diverse datasets of text and code. This extensive training endows them with powerful emergent capabilities, including natural language understanding, reasoning, and most relevantly, code generation.
+
+While LLMs demonstrate impressive performance, they have inherent limitations. LLMs operate on sequences of subword units called tokens, and they can only process a finite number of them at once. This limitation is known as the context window. For security analysis, where multiple IaC files and security documents must be considered, the context window makes it impractical to provide all necessary information in a single input. Furthermore, a primary concern is their propensity for "hallucination," where the model generates outputs that are plausible-sounding but factually incorrect or nonsensical \cite{haque_sok_2025-1}. This occurs because the model's knowledge is static, frozen at the time of its last training and it lacks a true understanding of the real world. For a security-critical application like policy generation, relying on an ungrounded LLM would be unacceptably risky.
+
+\subsection{Enhancing LLMs with Retrieval-Augmented Generation (RAG)}
+To address the limitations of LLMs, particularly hallucinations, outdated knowledge, and the finite context window the Retrieval-Augmented Generation (RAG) framework was developed \cite{lewis_retrieval-augmented_2020}. RAG enhances the capabilities of an LLM by connecting it to an external, authoritative knowledge base. The process involves two main steps:
+\begin{enumerate}
+    \item \textbf{Retrieve:} When a query is made, the RAG system first searches a knowledge base (e.g., a vector database containing security documentation, best practices, and code examples) to find the most relevant information for the task.
+    \item \textbf{Augment and Generate:} This retrieved, targeted information is then appended to the original prompt as additional context and passed to the LLM. The LLM uses this grounded, up-to-date information to generate a more accurate and factually consistent response.
+\end{enumerate}
+RAG is a cornerstone of the framework proposed in this thesis. By grounding the policy generation process in a curated knowledge base of security standards, RAG makes the LLM's output more reliable, trustworthy, and tailored to the specific context of cloud security.
+
+\subsection{Guiding LLMs with Prompt Engineering}
+While RAG provides the right context, the LLM still needs clear instructions. Prompt Engineering is the practice of carefully designing the input (the "prompt") given to an LLM to elicit a desired output \cite{sahoo_systematic_2024}. Effective prompts are crucial for controlling the model's behavior and ensuring the generated output is accurate, relevant, and in the correct format. Key techniques include role-playing (e.g., "You are a security expert"), providing examples (few-shot prompting), and explicitly defining the output structure.
+
+\subsection{Ensuring Reliability: Self-Correction and Validation Guardrails}
+Even with RAG and expert prompting, an LLM's output is not guaranteed to be perfect. To build a trustworthy system, programmatic reasoning patterns and validation guardrails are essential. A key pattern is iterative refinement or self-reflection, where the system uses external tools to validate the LLM's output and feeds any errors back to the model for correction \cite{vaswani_attention_2023}.
+
+The prototype in this thesis embodies this through an automated self-correction loop: a generated policy is first checked by a syntax validator. If errors are found, they are included in a new prompt that asks the LLM to fix its own mistake. This loop, combined with other validation guardrails such as security self-scans of the generated artifact and schema constraints, forms a layered defense against incorrect or insecure outputs. This automated assurance stack converts an LLM's suggestion into a verified artifact, with the Human-in-the-Loop (HITL) review serving as the final, critical safeguard.
+
+Together, these foundational concepts, the generative power of Transformer-based LLMs, the grounding provided by RAG, the precise control of prompt engineering, and the reliability ensured by self-correction loops and validation guardrails, form the technological toolkit that enables the advanced security automation explored in this thesis.
 
 % section Foundational Concepts in Generative AI (end)
 
-\section{State of Cloud Provider Ecosystems} % (fold)
-\label{sec:State of Cloud Provider Ecosystems}
+\section{State of Cloud Provider Ecosystems}
+\label{sec:cloud_ecosystems}
 
-This section reviews the current landscape of major cloud providers, highlighting their security services and the evolving ecosystem.
+This section reviews the current landscape of major cloud providers, highlighting the market dynamics and technological trends that shape the environment for the security automation framework proposed in this thesis. The modern cloud is dominated by a small number of "hyperscale" providers whose scale, complexity, and rapid innovation in areas like Generative AI create both immense opportunities and significant security challenges.
 
-TBD
+\subsection{The Dominance of Hyperscale Providers}
+The global public cloud market is characterized by the dominance of three major US-based hyperscale providers: Amazon Web Services (AWS), Microsoft Azure, and Google Cloud Platform (GCP) \cite{n_koritala_cloud-first_2025}. According to recent market analysis from Synergy Research Group, these three providers collectively account for a significant majority of the worldwide cloud infrastructure market \cite{noauthor_european_nodate}. This concentration of market power has several profound implications.
+
+On one hand, it has fueled an intense cycle of innovation, particularly in advanced services like machine learning, analytics, and now, Generative AI. On the other hand, it presents significant strategic challenges for enterprises, most notably the risk of vendor lock-in \cite{patel_comparative_nodate}. Organizations become dependent on a single provider’s proprietary services, APIs, and operational models, making future migrations costly and complex \cite{n_koritala_cloud-first_2025}.
+
+\subsection{The Strategic Shift to Multi-Cloud}
+To mitigate the risks of vendor lock-in and leverage the unique strengths of different platforms, a growing number of enterprises are adopting multi-cloud strategies. The 2024 Flexera State of the Cloud Report indicates that a vast majority of organizations use multiple public clouds \cite{flexera_flexera_2024}. The primary drivers for this trend include:
+\begin{itemize}
+    \item \textbf{Access to Best-of-Breed Services:} Using different providers for their specialized strengths (e.g., one for data analytics, another for AI/ML).
+    \item \textbf{Increased Resilience and Availability:} Distributing workloads across multiple providers to avoid a single point of failure.
+    \item \textbf{Cost Optimization:} Taking advantage of competitive pricing and avoiding reliance on a single vendor's pricing structure.
+    \item \textbf{Regulatory and Compliance Needs:} Meeting data sovereignty requirements by using providers with data centers in specific geographic locations.
+\end{itemize}
+However, this strategic shift introduces significant operational complexity, particularly for security. Managing a heterogeneous environment with disparate services, IAM models, and security controls makes it exceptionally difficult to maintain a consistent security posture manually. This complexity underscores the need for cloud-agnostic automation tools like Terraform and Open Policy Agent (OPA), and by extension, for intelligent systems that can orchestrate security across these diverse ecosystems \cite{dasari_infrastructure_2025}.
+
+\subsection{The Convergence of Cloud and Generative AI}
+A defining trend within the hyperscale ecosystem is the deep integration of advanced AI and GenAI capabilities as managed services. The major providers are in a technological race to offer the most powerful and accessible AI platforms, such as AWS Bedrock\cite{noauthor_claude_nodate}, Azure OpenAI Service \cite{microsoft_what_2024}, and Google Vertex AI \cite{noauthor_ground_nodate}. This convergence is a critical enabler for the framework proposed in this thesis.
+
+The availability of powerful foundation models via simple API calls democratizes access to cutting-edge AI, allowing developers and security teams to build intelligent automation without the prohibitive cost and complexity of training and hosting their own models \cite{seth_ai_2025-1}. This "AI-as-a-Service" model allows the focus to shift from MLOps and infrastructure management to the application logic itself, in this case, the analysis of IaC and the generation of security policies. The prototype developed in this thesis, which leverages AWS Bedrock, is a direct result of this trend.
+
+\subsection{Implications for Automated Security}
+The state of the cloud provider ecosystem is defined by hyperscale dominance, the strategic imperative of multi-cloud, and the convergence with GenAI creates the precise conditions that necessitate the solution this thesis explores. The scale of these environments makes manual security untenable. The heterogeneity of multi-cloud architectures demands agnostic, automated control mechanisms. Finally, the availability of managed GenAI services provides the powerful building blocks needed to create a new generation of intelligent, context-aware security automation that can operate effectively within this complex landscape.
 
 % section State of Cloud Provider Ecosystems (end)
 
