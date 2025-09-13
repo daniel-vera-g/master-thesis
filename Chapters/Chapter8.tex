@@ -3,34 +3,45 @@
 \chapter{Conclusion} % Main chapter title
 \label{chap:conclusion} % For referencing the chapter elsewhere, use \ref{Chapter1}
 
-This chapter concludes the thesis by summarizing the key findings and contributions. It revisits the research questions and discusses the implications of the results. Finally, it outlines the limitations of the study and suggests potential directions for future research.
+\section{Summary of the Research}
 
-%----------------------------------------------------------------------------------------
-%	SECTION 1
-%----------------------------------------------------------------------------------------
+This thesis addressed the critical security gap in modern software development, a consequence of high-velocity Infrastructure-as-Code (IaC) practices on hyperscale cloud platforms outpacing traditional, manual security measures. The central objective was to investigate how Generative AI (GenAI) could be harnessed to develop an intelligent automation system capable of analyzing IaC configurations and automatically generating precise, preventative security policies.
 
-\section{Main Section 1}
+To achieve this, the research employed a Design Science Research (DSR) methodology~\cite{Hevner2004}, leading to two primary contributions: first, a novel conceptual framework for GenAI-driven security automation, distinguished by its hybrid analysis model, a Retrieval-Augmented Generation (RAG) architecture, and an essential Human-in-the-Loop (HITL) validation process. Second, a functional prototype was implemented and empirically validated, proving the framework's practical feasibility with industry-standard technologies, including Amazon Web Services (AWS), Terraform~\cite{Howard2022_Terraform}, and Open Policy Agent (OPA)~\cite{openpolicyagent}.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
+\section{Answering the Research Questions}
 
-%-----------------------------------
-%	SUBSECTION 1
-%-----------------------------------
-\subsection{Subsection 1}
+The empirical results and subsequent analysis provide clear answers to the research questions posed in Chapter~\ref{ch:introduction}.
 
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+The overarching research question was: \textit{How can Generative AI technologies be effectively leveraged to automate security operations across hyperscale cloud platforms?}
+This research concludes that GenAI is most effectively leveraged not as a standalone solution but as the core intelligence within a hybrid architectural framework. This framework must combine the deterministic speed of traditional static analysis for baseline scanning with the deep contextual reasoning of a Large Language Model (LLM) for nuanced threat identification. The prototype demonstrated that this approach is highly efficient, with a mean policy generation time of \textbf{9.86 seconds}, making it fully compatible with modern CI/CD pipelines. Furthermore, it proved highly effective at generating syntactically perfect and logically sound policies for the most critical vulnerabilities identified.
 
-%-----------------------------------
-%	SUBSECTION 2
-%-----------------------------------
+This primary conclusion is further supported by the answers to the sub-questions:
 
-\subsection{Subsection 2}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+\begin{enumerate}
+    \item \textit{How can GenAI automate security policy generation and management?} \\
+    This work demonstrates that policy generation can be successfully automated by grounding an LLM in a curated knowledge base using a \textbf{RAG architecture} and implementing an \textbf{automated self-correction loop} for validation. This specific combination proved remarkably robust, enabling the prototype to achieve \textbf{100\% syntactic accuracy} (\(A_{policy}\)) across all generated Rego policies.
 
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
+    \item \textit{What architectural patterns and validation mechanisms are required for trust and accuracy?} \\
+    A trustworthy architecture requires a \textbf{multi-layered design} (Ingestion, Analysis, Policy) and several critical validation mechanisms. The research identified two as indispensable: the \textbf{automated self-correction loop} for guaranteeing syntactic validity and a mandatory \textbf{Human-in-the-Loop (HITL) review process} to ensure the logical soundness and contextual appropriateness of the final security artifact.
 
-\section{Main Section 2}
+    \item \textit{How can the effectiveness of this automation be quantitatively measured?} \\
+    The effectiveness of such a system can be quantitatively measured using a defined set of metrics: \textbf{Policy Accuracy (\(A_{policy}\))}, \textbf{Policy Effectiveness (\(E_{policy}\))}, and \textbf{Policy Generation Speed (\(T_{gen}\))}. The evaluation conducted in this thesis successfully used these metrics to reveal the crucial distinction between the system's ability to produce syntactically perfect code (100\% accuracy) and its more nuanced success in achieving logical correctness, where effectiveness varied from \textbf{36.36\% to 100\%} depending on the severity of the vulnerability.
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+    \item \textit{What is the optimal balance between automation and human oversight?} \\
+    The optimal balance is a \textbf{symbiotic partnership} where the system automates the laborious tasks of analysis and initial policy drafting, but final approval remains with a human expert. This conclusion is driven by the demonstrated gaps in the prototype's logical effectiveness and contextual reasoning, where it struggled with nuances like developer intent and business context. The HITL process is therefore not a temporary scaffold but a foundational and permanent component of a safe, responsible, and effective automated security system.
+\end{enumerate}
+
+\section{Significance and Implications of the Research}
+
+The findings of this thesis carry significant implications for the field of cloud security. The research advances the \textbf{"shift-left" security paradigm}~\cite{Akto2025} by providing a practical blueprint for embedding automated, preventative security controls directly into the earliest stages of the development lifecycle. The proposed framework and prototype serve as a tangible guide for organizations seeking to integrate GenAI into their DevSecOps pipelines in a structured, effective, and responsible manner. By successfully automating the traditionally manual bottleneck of security policy creation, this work helps bridge the critical gap between high-velocity development and robust security assurance, ultimately reducing the operational burden on security teams and allowing them to focus on higher-value strategic initiatives.
+
+\section{Limitations and Future Research}
+
+While this study validates the core conceptual framework, it is important to acknowledge its limitations, which in turn illuminate clear pathways for future research. The prototype was intentionally focused on a single technology stack—AWS, Terraform, and Rego—meaning its direct applicability is confined to this ecosystem. Furthermore, the GenAI components, while functional, were not exhaustively tuned; the selection of the LLM and the configuration of the RAG knowledge base present significant opportunities for optimization.
+
+Future work should proceed in several key directions. First, the framework should be expanded to support \textbf{multi-cloud environments} (e.g., Azure, GCP) and a wider array of IaC linters, which would require developing a more abstract, modular architecture. Second, a systematic evaluation of different LLMs and more advanced RAG techniques is needed to enhance policy effectiveness and reduce generation latency further. Finally, the HITL mechanism should be evolved from a simple review gate into a continuous learning system, potentially using \textbf{Reinforcement Learning from Human Feedback (RLHF)}~\cite{Ouyang2022} to refine the model's accuracy and contextual understanding over time.
+
+\section{Concluding Remarks}
+
+This research has demonstrated that the integration of Generative AI into security automation is a viable and powerful approach to addressing the complex security challenges of modern, high-velocity cloud environments. While the nuanced judgment of human experts remains indispensable, the framework and prototype presented in this thesis lay a robust foundation for building the next generation of intelligent, context-aware security systems. These systems, born from a partnership between human and machine, are poised to operate at the speed and scale demanded by the ever-evolving landscape of hyperscale cloud platforms.
