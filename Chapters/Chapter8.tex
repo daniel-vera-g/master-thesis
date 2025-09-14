@@ -38,9 +38,9 @@ The findings of this thesis carry significant implications for the field of clou
 
 \section{Limitations and Future Research}
 
-While this study validates the core conceptual framework, it is important to acknowledge its limitations, which in turn illuminate clear pathways for future research. The prototype was intentionally focused on a single technology stack: AWS, Terraform, and Rego. Meaning its direct applicability is confined to this ecosystem. Furthermore, the GenAI components, while functional, were not exhaustively tuned; the selection of the LLM and the configuration of the RAG knowledge base present significant opportunities for optimization.
+While this study validates the core conceptual framework, its limitations, which are discussed in detail in Chapter~\ref{chap:discussion}, must be acknowledged. The prototype was intentionally focused on a single technology stack (AWS, Terraform, and Rego), and its GenAI components were not exhaustively optimized. These constraints define clear pathways for future research.
 
-Future work should proceed in several key directions. First, the framework should be expanded to support multi-cloud environments (e.g., Azure, GCP) and a wider array of IaC linters, which would require developing a more abstract, modular architecture. Second, a systematic evaluation of different LLMs and more advanced RAG techniques is needed to enhance policy effectiveness and reduce generation latency further. Finally, the HITL mechanism should be evolved from a simple review gate into a continuous learning system, potentially using Reinforcement Learning from Human Feedback (RLHF)~\cite{ouyang_training_2022} to refine the model's accuracy and contextual understanding over time.
+Future work should proceed in several key directions, expanding upon the roadmap detailed in Section~\ref{sec:future_work}. The primary goals would be to expand the framework to support multi-cloud environments, conduct a systematic evaluation of different LLMs and advanced RAG techniques, and evolve the HITL mechanism into a continuous learning system using Reinforcement Learning from Human Feedback (RLHF)~\cite{ouyang_training_2022} to refine the model’s accuracy and contextual understanding over time.
 
 \section{Concluding Remarks}
 
