@@ -1,7 +1,7 @@
 \chapter{Methodology}
 \label{chap:methodology}
 
-This chapter outlines the research methodology employed to answer the research questions posed in Chapter \ref{chap:introduction}. The research follows a Design Science Research (DSR) \cite{hevner_design_2004} approach, which is centered on the design, implementation, and evaluation of an IT artifact to address a specific problem domain. The artifact in this thesis is the conceptual framework for GenAI-driven security automation and its corresponding software prototype.
+This chapter outlines the research methodology employed to answer the research questions posed in Chapter \ref{chap:introduction}. The research follows a \gls{dsr} \cite{hevner_design_2004} approach, which is centered on the design, implementation, and evaluation of an \gls{it} artifact to address a specific problem domain. The artifact in this thesis is the conceptual framework for \gls{genai}-driven security automation and its corresponding software prototype.
 
 This chapter first introduces the DSR paradigm and justifies its suitability for this project. It then details the specific research process, which is structured into four distinct phases ensuring a systematic progression from theoretical grounding to empirical validation:
 
@@ -15,44 +15,44 @@ This chapter first introduces the DSR paradigm and justifies its suitability for
 \section{Research Paradigm: Design Science}
 \label{sec:research_paradigm}
 
-Design Science Research is fundamentally concerned with creating and evaluating IT artifacts (constructs, models, methods, or instantiations) that address real-world problems \cite{hevner_design_2004}. Unlike natural science, which seeks to understand reality, design science aims to create new and purposeful artifacts to extend human and organizational capabilities. This paradigm is particularly well-suited for this thesis for several reasons:
+Design Science Research is fundamentally concerned with creating and evaluating \gls{it} artifacts (constructs, models, methods, or instantiations) that address real-world problems \cite{hevner_design_2004}. Unlike natural science, which seeks to understand reality, design science aims to create new and purposeful artifacts to extend human and organizational capabilities. This paradigm is particularly well-suited for this thesis for several reasons:
 \begin{itemize}
     \item \textbf{Problem-Centered:} The research is motivated by a practical and pressing problem: The need for scalable and automated security policy generation in complex cloud environments.
     \item \textbf{Artifact-Oriented:} The primary contributions of this thesis are tangible artifacts: the conceptual framework (Chapter \ref{chap:conceptual_framework}) and its implementation as a software prototype (Chapter \ref{chap:implementation}).
-    \item \textbf{Evaluation-Focused:} DSR emphasizes the rigorous evaluation of the artifact against defined criteria. This aligns with the research questions concerning effectiveness and measurement, which are addressed via empirical evaluation in Chapter \ref{chap:results}.
+    \item \textbf{Evaluation-Focused:} \gls{dsr} emphasizes the rigorous evaluation of the artifact against defined criteria. This aligns with the research questions concerning effectiveness and measurement, which are addressed via empirical evaluation in Chapter \ref{chap:results}.
 \end{itemize}
 
-The research process follows the DSR model proposed by Peffers et al. \cite{peffers_design_2007}, which provides a structured approach for conducting and presenting design science research.
+The research process follows the \gls{dsr} model proposed by Peffers et al. \cite{peffers_design_2007}, which provides a structured approach for conducting and presenting design science research.
 
 \section{Research Process}
 \label{sec:research_process}
-The research was conducted in four sequential phases, corresponding to the activities in the DSR process model. This ensures a logical and rigorous progression from understanding the problem to demonstrating and evaluating a viable solution.
+The research was conducted in four sequential phases, corresponding to the activities in the \gls{dsr} process model. This ensures a logical and rigorous progression from understanding the problem to demonstrating and evaluating a viable solution.
 
 \subsection{Phase 1: Foundational Literature Review}
 The initial phase involved a structured literature review to build a comprehensive understanding of the state-of-the-art in Generative AI for cloud security automation. This review, presented in Chapter \ref{chap:Background and Related Work}, served to identify the theoretical foundations, current capabilities, and critical research gaps in the field.
 
-The process was guided by the PRISMA 2020 guidelines \cite{page_prisma_2021-1} and involved:
+The process was guided by the \gls{prisma} 2020 guidelines \cite{page_prisma_2021-1} and involved:
 \begin{itemize}
-    \item \textbf{Source Identification:} Academic databases, including IEEE Xplore and ACM Digital Library, were queried using key search terms such as "generative AI", "cloud security automation", and "multi-cloud orchestration".
-    \item \textbf{Selection Criteria:} Publications were selected based on their relevance to GenAI applications in hyperscale cloud contexts, their focus on technical solutions for security automation, and their methodological rigor, with a focus on articles published in the last five years.
+    \item \textbf{Source Identification:} Academic databases, including \gls{ieee} Xplore and \gls{acm} Digital Library, were queried using key search terms such as "generative AI", "cloud security automation", and "multi-cloud orchestration".
+    \item \textbf{Selection Criteria:} Publications were selected based on their relevance to \gls{genai} applications in hyperscale cloud contexts, their focus on technical solutions for security automation, and their methodological rigor, with a focus on articles published in the last five years.
     \item \textbf{Synthesis:} Relevant findings were thematically analyzed and synthesized to establish the research context and identify the gaps addressed by this thesis.
 \end{itemize}
 
 \subsection{Phase 2: Conceptual Framework Development}
 Based on the insights from the literature review, the second phase focused on the design of the conceptual framework presented in Chapter \ref{chap:conceptual_framework}. This artifact serves as the architectural blueprint for the system. The design process was iterative and guided by key principles derived from the research, including:
 \begin{itemize}
-    \item A \textbf{hybrid analysis model} combining traditional static analysis with the contextual reasoning of LLMs.
+    \item A \textbf{hybrid analysis model} combining traditional static analysis with the contextual reasoning of \glspl{llm}.
     \item A \textbf{modular, multi-layered architecture} (Ingestion, Analysis, Policy) to ensure a clear separation of concerns.
-    \item A mandatory \textbf{Human-in-the-Loop (HITL)} workflow as a critical trust and safety mechanism.
+    \item A mandatory \textbf{\gls{hitl}} workflow as a critical trust and safety mechanism.
 \end{itemize}
 This phase directly addresses the research question concerning the architectural patterns required for a trustworthy automation system.
 
 \subsection{Phase 3: Prototype Implementation (Artifact Construction)}
 To empirically validate the conceptual framework, a functional prototype was implemented as detailed in Chapter \ref{chap:implementation}. This artifact construction phase translated the theoretical design into a practical, testable system using an industry-relevant technology stack:
 \begin{itemize}
-    \item \textbf{Cloud and GenAI Services:} Amazon Web Services (AWS) was used as the cloud platform, with AWS Bedrock providing managed access to Anthropic's Claude 3.5 Sonnet LLM.
-    \item \textbf{IaC and PaC Technologies:} The system was designed to analyze \gls{terraform} configurations and generate preventative policies in \gls{rego} for the Open Policy Agent (\gls{opa}).
-    \item \textbf{Orchestration:} A command-line application written in Python orchestrates the end-to-end workflow, from scanning IaC files to generating and validating security policies.
+    \item \textbf{Cloud and GenAI Services:} \gls{aws} was used as the cloud platform, with \gls{aws} Bedrock providing managed access to Anthropic's Claude 3.5 Sonnet \gls{llm}.
+    \item \textbf{IaC and PaC Technologies:} The system was designed to analyze \gls{terraform} configurations and generate preventative policies in \gls{rego} for the \gls{opa}.
+    \item \textbf{Orchestration:} A command-line application written in Python orchestrates the end-to-end workflow, from scanning \gls{iac} files to generating and validating security policies.
 \end{itemize}
 
 \subsection{Phase 4: Empirical Evaluation}

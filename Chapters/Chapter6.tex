@@ -8,20 +8,21 @@ This chapter presents the empirical results of the prototype, which was develope
 %----------------------------------------------------------------------------------------
 % Setup
 %----------------------------------------------------------------------------------------
-\section{Experimental Setup}\label{sec:experimental-setup}
+\section{Experimental Setup}
+\label{sec:experimental-setup}
 
-This section outlines how we evaluated the prototype described in Chapter~\ref{chap:implementation} against the framework in Chapter~\ref{chap:conceptual_framework}. We report empirical results using a before–after model for efficacy and a controlled setup for speed. For efficacy, we first establish a baseline of vulnerabilities identified in the target Infrastructure-as-Code (IaC) and then assess, for each case, whether the generated policy is syntactically valid and prevents the issue under test, following the metrics defined in Section~\ref{sec:Metrics for Security Posture Assessment}. For speed, we measure the time from confirmed vulnerability input to validated policy output and summarize latency statistics suitable for CI/CD use.
+This section outlines how we evaluated the prototype described in Chapter~\ref{chap:implementation} against the framework in Chapter~\ref{chap:conceptual_framework}. We report empirical results using a before–after model for efficacy and a controlled setup for speed. For efficacy, we first establish a baseline of vulnerabilities identified in the target \gls{iac} and then assess, for each case, whether the generated policy is syntactically valid and prevents the issue under test, following the metrics defined in Section~\ref{sec:Metrics for Security Posture Assessment}. For speed, we measure the time from confirmed vulnerability input to validated policy output and summarize latency statistics suitable for \gls{cicd} use.
 
 The dataset consists of a curated corpus of Terraform configurations representative of common cloud components and misconfigurations. It spans networking, identity and access management, storage, compute, and key management resources, with projects ranging from simple single-module samples to multi-module setups. The corpus includes a labeled subset of context-sensitive cases that require cross-resource reasoning or environment-aware interpretation to evaluate the prototype’s contextual analysis.
 
 \subsubsection*{Prototype Components}
 \begin{itemize}
 	\item \textbf{Static Analysis Engine}: The prototype uses \texttt{tfsec} (v1.28.14) \cite{aqua_security_tfsec_nodate} for static analysis of Terraform code, configured with its default ruleset to identify baseline misconfigurations.
-	\item \textbf{IaC Parser}: Terraform configurations are parsed using the \texttt{python-hcl2} library \cite{amplify_python-hcl2_2025}, which enables the system to understand the structure and content of the IaC files.
-	\item \textbf{GenAI Analysis Engine}: The core of the prototype is a Large Language Model (LLM) from Amazon Web Services (AWS) Bedrock, accessed via the \texttt{boto3} SDK. The specific model used is Anthropic's Claude 3.5 Sonnet (\texttt{anthropic.claude-3-5-sonnet-20240620}) \cite{anthropic_claude_2023}.
-	\item \textbf{Validation Layer}: Generated Rego policies are validated for syntactic correctness using the Open Policy Agent (OPA) command-line tool (v1.7.1) \cite{the_opa_authors_open_nodate}. This ensures that only valid policies are produced.
+	\item \textbf{\gls{iac} Parser}: Terraform configurations are parsed using the \texttt{python-hcl2} library \cite{amplify_python-hcl2_2025}, which enables the system to understand the structure and content of the \gls{iac} files.
+	\item \textbf{\gls{genai} Analysis Engine}: The core of the prototype is a \gls{llm} from \gls{aws} Bedrock, accessed via the \texttt{boto3} \gls{sdk}. The specific model used is Anthropic's Claude 3.5 Sonnet (\texttt{anthropic.claude-3-5-sonnet-20240620}) \cite{anthropic_claude_2023}.
+	\item \textbf{Validation Layer}: Generated Rego policies are validated for syntactic correctness using the \gls{opa} command-line tool (v1.7.1) \cite{the_opa_authors_open_nodate}. This ensures that only valid policies are produced.
 	\item \textbf{Output Formatting}: Terminal output is enhanced with the \texttt{rich} library \cite{textualize_rich_nodate} for better readability and presentation of results.
-	\item \textbf{Retrieval-Augmented Generation (RAG)}: The RAG implementation leverages Amazon Bedrock for knowledge base retrieval.
+	\item \textbf{\gls{rag}}: The \gls{rag} implementation leverages Amazon Bedrock for knowledge base retrieval.
 \end{itemize}
 
 \subsubsection*{Datasets and Scenarios}
@@ -30,10 +31,10 @@ The evaluation is performed on a curated set of Terraform configurations, each d
     \item \textbf{Complex Logic}: This sample tests the prototype's ability to interpret complex logic within Terraform, such as variables and conditional expressions, to accurately determine the security posture of a resource.
     \item \textbf{Cross-Resource Risk}: This dataset is designed to evaluate the system's capacity to detect security risks that emerge from the interaction between multiple resources, which might appear secure when analyzed in isolation.
     \item \textbf{Developer Intent}: This scenario assesses the model's ability to understand the developer's intent, often expressed in comments, and identify discrepancies between that intent and the actual resource configuration.
-    \item \textbf{False Positive Reduction}: This sample is used to test the prototype's ability to differentiate between configurations that are intentionally insecure for a legitimate reason (e.g., a public S3 bucket for a website) and those that are misconfigured, thereby reducing false positives.
-    \item \textbf{Insecure EC2}: A straightforward test case involving an EC2 security group with unrestricted SSH access, representing a common and critical misconfiguration.
+    \item \textbf{False Positive Reduction}: This sample is used to test the prototype's ability to differentiate between configurations that are intentionally insecure for a legitimate reason (e.g., a public \gls{s3} bucket for a website) and those that are misconfigured, thereby reducing false positives.
+    \item \textbf{Insecure \gls{ec2}}: A straightforward test case involving an \gls{ec2} security group with unrestricted \gls{ssh} access, representing a common and critical misconfiguration.
     \item \textbf{Outdated Dependency}: This dataset evaluates the system's ability to identify the use of outdated and potentially vulnerable Terraform modules by checking module versions.
-    \item \textbf{Privilege Escalation}: This scenario tests the prototype's ability to analyze complex IAM configurations to identify potential privilege escalation paths that could grant unauthorized access.
+    \item \textbf{Privilege Escalation}: This scenario tests the prototype's ability to analyze complex \gls{iam} configurations to identify potential privilege escalation paths that could grant unauthorized access.
 \end{itemize}
 
 % \subsubsection*{Environment and Protocol}
@@ -62,7 +63,7 @@ We assess policy generation performance by establishing a baseline of vulnerabil
 
 \subsection{Generation Speed}\label{sec:metrics-speed}
 
-We evaluate speed in a controlled environment using the Average Time per Policy, $T_{\text{gen}}$, measured from confirmed vulnerability input to validated policy output. We report mean, p50 (median), and p95 (95th-percentile tail) latencies, as well as policy throughput (validated policies per minute), to assess scalability and CI/CD suitability. Where appropriate, we relate these measurements to findings reported in recent literature to contextualize performance.
+We evaluate speed in a controlled environment using the Average Time per Policy, $T_{\text{gen}}$, measured from confirmed vulnerability input to validated policy output. We report mean, p50 (median), and p95 (95th-percentile tail) latencies, as well as policy throughput (validated policies per minute), to assess scalability and \gls{cicd} suitability. Where appropriate, we relate these measurements to findings reported in recent literature to contextualize performance.
 
 Average generation time per policy and throughput:
 \[ T_{\text{gen}} = \frac{1}{N} \sum_{i=1}^{N} (t_{\text{end},i} - t_{\text{start},i}) \]\
@@ -143,13 +144,13 @@ The prototype demonstrated a mean generation time ($T_{\text{gen}}$) of 9.86 sec
 	\caption{Distribution of policy generation time}\label{fig:speed-distribution}
 \end{figure}
 
-These results are highly significant when contextualized within the fast-paced nature of DevOps and CI/CD pipelines. As argued in Chapter~\ref{chap:conceptual_framework}, the primary value of this automation is not merely being faster than a human, but operating at a speed that makes "shift left" security practical at scale \cite{vaidya_devsecops_2024}. A generation time of under 10 seconds is well within the acceptable limits for automated checks in a typical CI/CD pipeline, ensuring that security analysis does not become a bottleneck for development teams \cite{li_automated_2024}.
+These results are highly significant when contextualized within the fast-paced nature of \gls{devops} and \gls{cicd} pipelines. As argued in Chapter~\ref{chap:conceptual_framework}, the primary value of this automation is not merely being faster than a human, but operating at a speed that makes "shift left" security practical at scale \cite{vaidya_devsecops_2024}. A generation time of under 10 seconds is well within the acceptable limits for automated checks in a typical \gls{cicd} pipeline, ensuring that security analysis does not become a bottleneck for development teams \cite{li_automated_2024}.
 
-The speed demonstrated by the prototype directly addresses the inherent limitations of manual processes. Manual policy creation is a resource-intensive task that introduces significant cognitive load on security experts and creates delays in development lifecycles \cite{gunathilaka_context-aware_2025, mahboob_future_2024}. Research has consistently shown that manual security integration impedes delivery speed \cite{gunathilaka_context-aware_2025, mahboob_future_2024}. In contrast, AI-driven approaches, like the one implemented in this prototype, are proven to automate these workflows, reduce manual effort, and accelerate development cycles \cite{fu_ai_2025}.
+The speed demonstrated by the prototype directly addresses the inherent limitations of manual processes. Manual policy creation is a resource-intensive task that introduces significant cognitive load on security experts and creates delays in development lifecycles \cite{gunathilaka_context-aware_2025, mahboob_future_2024}. Research has consistently shown that manual security integration impedes delivery speed \cite{gunathilaka_context-aware_2025, mahboob_future_2024}. In contrast, \gls{ai}-driven approaches, like the one implemented in this prototype, are proven to automate these workflows, reduce manual effort, and accelerate development cycles \cite{fu_ai_2025}.
 
-Controlled studies provide compelling quantitative evidence for this acceleration. For instance, a notable experiment with GitHub Copilot found that professional developers with access to an AI assistant completed a complex task 55.8\% faster than a control group \cite{peng_impact_2023}. Similar improvements have been measured in specialized cloud engineering tasks, including the generation of IAM policies, which is directly analogous to the prototype's function \cite{kesireddy_copilot_2025}. The ability to automate complex, time-consuming software engineering tasks with high rates of success is a key driver for adopting AI in DevOps \cite{tufano_autodev_2024}.
+Controlled studies provide compelling quantitative evidence for this acceleration. For instance, a notable experiment with GitHub Copilot found that professional developers with access to an \gls{ai} assistant completed a complex task 55.8\% faster than a control group \cite{peng_impact_2023}. Similar improvements have been measured in specialized cloud engineering tasks, including the generation of \gls{iam} policies, which is directly analogous to the prototype's function \cite{kesireddy_copilot_2025}. The ability to automate complex, time-consuming software engineering tasks with high rates of success is a key driver for adopting \gls{ai} in \gls{devops} \cite{tufano_autodev_2024}.
 
-Therefore, the measured performance of a sub-10-second average policy generation time confirms that the prototype is not only efficient but also highly compatible with the demands of modern, high-velocity software development environments. This high-speed capability is fundamental to enabling the rapid feedback loops required in a CI/CD pipeline, drastically reducing the time required to create and enforce security controls for newly identified misconfigurations a process that would otherwise be resource-intensive and prone to human delay at scale \cite{vaidya_devsecops_2024}.
+Therefore, the measured performance of a sub-10-second average policy generation time confirms that the prototype is not only efficient but also highly compatible with the demands of modern, high-velocity software development environments. This high-speed capability is fundamental to enabling the rapid feedback loops required in a \gls{cicd} pipeline, drastically reducing the time required to create and enforce security controls for newly identified misconfigurations a process that would otherwise be resource-intensive and prone to human delay at scale \cite{vaidya_devsecops_2024}.
 
 %----------------------------------------------------------------------------------------
 % Results — Context
@@ -182,9 +183,9 @@ The prototype demonstrated a strong ability to reason about context in a majorit
 As shown in Table~\ref{tab:context-reasoning-summary}, the prototype successfully identified several types of context-sensitive vulnerabilities:
 \begin{itemize}
     \item \textbf{Complex Logic:} It correctly interpreted conditional logic in Terraform variables to identify a security group misconfiguration that was only active in a ``development'' environment.
-    \item \textbf{Cross-Resource Risk:} It successfully identified a public S3 bucket by analyzing the interaction between the bucket resource and a separate bucket policy, a risk not apparent from either resource in isolation.
-    \item \textbf{Privilege Escalation:} It correctly identified a potential privilege escalation path by analyzing the combination of \texttt{sts:AssumeRole} and \texttt{iam:PassRole} permissions in an IAM policy.
-    \item \textbf{Standard Misconfigurations:} It easily detected common, critical issues such as unrestricted SSH access in an EC2 security group.
+    \item \textbf{Cross-Resource Risk:} It successfully identified a public \gls{s3} bucket by analyzing the interaction between the bucket resource and a separate bucket policy, a risk not apparent from either resource in isolation.
+    \item \textbf{Privilege Escalation:} It correctly identified a potential privilege escalation path by analyzing the combination of \texttt{sts:AssumeRole} and \texttt{iam:PassRole} permissions in an \gls{iam} policy.
+    \item \textbf{Standard Misconfigurations:} It easily detected common, critical issues such as unrestricted \gls{ssh} access in an \gls{ec2} security group.
 \end{itemize}
 These successes are further interpreted in Chapter~\ref{chap:discussion}.
 
@@ -240,14 +241,14 @@ These cases are discussed in more detail in Chapter~\ref{chap:discussion}.
 %----------------------------------------------------------------------------------------
 % Results — Portability
 %----------------------------------------------------------------------------------------
-\section{Portability and Scope}\label{sec:results-portability}
+\section{Portability and Scope}{\label{sec:results-portability}}
 
 The prototype's portability and the scope of these results are characterized by the following points:
 \begin{itemize}
-    \item \textbf{Primary Evaluation Target:} The evaluation was conducted exclusively on Infrastructure-as-Code written in Terraform for the Amazon Web Services (AWS) cloud platform.
-    \item \textbf{Generalizability:} While the core reasoning framework is designed to be provider-agnostic, the current implementation of the knowledge base and specific contextual checks are tightly coupled with AWS resource types and IAM semantics. Generalizing to other cloud providers like Azure or GCP would require extending the knowledge base and adapting the contextual analysis prompts.
-    \item \textbf{Cross-Environment Consistency:} The performance metrics reported are based on a consistent set of Terraform modules and provider versions, as detailed in Section~\ref{sec:experimental-setup}. Consistency across different customer environments or Terraform versions was not explicitly tested.
-    \item \textbf{Limitations:} The primary limitation is the dependency on the quality and coverage of the Retrieval-Augmented Generation (RAG) knowledge base. Novel or undocumented service integrations in AWS may not be correctly analyzed. Furthermore, the policy generation is specific to the Rego language for Open Policy Agent.
+    \item \textbf{Primary Evaluation Target:} The evaluation was conducted exclusively on \gls{iac} written in Terraform for the \gls{aws} cloud platform.
+    \item \textbf{Generalizability:} While the core reasoning framework is designed to be provider-agnostic, the current implementation of the knowledge base and specific contextual checks are tightly coupled with \gls{aws} resource types and \gls{iam} semantics. Generalizing to other cloud providers like \gls{azure} or \gls{gcp} would require extending the knowledge base and adapting the contextual analysis prompts.
+    \item \textbf{Cross-Environment Consistency:} The performance metrics reported are based on a consistent set of Terraform modules and provider versions, as detailed in Section\ref{sec:experimental-setup}. Consistency across different customer environments or Terraform versions was not explicitly tested.
+    \item \textbf{Limitations:} The primary limitation is the dependency on the quality and coverage of the \gls{rag} knowledge base. Novel or undocumented service integrations in \gls{aws} may not be correctly analyzed. Furthermore, the policy generation is specific to the Rego language for \gls{opa}.
 \end{itemize}
 
 %----------------------------------------------------------------------------------------
@@ -273,7 +274,7 @@ This chapter presented the empirical results of our prototype, evaluating its pe
 In summary, the prototype demonstrates:
 \begin{itemize}
     \item \textbf{Efficacy:} A measurable potential to prevent misconfigurations by generating syntactically valid and effective security policies.
-    \item \textbf{Speed:} Policy generation latency compatible with the feedback loop requirements of typical CI/CD pipelines.
+    \item \textbf{Speed:} Policy generation latency compatible with the feedback loop requirements of typical \gls{cicd} pipelines.
     \item \textbf{Contextual Intelligence:} A significant improvement in detecting context-sensitive risks compared to static-only baselines, thereby addressing the critical challenge of reducing false positives and enhancing the accuracy of findings \cite{zheng_context-aware_2023}.
 \end{itemize}
 
