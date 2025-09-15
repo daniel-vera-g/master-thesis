@@ -4,7 +4,11 @@
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
-\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
+\addchaptertocentry{\abstractname}
+This thesis tackles the critical challenge of automating cloud security policy generation, a task that has become a significant bottleneck in high-velocity cloud environments. It introduces a novel framework that integrates Large Language Models (LLMs) with traditional static analysis using a Retrieval-Augmented Generation (RAG) architecture. Following a Design Science Research paradigm, the work progresses from a comprehensive literature review to the development and empirical evaluation of a functional prototype.
+
+The primary contributions are twofold: (1) a conceptual framework that strategically combines the speed of static analysis with the contextual reasoning of an LLM, grounded in curated data and validated by a Human-in-the-Loop (HITL) process; and (2) a functional prototype built to secure Infrastructure-as-Code (IaC). Empirical evaluation of the prototype on AWS using Terraform and tfsec reveals significant performance gains. The system achieves 100\% syntactic accuracy and, crucially, 100\% logical effectiveness for critical vulnerabilities. Furthermore, with a  mean policy generation time of 9.86 seconds, the framework proves highly compatible with the rapid feedback loops required in modern CI/CD pipelines.
+
+The findings offer a significant contribution to the shift-left security paradigm, providing a practical blueprint for embedding automated, preventative controls early in the development lifecycle. Limitations are primarily the prototype's focus on a specific technology stack (AWS, Terraform, Rego) and the need for further GenAI optimization, which suggest clear directions for future research. Ultimately, this work provides an actionable guide for integrating GenAI into DevSecOps, effectively bridging the gap between rapid development and robust security by automating a critical, yet traditionally manual, security function.
 \end{abstract}
 
